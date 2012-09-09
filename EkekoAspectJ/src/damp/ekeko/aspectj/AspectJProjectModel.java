@@ -1,46 +1,29 @@
 package damp.ekeko.aspectj;
 
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.aspectj.org.eclipse.jdt.internal.compiler.impl.CompilerOptions;
-import org.aspectj.org.eclipse.jdt.internal.core.JavaModel;
+import org.aspectj.org.eclipse.jdt.core.dom.AST;
+import org.aspectj.org.eclipse.jdt.core.dom.ASTNode;
+import org.aspectj.org.eclipse.jdt.core.dom.ASTParser;
 import org.aspectj.org.eclipse.jdt.core.dom.CompilationUnit;
-
+import org.aspectj.org.eclipse.jdt.internal.compiler.impl.CompilerOptions;
 import org.eclipse.ajdt.core.AspectJPlugin;
-import org.eclipse.ajdt.core.model.AJProjectModelFacade;
-import org.eclipse.ajdt.core.model.AJProjectModelFactory;
-
 import org.eclipse.ajdt.core.javaelements.AJCompilationUnit;
 import org.eclipse.ajdt.core.javaelements.AJCompilationUnitManager;
-
+import org.eclipse.ajdt.core.model.AJProjectModelFacade;
+import org.eclipse.ajdt.core.model.AJProjectModelFactory;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.ICompilationUnit;
-import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
-import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
-import org.eclipse.jdt.internal.core.JavaProject;
 
-import org.aspectj.org.eclipse.jdt.core.dom.*;
-
-import damp.ekeko.EkekoModel;
-import damp.ekeko.EkekoModelAddedEvent;
-import damp.ekeko.EkekoModelRemovedEvent;
-import damp.ekeko.EkekoModelUpdateEvent;
-import damp.ekeko.IEkekoModelUpdateListener;
-import damp.ekeko.IProjectModel;
 import damp.ekeko.JavaProjectModel;
-import damp.ekeko.ProjectModel;
 
 public class AspectJProjectModel extends JavaProjectModel {
 
@@ -63,12 +46,21 @@ public class AspectJProjectModel extends JavaProjectModel {
 	}
 
 	public boolean isAJCompilationUnit(ICompilationUnit icu) {
-		IResource resource = icu.getResource();
-		return resource.getFileExtension().equals(AspectJPlugin.AJ_FILE_EXT);
+		return icu instanceof AJCompilationUnit;
+	}
+	
+	public boolean isJCompilationUnit(ICompilationUnit icu) {
+		//PackageFragmentRoot.getCompilationUnits() returns an AJCompilationUnit instance
+		//and a CompilationUnit instance for each .aj file ..	
+		return 	!icu.getResource().getFileExtension().equals(AspectJPlugin.AJ_FILE_EXT);
 	}
 	
 	public AJCompilationUnit ajCuForICU(ICompilationUnit icu) {
 		return (AJCompilationUnit) AJCompilationUnitManager.mapToAJCompilationUnit(icu);
+	}
+	
+	public Iterable<CompilationUnit> getAspectJCompilationUnits() {
+		return ajicu2ajast.values();
 	}
 
 	public CompilationUnit parseAJ(AJCompilationUnit ajcu,IProgressMonitor monitor) throws JavaModelException {
@@ -118,14 +110,15 @@ public class AspectJProjectModel extends JavaProjectModel {
 						AJCompilationUnit ajcu = ajCuForICU(icu);
 						CompilationUnit ajcunode = parseAJ(ajcu, monitor);
 						ajicu2ajast.put(icu, ajcunode);
+						continue;
 					} catch (JavaModelException e) {
 						e.printStackTrace();
 					}
-				} else {
-						icu2ast.put(icu, super.parse(icu, monitor));
+				} 
+				if (isJCompilationUnit(icu))
+					icu2ast.put(icu, super.parse(icu, monitor));
 				}
-			}
-		}
+			}		
 		gatherInformationFromCompilationUnits();
 		gatherInformationFromAJCompilationUnits();
 	}
@@ -137,7 +130,6 @@ public class AspectJProjectModel extends JavaProjectModel {
 		//	addInformationFromVisitor(visitCompilationUnitForInformation(cu));
 		final long duration = System.currentTimeMillis() - startTime;
 		System.out.println("Gathered information from AJDT compilation units in " + duration + "ms");	
-		
 	}
 
 	@Override
@@ -148,52 +140,12 @@ public class AspectJProjectModel extends JavaProjectModel {
 		clean();
 		populate(monitor);
 	}
-
-	private boolean isCorrespondingJavaProjectModel(IProjectModel m) {
-		return  !(m.equals(this)) //AspectJProjectModel extends JavaProjectModel
-				&& m instanceof JavaProjectModel
-				&& ((JavaProjectModel) m).getProject().equals(getProject());
-	}
 	
-	/*
-	 CME-safe version relies on factories to veto other factories 
-	 
-	@Override
-	public void addedToEkekoModel(final EkekoModel em,
-			Collection<IProjectModel> projectModels) {
-		// AJDT projects have JavaNature enabled as well
-		// remove existing JavaProjectModel
-		Iterator<IProjectModel> i = projectModels.iterator();
-		while (i.hasNext()) {
-			IProjectModel m = i.next();
-			if (isCorrespondingJavaProjectModel(m))
-				i.remove();
-		}
-		// install listener to remove future JavaProjectModels
-		em.addListener(new IEkekoModelUpdateListener() {
-			@Override
-			public void projectModelUpdated(EkekoModelUpdateEvent e) {
-				// remove corresponding JavaProjectModel instances
-				if (e instanceof EkekoModelAddedEvent) {
-					IProjectModel m = e.getModel();
-					if (isCorrespondingJavaProjectModel(m))
-						em.removeProjectModel(getProject(), m);
-				}
-				// remove listener in case the AspectJProjectModel itself is
-				// removed
-				if (e instanceof EkekoModelRemovedEvent) {
-					IProjectModel m = e.getModel();
-					if (m.equals(AspectJProjectModel.this))
-						em.removeListener(this);
-				}
-			}
-		});
-	}
-	*/
 
 	@Override
 	protected void addControlFlowGraphInformationForMethodDeclaration(MethodDeclaration m) {
 	}
+	
 	
 	
 }
