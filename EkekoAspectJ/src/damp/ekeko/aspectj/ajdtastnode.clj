@@ -3,17 +3,24 @@
   (:import 
     [java.lang Class]
     [java.lang.reflect Field]
+    [org.eclipse.jface.text Region]
+    [org.eclipse.ajdt.core.text ITDCodeSelection]
     [org.aspectj.org.eclipse.jdt.core.dom
+     CompilationUnit
     ASTNode
     StructuralPropertyDescriptor ChildPropertyDescriptor ChildListPropertyDescriptor SimplePropertyDescriptor
       ;specific to aspectj
       AjTypeDeclaration AspectDeclaration AdviceDeclaration AfterAdviceDeclaration AfterReturningAdviceDeclaration
-   AfterThrowingAdviceDeclaration AroundAdviceDeclaration BeforeAdviceDeclaration DeclareDeclaration 
-   DeclareAnnotationDeclaration DeclareAtConstructorDeclaration DeclareAtFieldDeclaration DeclareAtMethodDeclaration
+   AfterThrowingAdviceDeclaration AroundAdviceDeclaration BeforeAdviceDeclaration  
+    DeclareAtConstructorDeclaration DeclareAtFieldDeclaration DeclareAtMethodDeclaration
    DeclareAtTypeDeclaration DeclareErrorDeclaration DeclareParentsDeclaration DeclarePrecedenceDeclaration DeclareSoftDeclaration
-   DeclareWarningDeclaration InterTypeFieldDeclaration InterTypeMethodDeclaration PointcutDeclaration PatternNode SignaturePattern
-   TypePattern DefaultTypePattern PointcutDesignator AndPointcut CflowPointcut DefaultPointcut NotPointcut
-   OrPointcut PerCflow PerObject PerTypeWithin ReferencePointcut]
+   DeclareWarningDeclaration InterTypeFieldDeclaration InterTypeMethodDeclaration PointcutDeclaration  SignaturePattern
+    DefaultTypePattern  AndPointcut CflowPointcut DefaultPointcut NotPointcut
+   OrPointcut PerCflow PerObject PerTypeWithin ReferencePointcut
+   
+   ;Following have been omitted as they do not have property descriptors, probably because instances cannot feature as leaf node
+   ;PatternNode DeclareDeclaration TypePattern PointcutDesignator DeclareAnnotationDeclaration
+   ]
   ))
 
 (set! *warn-on-reflection* true)
@@ -30,11 +37,11 @@
   ajdt-node-classes-aspectj
   []
   [AjTypeDeclaration AspectDeclaration AdviceDeclaration AfterAdviceDeclaration AfterReturningAdviceDeclaration
-   AfterThrowingAdviceDeclaration AroundAdviceDeclaration BeforeAdviceDeclaration DeclareDeclaration 
-   DeclareAnnotationDeclaration DeclareAtConstructorDeclaration DeclareAtFieldDeclaration DeclareAtMethodDeclaration
+   AfterThrowingAdviceDeclaration AroundAdviceDeclaration BeforeAdviceDeclaration  
+   DeclareAtConstructorDeclaration DeclareAtFieldDeclaration DeclareAtMethodDeclaration
    DeclareAtTypeDeclaration DeclareErrorDeclaration DeclareParentsDeclaration DeclarePrecedenceDeclaration DeclareSoftDeclaration
-   DeclareWarningDeclaration InterTypeFieldDeclaration InterTypeMethodDeclaration PointcutDeclaration PatternNode SignaturePattern
-   TypePattern DefaultTypePattern PointcutDesignator AndPointcut CflowPointcut DefaultPointcut NotPointcut
+   DeclareWarningDeclaration InterTypeFieldDeclaration InterTypeMethodDeclaration PointcutDeclaration  SignaturePattern
+   DefaultTypePattern  AndPointcut CflowPointcut DefaultPointcut NotPointcut
    OrPointcut PerCflow PerObject PerTypeWithin ReferencePointcut]
   )
 
@@ -165,13 +172,29 @@
 
 
 (defprotocol IAJAST
+  (source-string [this]
+    "Returns a string corresponding to the actual AspectJ source code.")      
   (reifiers [this] 
     "Returns a map of keywords to reifier functions. The latter will return an Ekeko-specific child of the AST node."))
 
+
+
+;todo: cflowpointcut, declaredeclaration
 (extend
   org.aspectj.org.eclipse.jdt.core.dom.ASTNode
   IAJAST
-  {:reifiers (fn [this] (node-ekeko-properties this))})
+  {:source-string (fn [^ASTNode this] 
+                    (let [v (org.aspectj.org.eclipse.jdt.core.dom.AjNaiveASTFlattener.)]
+                      (do 
+                        (.accept this v)
+                        (.getResult v))))
+   :reifiers (fn [this] (node-ekeko-properties this))})
+
+
+; The following classes do not use node-ekeko-properties because their propertyDescriptors method throws an exception:
+; java.lang.RuntimeException: Structural property descriptor has wrong node class!
+; at org.aspectj.org.eclipse.jdt.core.dom.ASTNode.addProperty(ASTNode.java:1754)
+; at org.aspectj.org.eclipse.jdt.core.dom.CflowPointcut.propertyDescriptors(CflowPointcut.java:60)
 
 
 (extend
@@ -182,5 +205,45 @@
                 :right (fn [] (.getRight this)) }
                )})
 
+(extend
+  org.aspectj.org.eclipse.jdt.core.dom.CflowPointcut
+  IAJAST
+  {:reifiers (fn [^CflowPointcut this] 
+               {:body (fn [] (.getBody this)) }
+               )})
+
+(extend
+  org.aspectj.org.eclipse.jdt.core.dom.OrPointcut
+  IAJAST
+  {:reifiers (fn [^OrPointcut this] 
+               {:left (fn [] (.getLeft this))
+                :right (fn [] (.getRight this))
+                }
+               )})
+
+(extend
+  org.aspectj.org.eclipse.jdt.core.dom.PerObject
+  IAJAST
+  {:reifiers (fn [^PerObject this] 
+               {:body (fn [] (.getBody this)) }
+               )})
+
+(extend
+  org.aspectj.org.eclipse.jdt.core.dom.PerCflow
+  IAJAST
+  {:reifiers (fn [^PerCflow this] 
+               {:body (fn [] (.getBody this)) }
+               )})
+
+;todo: perhaps there is a faster way that doesn't involve as much ui code?
+(defn 
+  ast-to-element
+  [^ASTNode ast]
+  (let [cu (.getRoot ast)
+        icu (.getJavaElement ^CompilationUnit cu)
+        sel (ITDCodeSelection. icu)
+        region (Region. (.getStartPosition ast) (.getLength ast))]
+    (.findJavaElement sel region)))
 
 
+    

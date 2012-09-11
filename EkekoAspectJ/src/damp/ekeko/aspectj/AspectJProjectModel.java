@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.aspectj.org.eclipse.jdt.core.IJavaElement;
+import org.aspectj.org.eclipse.jdt.core.IJavaProject;
 import org.aspectj.org.eclipse.jdt.core.dom.AST;
 import org.aspectj.org.eclipse.jdt.core.dom.ASTNode;
 import org.aspectj.org.eclipse.jdt.core.dom.ASTParser;
@@ -74,7 +76,9 @@ public class AspectJProjectModel extends JavaProjectModel {
 
 		ajdtparser.setResolveBindings(true);
 		ajdtparser.setKind(ASTParser.K_COMPILATION_UNIT);
+
 		//ajdtparser.setProject(ajcu.getJavaProject());
+		//ajdtparser.setProject((IJavaProject)ajcu.getAncestor(IJavaElement.JAVA_PROJECT));
 		ajdtparser.setStatementsRecovery(false);
 		ajdtparser.setBindingsRecovery(false);
 		char[] contents;
