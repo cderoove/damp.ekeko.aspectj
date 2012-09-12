@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.aspectj.ajde.core.AjCompiler;
+import org.aspectj.ajdt.internal.core.builder.AjState;
+import org.aspectj.ajdt.internal.core.builder.IncrementalStateManager;
 import org.aspectj.org.eclipse.jdt.core.IJavaElement;
 import org.aspectj.org.eclipse.jdt.core.IJavaProject;
 import org.aspectj.org.eclipse.jdt.core.dom.AST;
@@ -11,11 +14,13 @@ import org.aspectj.org.eclipse.jdt.core.dom.ASTNode;
 import org.aspectj.org.eclipse.jdt.core.dom.ASTParser;
 import org.aspectj.org.eclipse.jdt.core.dom.CompilationUnit;
 import org.aspectj.org.eclipse.jdt.internal.compiler.impl.CompilerOptions;
+import org.aspectj.weaver.World;
 import org.eclipse.ajdt.core.AspectJPlugin;
 import org.eclipse.ajdt.core.javaelements.AJCompilationUnit;
 import org.eclipse.ajdt.core.javaelements.AJCompilationUnitManager;
 import org.eclipse.ajdt.core.model.AJProjectModelFacade;
 import org.eclipse.ajdt.core.model.AJProjectModelFactory;
+import org.eclipse.ajdt.core.model.AJWorldFacade;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.CoreException;
@@ -33,7 +38,10 @@ public class AspectJProjectModel extends JavaProjectModel {
 	private ConcurrentHashMap<CompilationUnit, AJCompilationUnit> ajast2ajicu;
 	
 	
-	AJProjectModelFacade ajFacade;
+	private AJProjectModelFacade ajFacade;
+	private AJWorldFacade ajWorldFacade;
+	private World ajWorld;
+
 
 	public AspectJProjectModel(IProject p) {
 		super(p);
@@ -51,16 +59,47 @@ public class AspectJProjectModel extends JavaProjectModel {
 	}
 
 	
+	
+	private void updateAJBuildInformation() {
+		updateAJProjectFacade();
+		updateAJWorldFacade();
+		updateAJWorldAsSeenByWeaver();
+	}
+	
+	private void updateAJWorldFacade() {
+		IProject p = getProject();
+		ajWorldFacade =  new AJWorldFacade(p);
+	}
+	
+	private void updateAJWorldAsSeenByWeaver() {
+		IProject p = getProject();
+		AjCompiler compiler = AspectJPlugin.getDefault().getCompilerFactory().getCompilerForProject(p);
+		AjState state = IncrementalStateManager.retrieveStateFor(compiler.getId());
+		if (state != null) 
+			ajWorld = state.getAjBuildManager().getWorld();
+		else
+			ajWorld = null;
+	}
+	
 	private void updateAJProjectFacade() {
 		IProject p = getProject();
 		System.out.println("Updating AspectJ project model facade for:" + p.getName());
 		ajFacade = AJProjectModelFactory.getInstance().getModelForProject(getProject());
 	}
-
-	private AJProjectModelFacade getAJFacade() {
+	
+	public AJProjectModelFacade getAJProjectFacade() {
 		return ajFacade;
 	}
+	
+	public AJWorldFacade getAJWorldFacade() {
+		return ajWorldFacade;
+	}
+	
+	public World getAJWorldAsSeenByWeaver() {
+		return ajWorld;
+	}
 
+	
 	public boolean isAJCompilationUnit(ICompilationUnit icu) {
 		return icu instanceof AJCompilationUnit;
 	}
@@ -124,7 +163,7 @@ public class AspectJProjectModel extends JavaProjectModel {
 
 	@Override
 	public void populate(IProgressMonitor monitor) throws CoreException {
-		updateAJProjectFacade();
+		updateAJBuildInformation();
 		System.out.println("Populating AspectJProjectModel for: " + javaProject.getElementName());
 		for(IPackageFragment frag : javaProject.getPackageFragments()) {
 			ICompilationUnit[] icus = frag.getCompilationUnits();

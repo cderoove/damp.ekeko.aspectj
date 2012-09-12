@@ -387,7 +387,7 @@
   (filter 
     (fn [^AJProjectModelFacade facade] (.hasModel facade))
     (map
-      (fn [model] (.getAJFacade ^AspectJProjectModel model)) 
+      (fn [model] (.getAJProjectFacade ^AspectJProjectModel model)) 
       (projectmodel/aspectj-project-models))))
 
 (defn 
@@ -405,7 +405,7 @@
   [?element ?xcut]
   (fresh [?model]
          (element-model ?element ?model)
-         (equals ?xcut (.getAJFacade ^AspectJProjectModel ?model))
+         (equals ?xcut (.getAJProjectFacade ^AspectJProjectModel ?model))
          (succeeds (.hasModel ^AJProjectModelFacade ?xcut))))
 
 (defn
@@ -450,13 +450,7 @@
   (fresh [?advice]
          (advice-shadow ?advice ?shadow)))
 
-;; AspectJ Compiler
-;; ----------------
+;; AspectJ Weaver
+;; --------------
 
-
-(defn-
-  model-state
-  []
-  
-  )
 
