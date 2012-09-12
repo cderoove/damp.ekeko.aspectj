@@ -297,27 +297,16 @@
          (.discardOriginalContentMode ^AJCompilationUnit icu)
          result)))))
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+(comment
+  ;does not work
+ ;findNode expects a CompilationUnit from the JDT rather then the AJDT DOM
 (defn 
   element-to-ast
   [^AspectElement element]
   (let [icu (.getCompilationUnit element)
         cu (ajcompilationunit-to-ast icu)]
     (.findNode element cu)))
-
+)
      
 ;bovenstaande werkt niet:
 ;alternatief: predicaten schrijven om elementen en het xcutmodel te querien
