@@ -1,10 +1,16 @@
 (ns damp.ekeko.aspectj.ajdtastnode
-  (:require [damp.ekeko.jdt [astnode :as jdt]]) 
+  (:require [damp.ekeko.jdt [astnode :as jdt]]
+            [damp.ekeko.aspectj [projectmodel :as projectmodel]])
   (:import 
+    [damp.ekeko.aspectj AspectJProjectModel]
     [java.lang Class]
     [java.lang.reflect Field]
     [org.eclipse.jface.text Region]
     [org.eclipse.ajdt.core.text ITDCodeSelection]
+    [org.eclipse.ajdt.core.javaelements
+     AJCompilationUnit
+     AspectElement
+     ]
     [org.aspectj.org.eclipse.jdt.core.dom
      CompilationUnit
     ASTNode
@@ -235,15 +241,85 @@
                {:body (fn [] (.getBody this)) }
                )})
 
-;todo: perhaps there is a faster way that doesn't involve as much ui code?
+
+
+(defn 
+  ast-root
+  [^ASTNode ast]
+  (.getRoot ast))
+
+(defn
+  ast-to-ajcompilationunit
+  [^CompilationUnit cu]
+  (some (fn [x] (not (nil? x)) x)
+        (map (fn [^AspectJProjectModel model] (.getAJCompilationUnitForCompilationUnit model cu)) 
+             (projectmodel/aspectj-project-models))))
+
+
+(defn
+  ajcompilationunit-to-ast
+  [^AJCompilationUnit icu]
+    (some (fn [x] (not (nil? x)) x)
+        (map (fn [^AspectJProjectModel model]
+               (.getCompilationUnitForAJCompilationUnit model icu)) 
+             (projectmodel/aspectj-project-models))))
+
+(comment
+  ;this one always returns an empty array
 (defn 
   ast-to-element
   [^ASTNode ast]
   (let [cu (.getRoot ast)
-        icu (.getJavaElement ^CompilationUnit cu)
+        ;icu (.getJavaElement ^CompilationUnit cu) ;this is always null, because project cannot be set on AST parser
+        icu (ast-to-ajcompilationunit cu)
         sel (ITDCodeSelection. icu)
-        region (Region. (.getStartPosition ast) (.getLength ast))]
-    (.findJavaElement sel region)))
+        region (Region. (.getStartPosition ast) (.getLength ast))
+        elements (.findJavaElement sel region)]
+    (if 
+      (= 1 (alength elements))
+      (aget elements 0) 
+      nil)))
+)
 
 
-    
+(comment
+  ;this one always returns the wrong one
+  ;(e.g., testField as the element for fooMethod MethodDeclaration ASTNode) 
+(defn
+  ast-to-element
+   [^ASTNode ast]
+   (let
+     [cu (.getRoot ast)
+     icu  (ast-to-ajcompilationunit cu)]
+     (do 
+       (.requestOriginalContentMode ^AJCompilationUnit icu)
+       (let [result (.getElementAt ^AJCompilationUnit icu (.getLength ast))]
+         (.discardOriginalContentMode ^AJCompilationUnit icu)
+         result)))))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+(defn 
+  element-to-ast
+  [^AspectElement element]
+  (let [icu (.getCompilationUnit element)
+        cu (ajcompilationunit-to-ast icu)]
+    (.findNode element cu)))
+
+     
+;bovenstaande werkt niet:
+;alternatief: predicaten schrijven om elementen en het xcutmodel te querien
+;daarna checken of de sourcepos van het element (blijkbaar bijgehouden) en de ast node overeenkomen ..
+

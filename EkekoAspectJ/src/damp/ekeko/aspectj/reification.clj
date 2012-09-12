@@ -10,7 +10,12 @@
       [damp.ekeko.aspectj [ajdtastnode :as astnode]])
      (:import 
        [damp.ekeko.aspectj AspectJProjectModel]
-       [org.aspectj.org.eclipse.jdt.core.dom ASTNode]))
+       [org.aspectj.org.eclipse.jdt.core.dom ASTNode]
+       [org.eclipse.jdt.core IField IMethod]
+       [org.eclipse.jdt.internal.core SourceType]
+       [org.eclipse.ajdt.core.model AJProjectModelFacade]
+       [org.eclipse.ajdt.core.javaelements AspectElement IntertypeElement AdviceElement DeclareElement PointcutElement AJCompilationUnit FieldIntertypeElement MethodIntertypeElement]
+       ))
 
 (set! *warn-on-reflection* true)
 
@@ -101,21 +106,21 @@
 (defn- subclass-nodes-of-type [t]
   (let [c (astnode/class-for-ekeko-keyword t)
         s (supers c)]
-    (cond (contains? s org.aspectj.org.eclipse.jdt.core.dom.Expression)
-            (filter (fn [n] (instance? c n))
-              (nodes-of-type :Expression))
-          (contains? s org.aspectj.org.eclipse.jdt.core.dom.Statement)
-            (filter (fn [n] (instance? c n))
-              (nodes-of-type :Statement))
-          (contains? s org.aspectj.org.eclipse.jdt.core.dom.Type)
-            (filter (fn [n] (instance? c n))
-              (nodes-of-type :Type))
-          :else 
+   ; (cond (contains? s org.aspectj.org.eclipse.jdt.core.dom.Expression)
+   ;         (filter (fn [n] (instance? c n))
+   ;           (nodes-of-type :Expression))
+   ;       (contains? s org.aspectj.org.eclipse.jdt.core.dom.Statement)
+   ;         (filter (fn [n] (instance? c n))
+   ;           (nodes-of-type :Statement))
+   ;       (contains? s org.aspectj.org.eclipse.jdt.core.dom.Type)
+   ;         (filter (fn [n] (instance? c n))
+   ;           (nodes-of-type :Type))
+    ;      :else 
             (run* [?n] 
               (fresh [?cu]
                 (ast :CompilationUnit ?cu)
                 (child+ ?cu ?n)
-                (succeeds (instance? c ?n)))))))
+                (succeeds (= c (class ?n)))))))
 
 
 
@@ -125,10 +130,134 @@
       :CompilationUnit (mapcat (fn [aspectj-project-model]
                                  (.getAspectJCompilationUnits ^AspectJProjectModel aspectj-project-model)) models)
       (try (subclass-nodes-of-type t) (catch ClassNotFoundException e []))
-      
       )))
                  
 
+;; Elements
+;; --------
+
+(defn- 
+  aspectj-facades
+  []
+  (filter 
+    (fn [^AJProjectModelFacade facade] (.hasModel facade))
+    (mapcat
+      (fn [model] (.getAJFacade ^AspectJProjectModel model)) 
+      (projectmodel/aspectj-project-models))))
+
+
+(defn
+  ajcu
+  "Relation of AJCompilationUnit instances."
+  [?ajcu]
+  (let [compilationunits 
+        (mapcat (fn [model] (.getAJCompilationUnits ^AspectJProjectModel model))
+                (projectmodel/aspectj-project-models))]
+  (all
+    (contains compilationunits ?ajcu))))
+
+
+
+(defn 
+  ajcu-aspect
+  "Relation between an AJCompilationUnit and one of the aspects 
+   its defines using the aspect keyword."
+  [?ajcu ?aspect]
+  (all
+    (ajcu ?ajcu)
+    (contains (.getAllAspects ^AJCompilationUnit ?ajcu) ?aspect)
+    (succeeds (instance? AspectElement ?aspect))))
+
+;todo: include them in other relations
+(defn 
+  ajcu-aspectbyannotation
+  "Relation between an AJCompilationUnit and one of the aspects 
+   it defines using the @aspect annotation on a class. "
+  [?ajcu ?sourcetype]
+  (all
+    (ajcu ?ajcu)
+    (contains (.getAllAspects ^AJCompilationUnit ?ajcu) ?sourcetype)
+    (succeeds (instance? SourceType ?sourcetype))))
+
+(defn
+  aspect-advice
+  "Relation between an aspect and one if its advices."
+  [?aspect ?advice]
+  (fresh [?ajcu]
+         (ajcu-aspect ?ajcu ?aspect)
+         (contains (.getAdvice ^AspectElement ?aspect) ?advice)))
+
+(defn
+  aspect-declare
+   "Relation between an aspect and one of its declares."
+  [?aspect ?declare]
+  (fresh [?ajcu]
+         (ajcu-aspect ?ajcu ?aspect)
+         (contains (.getDeclares ^AspectElement ?aspect) ?declare)))
+  
+(defn
+  aspect-pointcut
+  "Relation between an aspect and one of its pointcuts."
+  [?aspect ?pointcut]
+  (fresh [?ajcu]
+         (ajcu-aspect ?ajcu ?aspect)
+         (contains (.getPointcuts ^AspectElement ?aspect) ?pointcut)))
+         
+
+(defn
+  aspect-intertype
+  "Relation between an aspect and one of its intertype declarations."
+  [?aspect ?itd]
+  (fresh [?ajcu]
+         (ajcu-aspect ?ajcu ?aspect)
+         (contains (.getITDs ^AspectElement ?aspect) ?itd)))
+
+(defn
+  aspect-intertype-method
+  "Relation between an aspect and one of its intertype method declarations."
+  [?aspect ?itd]
+  (all 
+    (aspect-intertype ?aspect ?itd)
+    (succeeds (instance? MethodIntertypeElement ?itd))))
+
+(defn
+  aspect-intertype-field
+  "Relation between an aspect and one of its intertype field declarations."
+  [?aspect ?itd]
+  (all 
+    (aspect-intertype ?aspect ?itd)
+    (succeeds (instance? FieldIntertypeElement ?itd))))
+
+(defn
+  aspect-field
+  "Relation between an aspect and one of its fields."  
+  [?aspect ?field]
+  (fresh [?ajcu]
+         (ajcu-aspect ?ajcu ?aspect)
+         (contains (.getFields ^AspectElement  ?aspect) ?field)))
+
+(defn-
+  aspectj-imethod-represents-method?
+  [^IMethod m]
+  (not (or (instance? AdviceElement m)
+           (instance? PointcutElement m)
+           (instance? IntertypeElement m)
+           (instance? DeclareElement m))))
+  
+(defn
+  aspect-method
+  "Relation between an aspect and one of its methods."  
+  [?aspect ?method]
+  (fresh [?ajcu]
+         (ajcu-aspect ?ajcu ?aspect)
+         (contains (.getMethods ^AspectElement  ?aspect) ?method)
+         (succeeds (aspectj-imethod-represents-method? ?method))))
+
+
+
+
+;; XCut model
+;; ----------
 
 
 

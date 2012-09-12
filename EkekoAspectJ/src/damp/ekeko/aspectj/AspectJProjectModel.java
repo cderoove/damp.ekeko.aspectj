@@ -29,14 +29,28 @@ import damp.ekeko.JavaProjectModel;
 
 public class AspectJProjectModel extends JavaProjectModel {
 
-	private ConcurrentHashMap<ICompilationUnit, CompilationUnit> ajicu2ajast;
+	private ConcurrentHashMap<AJCompilationUnit, CompilationUnit> ajicu2ajast;
+	private ConcurrentHashMap<CompilationUnit, AJCompilationUnit> ajast2ajicu;
+	
+	
 	AJProjectModelFacade ajFacade;
 
 	public AspectJProjectModel(IProject p) {
 		super(p);
-		ajicu2ajast = new ConcurrentHashMap<ICompilationUnit, CompilationUnit>();
+		ajicu2ajast = new ConcurrentHashMap<AJCompilationUnit, CompilationUnit>();
+		ajast2ajicu = new ConcurrentHashMap<CompilationUnit, AJCompilationUnit>();
+
+	}
+	
+	public AJCompilationUnit getAJCompilationUnitForCompilationUnit(CompilationUnit cu) {
+		return ajast2ajicu.get(cu);
+	}
+	
+	public CompilationUnit getCompilationUnitForAJCompilationUnit(AJCompilationUnit  icu) {
+		return ajicu2ajast.get(icu);
 	}
 
+	
 	private void updateAJProjectFacade() {
 		IProject p = getProject();
 		System.out.println("Updating AspectJ project model facade for:" + p.getName());
@@ -61,6 +75,12 @@ public class AspectJProjectModel extends JavaProjectModel {
 		return (AJCompilationUnit) AJCompilationUnitManager.mapToAJCompilationUnit(icu);
 	}
 	
+	//model elements
+	public Iterable<AJCompilationUnit> getAJCompilationUnits() {
+		return ajicu2ajast.keySet();
+	}
+	
+	//ast nodes
 	public Iterable<CompilationUnit> getAspectJCompilationUnits() {
 		return ajicu2ajast.values();
 	}
@@ -113,7 +133,8 @@ public class AspectJProjectModel extends JavaProjectModel {
 					try {
 						AJCompilationUnit ajcu = ajCuForICU(icu);
 						CompilationUnit ajcunode = parseAJ(ajcu, monitor);
-						ajicu2ajast.put(icu, ajcunode);
+						ajicu2ajast.put(ajcu, ajcunode);
+						ajast2ajicu.put(ajcunode, ajcu);	
 						continue;
 					} catch (JavaModelException e) {
 						e.printStackTrace();
