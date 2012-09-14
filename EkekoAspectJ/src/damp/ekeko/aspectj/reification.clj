@@ -12,6 +12,7 @@
        [damp.ekeko EkekoModel]
        [damp.ekeko.aspectj AspectJProjectModel]
       ; [org.aspectj.asm.IRelationship]
+       [org.aspectj.weaver World]
        [org.aspectj.org.eclipse.jdt.core.dom ASTNode]
        [org.eclipse.core.resources IProject]
        [org.eclipse.jdt.core IField IMethod IJavaElement]
@@ -390,7 +391,7 @@
       (fn [model] (.getAJProjectFacade ^AspectJProjectModel model)) 
       (projectmodel/aspectj-project-models))))
 
-(defn 
+(defn- 
   xcut
   "Relation of all AJProjectModel facades."
   [?xcut]
@@ -399,7 +400,7 @@
          [(v- ?xcut)
           (contains (xcuts) ?xcut)]))
 
-(defn
+(defn-
   element-xcut
   "Relation between a model element ?element and the AJProjectModel ?xcut for the project in which it resides."
   [?element ?xcut]
@@ -407,6 +408,7 @@
          (element-model ?element ?model)
          (equals ?xcut (.getAJProjectFacade ^AspectJProjectModel ?model))
          (succeeds (.hasModel ^AJProjectModelFacade ?xcut))))
+
 
 (defn
   xcut-relationtype-relation
@@ -417,12 +419,30 @@
          (xcut ?xcut)
          (equals ?relation (.getRelationshipsForProject ^AJProjectModelFacade ?xcut ?types))))
 
+;handle to JDT JavaElement
 (defn-
   xcut-aje-je
   [?xcut ?handle ?element]
   (all 
     (equals ?element (.programElementToJavaElement ^AJProjectModelFacade ?xcut ^String ?handle))))
 
+;handle to AspectJ ProgramElement
+(defn-
+  xcut-aje-pe
+  [?xcut ?handle ?element]
+  (all 
+    (equals ?element (.toProgramElement ^AJProjectModelFacade ?xcut ^String ?handle))))
+
+;JDT Javaelement to AspectJ ProgramElement
+(defn
+  xcut-je-pe
+  [?xcut ?jdt-element ?aj-element]
+  (all
+    (equals ?aj-element (.javaElementToProgramElement ^AJProjectModelFacade ?xcut ?jdt-element))))
+
+
+
+;javaElementToProgramElement(IJavaElement) goes from JDT world to AspectJ world
 
 ;; XCut shadows and advice
 
@@ -434,8 +454,7 @@
          (contains ?relation ?relelement)
          (equals ?advicehandle (.getSourceHandle ?relelement))
          (contains (.getTargets ?relelement) ?shadowhandle)))
-         
-        
+
 (defn
   advice-shadow
   [?advice ?shadow]
@@ -450,7 +469,116 @@
   (fresh [?advice]
          (advice-shadow ?advice ?shadow)))
 
-;; AspectJ Weaver
-;; --------------
+
+
+;; AspectJ Weaver World
+;; --------------------
+
+
+;note: contains a lot of interesting information
+
+(defn- 
+  weaverworlds
+  []
+  (filter
+    (complement nil?) 
+    (map
+      (fn [model] (.getAJWorldAsSeenByWeaver ^AspectJProjectModel model)) 
+      (projectmodel/aspectj-project-models))))
+
+(defn- 
+  weaverworld
+  "Relation of all AspectJ weaver worlds."
+  [?world]
+  (conda [(v+ ?world)
+          (succeeds (instance? World ?world))]
+         [(v- ?world)
+          (contains (weaverworlds) ?world)]))
+
+(defn-
+  element-weaverworld
+  "Relation between a model element ?element and the AJProjectModel ?xcut for the project in which it resides."
+  [?element ?world]
+  (fresh [?model]
+         (element-model ?element ?model)
+         (equals ?world (.getAJWorldAsSeenByWeaver ^AspectJProjectModel ?model))
+         (!= nil ?world)))
+
+;; precedences
+
+
+
+
+;;todo: check whether this works when the aspects stem from different projects
+;go to world
+;
+;In World (not AJWorldFacade), relevant methods:
+;compareByPrecedence(ResolvedType firstAspect, ResolvedType secondAspect)
+;getPrecedenceIfAny(ResolvedType aspect1, ResolvedType aspect2)
+;compareByPrecedenceAndHierarchy(ResolvedType firstAspect, ResolvedType secondAspect) 
+;
+;need to go from aspect (jdt element) -> programelement (aspectj) -> signature -> resolvedtype
+;programelement.toSignatureString
+;
+
+;world.resolveType(signature)
+
+;;alternatief:
+;world lookupBySignature
+
+
+;;program element .getModel -> an AsmManager, which contains info about aspect structure
+
+(defn
+  pe-signature
+  [?program-element ?signature-string]
+  (all
+    (equals ?signature-string (.toSignatureString ?program-element))))
+
+(defn
+  weaverworld-signature-resolvedtype
+  [?world ?signature ?resolved-type]
+  (equals ?resolved-type (.lookupBySignature ?world ?signature)))
+
+;element-weaverworld
+
+
+(comment 
+(defn 
+  aspect-explicitly-dominatedaspect
+  [?dominator ?subordinate]
+  (fresh [?dominator-pe ?subordinate-pe] 
+    (element-xcut ?dominator ?xcut)
+    (xcut-je-pe ?xcut ?dominator ?dominator-pe)
+    
+    (aspect ?subordinate)
+    (xcut-je-pe ?xcut ?subordinate ?subordinate-pe)
+    
+    
+    ))
+)
+  
+
+;OR:
+;go from declare (jdt element) -> programelement (aspectj, could be declarepattern) 
+;and check what you can do there
+
+(comment 
+(damp.ekeko* [?declare ?declare-pe ?declare-pe-class]
+        (fresh [?xcut]
+               (declare ?declare)
+               (element-xcut ?dominator ?xcut)
+               (xcut-je-pe ?xcut ?declare ?declare-pe)
+               ;take details from declare element
+               ;contains types of two aspects
+               ;then take aspect of that type
+               ;yuk
+)))
+
+
+;(defn-
+;  aspect-precedence
+;  
+;  )
 
 

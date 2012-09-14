@@ -4,7 +4,7 @@
 ;  (:use [clojure.core.logic])
   (:use [damp.ekeko logic])
   (:use [damp.ekeko])
-  (:require [damp.ekeko.aspectj [reification :as aj] [ajdtastnode :as ajnode]]))
+  (:require [damp.ekeko.aspectj [reification :as aj] [ajdtastnode :as ajnode] [weaverworld :as world]]))
 
 (defn
   make-query-views-aspectj-aware!
@@ -33,8 +33,6 @@
   ;;all xcut relations and their type ... only 4 contain info for the test project
   ;;TODO: check on HealthWatcher, AJHotdraw
   (ekeko* [?xcut ?reltype ?rel] (aj/xcut-relationtype-relation ?xcut ?reltype ?rel))
-  
-  
   
   
   
