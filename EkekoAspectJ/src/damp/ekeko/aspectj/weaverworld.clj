@@ -15,7 +15,7 @@
        [org.aspectj.weaver.patterns Declare DeclarePrecedence]
        [damp.ekeko EkekoModel]
        [damp.ekeko.aspectj AspectJProjectModel]
-       [org.aspectj.weaver World ResolvedTypeMunger ConcreteTypeMunger UnresolvedType ResolvedType  Member]
+       [org.aspectj.weaver AdviceKind World ResolvedTypeMunger ConcreteTypeMunger UnresolvedType ResolvedType  Member]
        [org.aspectj.asm AsmManager IProgramElement IProgramElement$Kind IHierarchy ]
        [org.aspectj.weaver.bcel BcelTypeMunger]))
               
@@ -384,6 +384,66 @@
     (advice ?advice)
     (equals ?location (.getSourceLocation ?advice))))
 
+(defn
+  advice-kind
+  "Relation between an advice and its kind (an AdviceKind)."
+  [?advice ?kind]
+  (all
+    (advice ?advice)
+    (equals ?kind (.getKind ?advice))))
+
+(defn
+  advice-kindprecedence 
+  "Relation between an advice and a number representing
+   the precedence associated with its kind (see AdviceKind).
+   E.g., before=1, after=2, afterThrowing=3, afterReturning=4,around=5"
+  [?advice ?precedence]
+  (fresh [?kind]
+         (advice-kind ?advice ?kind)
+         (equals ?precedence (.getPrecedence ?kind))))
+
+;todo: there are also advice kinds that cannot be declared, but are used by the weaver (see AdviceKind)
+
+(defn
+  advicebefore 
+  "Relation of before advices."
+  [?advice]
+  (fresh [?kind]
+    (advice-kind ?advice ?kind)
+    (equals ?kind AdviceKind/Before)))
+
+(defn
+  adviceafter
+  "Relation of after advices."
+  [?advice]
+  (fresh [?kind]
+    (advice-kind ?advice ?kind)
+    (equals ?kind AdviceKind/After)))
+
+(defn
+  adviceafterthrowing
+  "Relation of after throwing advices."
+  [?advice]
+  (fresh [?kind]
+    (advice-kind ?advice ?kind)
+    (equals ?kind AdviceKind/AfterThrowing)))
+
+(defn
+  adviceafterreturning
+  "Relation of after returning advices."
+  [?advice]
+  (fresh [?kind]
+    (advice-kind ?advice ?kind)
+    (equals ?kind AdviceKind/AfterReturning)))
+
+(defn
+  advicearound
+  "Relation of around advices."
+  [?advice]
+  (fresh [?kind]
+    (advice-kind ?advice ?kind)
+    (equals ?kind AdviceKind/Around)))
+
 
 ;; Intertype declarations
 ;; ----------------------
@@ -711,6 +771,8 @@
   (damp.ekeko/ekeko* [?aspect ?pointcut] (aspect-pointcutdefinition ?aspect ?pointcut))
   
   (damp.ekeko/ekeko* [?advice] (advice ?advice))
+  
+  (damp.ekeko/ekeko* [?advice]  (advicebefore ?advice))
   
   (damp.ekeko/ekeko* [?advice ?location] (advice-sourcelocation ?advice ?location))
 
