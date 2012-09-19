@@ -69,13 +69,9 @@
     (equals ?hierarchy (.getHierarchy ?model))))
 
 
-
-
-
-
 ;; ProgramElement hierarchy
-;; but not what we want
-;; -----------------------
+;; (but prefer not to use these) 
+;; -----------------------------
     
 (defn
   root
@@ -158,8 +154,6 @@
 ;; Actual Reification of WeaverWorld
 ;; ---------------------------------
 
-
-
 (defn-
   weaverworld-typemap
   "Relation between an AspectJ weaverworld and its non-expandable TypeMap."
@@ -211,247 +205,6 @@
                                      ?set)
         ?aspect))))
 
-;; Advice
-
-(defn
-  aspect-advice
-  "Relation between an aspect and one of the advices it declares."
-  [?aspect ?advice]
-  (fresh [?members]
-         (aspect-crosscuttingmembers ?aspect ?members)
-         (contains (.getShadowMungers ?members) ?advice)))
-
-; Prefer the above because going through the CrosscuttingMembersSet has proven more reliable for intertype declarations
-;(defn
-;  aspect-advice
-;  "Relation between an aspect and one of the advices it declares."
-;  [?aspect ?advice]
-;  (all
-;    (aspect ?aspect)
-;    (contains (.getDeclaredAdvice ?aspect) ?advice)))
-
-(defn
-  advice
-  "Relation of advices known to the weaver."
-  [?advice]
-  (fresh [?aspect]
-         (aspect-advice ?aspect ?advice)))
-
-;;following does not work: handles are all null
-;(defn
-;  advice-handle
-;  "Relation between an advice and the handle for its corresponding ProgramElement.";
-;  [?advice ?handle]
-;  (all
-;    (advice ?advice)
-;    (equals ?handle (.handle ?advice))))
-
-  
-(defn
-  advice-handle
-  "Relation between an advice and the handle for its corresponding ProgramElement."
-  [?advice ?handle]
-  (fresh [?aspect]
-    (aspect-advice ?aspect ?advice)
-    (equals ?handle 
-            (AsmRelationshipProvider/getHandle  (-> ?aspect .getWorld .getModel) ?advice))))
-
-
-;; Intertype declarations
-
-;Only returned one ITD of XCutTest
-;(defn
-;  aspect-intertype 
-; "Relation between an aspect and one of its intertype declarations."
-; [?aspect ?intertype]
-;  (all
-;    (aspect ?aspect)
-;    (contains (.getInterTypeMungers ?aspect) ?intertype)))
-
-
-
-(defn
-  aspect-intertype 
-  "Relation between an aspect and one of its intertype declarations (a ConcreteTypeMunger)."
-  [?aspect ?intertype]
-  (fresh [?members]
-    (aspect-crosscuttingmembers ?aspect ?members)
-    (contains (.getTypeMungers ?members) ?intertype)))
-
-
-(defn
-  intertype
-  [?intertype]
-  "Relation of intertype declarations."
-  (conda
-    [(v+ ?intertype) 
-     (succeeds (instance? ConcreteTypeMunger ?intertype))]
-    [(v- ?intertype) 
-     (fresh [?aspect]
-         (aspect-intertype ?aspect ?intertype))]))         
-  
-;note: ConcreteTypeMunger.getMunger returns a ResolvedTypeMunger (from a previous weaving stage)
-
-(defn
-  intertype-kind
-  "Relation between an intertype declaration and its kind."
-  [?intertype ?kind]
-  (all
-    (intertype ?intertype)
-    (equals ?kind (-> ?intertype .getMunger .getKind))))
-
-(defn
-  intertype-field
-  "Relation of field intertype declarations."
-  [?intertype]
-  (fresh [?kind]
-         (intertype-kind ?intertype ?kind)
-         (equals ?kind (ResolvedTypeMunger/Field))))
-
-(defn
-  intertype-method
-  "Relation of method intertype declarations."
-  [?intertype]
-  (fresh [?kind]
-         (intertype-kind ?intertype ?kind)
-         (equals ?kind (ResolvedTypeMunger/Method))))
-
-(defn
-  intertype-constructor
-  "Relation of constructor intertype declarations."
-  [?intertype]
-  (fresh [?kind]
-         (intertype-kind ?intertype ?kind)
-         (equals ?kind (ResolvedTypeMunger/Constructor))))
-
-
-(defn
-  intertype-member-type
-  "Relation between an intertype declaration, the field/method/constructor member it declares
-  (a ResolvedMemberImpl), and the type to which this member is added (a ResolvedType). "
-  [?intertype ?member ?type]
-  (fresh [?unresolved]
-    (intertype ?intertype)
-    (equals ?member (.getSignature ?intertype))
-    (equals ?unresolved (.getDeclaringType ?member))
-    (equals ?type (.resolve ?unresolved (.getWorld ?intertype)))))
-  
-   
-;; implemented in this manner because I don't know how to create a handle for a ConcreteTypeMunger / ResolvedMemberImpl 
-;; AsmRelationShipProviver.createIntertypeDeclaredChild(AsmManager model, ResolvedType aspect, BcelTypeMunger itd) {
-(defn
-  intertype-element
-  "Relation between an intertype declaration and its resulting member element (a ProgramElement) 
-   in the program element hierarchy.
-
-   These are of the same type as the shadows we return for an advice, thus allowing checking
-   whether a shadow stems from an intertype declaration.
-
-   Prefer to use the above intertype-member-type instead, as it does not escape the weaver world."
-  [?intertype ?member]
-  (fresh [?equivalentmember ?signaturestring]
-         (intertype ?intertype)
-         (equals 
-           ?equivalentmember
-           (interop/call-invisible-method 
-             AsmRelationshipProvider
-             'createIntertypeDeclaredChild
-             [AsmManager ResolvedType BcelTypeMunger]
-             nil
-             (-> ?intertype .getWorld .getModel)
-             (-> ?intertype .getAspectType)
-             ?intertype))
-         (equals ?signaturestring (.toSignatureString ?equivalentmember))
-         (element-signature ?member ?signaturestring))) 
-  
-
-
-;; SourceLocation
-
-(defn
-  sourcelocation-filename-startline-endline-column-offset 
-  "Non-relational. Unifies ?filename with the name of the file for the given ?sourcelocation, 
-   ?startline with the line at which it starts, ?endline with the line at which it ends, 
-   ?column with the column at which it starts, and ?offset with its offset."
-  [?sourcelocation ?filename ?startline ?endline ?column ?offset]
-  (all
-    (equals ?filename (.getSourceFileName ?sourcelocation))
-    (equals ?startline (.getLine ?sourcelocation))
-    (equals ?endline (.getEndLine ?sourcelocation))
-    (equals ?column (.getColumn ?sourcelocation))
-    (equals ?offset (.getOffset ?sourcelocation))))
-
-;; Pointcuts
-
-(defn
-  advice-sourcelocation
-  "Relation between an advice and its location in the source code (an ISourceLocation)."
-  [?advice ?location]
-  (all
-    (advice ?advice)
-    (equals ?location (.getSourceLocation ?advice))))
-
-
-(defn
-  advice-pointcut
-  "Relation between an Advice ?advice and its Pointcut ?pointcut.
-   Note that these are different from the ResolvedPointcutDefinition instances returned
-   by aspect-pointcutdefinition."
-  [?advice ?pointcut]
-  (all
-         (advice ?advice)
-         (equals ?pointcut (.getPointcut ?advice))))
-
-
-(defn
-  pointcut
-  "Relation of all pointcuts known to the AspectJ weaver.
-   Note that these are not pointcut definitions."
-  [?advice]
-  (fresh [?advice]
-         (advice-pointcut)))
-
-;;todo: 
-;;check Pointcut hierarcy, (AndPointcut, HandlerPointcut, ...)
-
-
-;; Pointcut definitions
-
-(defn
-  aspect-pointcutdefinition
-  "Relation between an aspect and one of the pointcuts it declares.
-   Note that these are instances of ResolvedPointcutDefinition,
-   rather than the Pointcut instances within ShadowMungers (advice).
-
-   Link between PointcutDefinition and Pointcut (.getPointcut) seems broken though..."
-  [?aspect ?pointcutdefinition]
-  (all 
-    (aspect ?aspect)
-    (contains (.getDeclaredPointcuts ?aspect) ?pointcutdefinition) ;instance of ResolvedPointcutDefinition
-    ))
-
-(defn
-  pointcutdefinition
-  "Relation of pointcuts known to the weaver.
-   Note: these are instances of Pointcut rather than ResolvedPointcutDefinition."
-  [?pointcut]
-  (fresh [?aspect]
-         (aspect-pointcutdefinition ?aspect ?pointcut)))
-  
-
-
-
-;;alternatief:
-;;neem crosscuttingmembersset
-;;de keys van die map daarin (ook al is die private, kan er misschien via reflectie aan), 
-;;zouden de aspecten zijn
-;;en daarna alles baseren op hun shadowmungers
-;;en de pointcut instances die zij hebben
-;;dus niet aan een resolvedtype vragen welke declarations ze hebben
-;; --> heb het getest, geen verschil
-;;--> probleem: vanuit een pointcut is het niet mogelijk om terug te gaan naar de oorspronkelijk pointcutdefinition
-;; (ald die er was) ... misschien wel via sourcelocation
-;;				IProgramElement ipe = asm.getHierarchy().findElementForSourceLine(sl);
 
 
 ;todo:
@@ -577,6 +330,242 @@
   
 
 
+;; Advice
+;; ------
+
+(defn
+  aspect-advice
+  "Relation between an aspect and one of the advices it declares."
+  [?aspect ?advice]
+  (fresh [?members]
+         (aspect-crosscuttingmembers ?aspect ?members)
+         (contains (.getShadowMungers ?members) ?advice)))
+
+; Prefer the above because going through the CrosscuttingMembersSet has proven more reliable for intertype declarations
+;(defn
+;  aspect-advice
+;  "Relation between an aspect and one of the advices it declares."
+;  [?aspect ?advice]
+;  (all
+;    (aspect ?aspect)
+;    (contains (.getDeclaredAdvice ?aspect) ?advice)))
+
+(defn
+  advice
+  "Relation of advices known to the weaver."
+  [?advice]
+  (fresh [?aspect]
+         (aspect-advice ?aspect ?advice)))
+
+;;following does not work: handles are all null
+;(defn
+;  advice-handle
+;  "Relation between an advice and the handle for its corresponding ProgramElement.";
+;  [?advice ?handle]
+;  (all
+;    (advice ?advice)
+;    (equals ?handle (.handle ?advice))))
+
+  
+(defn
+  advice-handle
+  "Relation between an advice and the handle for its corresponding ProgramElement."
+  [?advice ?handle]
+  (fresh [?aspect]
+    (aspect-advice ?aspect ?advice)
+    (equals ?handle 
+            (AsmRelationshipProvider/getHandle  (-> ?aspect .getWorld .getModel) ?advice))))
+
+(defn
+  advice-sourcelocation
+  "Relation between an advice and its location in the source code (an ISourceLocation)."
+  [?advice ?location]
+  (all
+    (advice ?advice)
+    (equals ?location (.getSourceLocation ?advice))))
+
+
+;; Intertype declarations
+;; ----------------------
+
+
+;Only returned one ITD of XCutTest
+;(defn
+;  aspect-intertype 
+; "Relation between an aspect and one of its intertype declarations."
+; [?aspect ?intertype]
+;  (all
+;    (aspect ?aspect)
+;    (contains (.getInterTypeMungers ?aspect) ?intertype)))
+
+
+
+(defn
+  aspect-intertype 
+  "Relation between an aspect and one of its intertype declarations (a ConcreteTypeMunger)."
+  [?aspect ?intertype]
+  (fresh [?members]
+    (aspect-crosscuttingmembers ?aspect ?members)
+    (contains (.getTypeMungers ?members) ?intertype)))
+
+
+(defn
+  intertype
+  [?intertype]
+  "Relation of intertype declarations."
+  (conda
+    [(v+ ?intertype) 
+     (succeeds (instance? ConcreteTypeMunger ?intertype))]
+    [(v- ?intertype) 
+     (fresh [?aspect]
+         (aspect-intertype ?aspect ?intertype))]))         
+  
+;note: ConcreteTypeMunger.getMunger returns a ResolvedTypeMunger (from a previous weaving stage)
+
+(defn
+  intertype-kind
+  "Relation between an intertype declaration and its kind."
+  [?intertype ?kind]
+  (all
+    (intertype ?intertype)
+    (equals ?kind (-> ?intertype .getMunger .getKind))))
+
+(defn
+  intertype-field
+  "Relation of field intertype declarations."
+  [?intertype]
+  (fresh [?kind]
+         (intertype-kind ?intertype ?kind)
+         (equals ?kind (ResolvedTypeMunger/Field))))
+
+(defn
+  intertype-method
+  "Relation of method intertype declarations."
+  [?intertype]
+  (fresh [?kind]
+         (intertype-kind ?intertype ?kind)
+         (equals ?kind (ResolvedTypeMunger/Method))))
+
+(defn
+  intertype-constructor
+  "Relation of constructor intertype declarations."
+  [?intertype]
+  (fresh [?kind]
+         (intertype-kind ?intertype ?kind)
+         (equals ?kind (ResolvedTypeMunger/Constructor))))
+
+
+(defn
+  intertype-member-type
+  "Relation between an intertype declaration, the field/method/constructor member it declares
+  (a ResolvedMemberImpl), and the type to which this member is added (a ResolvedType). "
+  [?intertype ?member ?type]
+  (fresh [?unresolved]
+    (intertype ?intertype)
+    (equals ?member (.getSignature ?intertype))
+    (equals ?unresolved (.getDeclaringType ?member))
+    (equals ?type (.resolve ?unresolved (.getWorld ?intertype)))))
+  
+   
+;; implemented in this manner because I don't know how to create a handle for a ConcreteTypeMunger / ResolvedMemberImpl 
+;; AsmRelationShipProviver.createIntertypeDeclaredChild(AsmManager model, ResolvedType aspect, BcelTypeMunger itd) {
+(defn
+  intertype-element
+  "Relation between an intertype declaration and its resulting member element (a ProgramElement) 
+   in the program element hierarchy.
+
+   These are of the same type as the shadows we return for an advice, thus allowing checking
+   whether a shadow stems from an intertype declaration.
+
+   Prefer to use the above intertype-member-type instead, as it does not escape the weaver world."
+  [?intertype ?member]
+  (fresh [?equivalentmember ?signaturestring]
+         (intertype ?intertype)
+         (equals 
+           ?equivalentmember
+           (interop/call-invisible-method 
+             AsmRelationshipProvider
+             'createIntertypeDeclaredChild
+             [AsmManager ResolvedType BcelTypeMunger]
+             nil
+             (-> ?intertype .getWorld .getModel)
+             (-> ?intertype .getAspectType)
+             ?intertype))
+         (equals ?signaturestring (.toSignatureString ?equivalentmember))
+         (element-signature ?member ?signaturestring))) 
+  
+
+
+;; SourceLocation
+;; --------------
+
+
+(defn
+  sourcelocation-filename-startline-endline-column-offset 
+  "Non-relational. Unifies ?filename with the name of the file for the given ?sourcelocation, 
+   ?startline with the line at which it starts, ?endline with the line at which it ends, 
+   ?column with the column at which it starts, and ?offset with its offset."
+  [?sourcelocation ?filename ?startline ?endline ?column ?offset]
+  (all
+    (equals ?filename (.getSourceFileName ?sourcelocation))
+    (equals ?startline (.getLine ?sourcelocation))
+    (equals ?endline (.getEndLine ?sourcelocation))
+    (equals ?column (.getColumn ?sourcelocation))
+    (equals ?offset (.getOffset ?sourcelocation))))
+
+;; Pointcuts
+;; ---------
+
+
+(defn
+  advice-pointcut
+  "Relation between an Advice ?advice and its Pointcut ?pointcut.
+   Note that these are different from the ResolvedPointcutDefinition instances returned
+   by aspect-pointcutdefinition."
+  [?advice ?pointcut]
+  (all
+         (advice ?advice)
+         (equals ?pointcut (.getPointcut ?advice))))
+
+
+(defn
+  pointcut
+  "Relation of all pointcuts known to the AspectJ weaver.
+   Note that these are not pointcut definitions."
+  [?advice]
+  (fresh [?advice]
+         (advice-pointcut)))
+
+;;todo: 
+;;check Pointcut hierarcy, (AndPointcut, HandlerPointcut, ...)
+
+
+;; Pointcut definitions
+;; --------------------
+
+(defn
+  aspect-pointcutdefinition
+  "Relation between an aspect and one of the pointcuts it declares.
+   Note that these are instances of ResolvedPointcutDefinition,
+   rather than the Pointcut instances within ShadowMungers (advice).
+
+   Link between PointcutDefinition and Pointcut (.getPointcut) seems broken though..."
+  [?aspect ?pointcutdefinition]
+  (all 
+    (aspect ?aspect)
+    (contains (.getDeclaredPointcuts ?aspect) ?pointcutdefinition) ;instance of ResolvedPointcutDefinition
+    ))
+
+(defn
+  pointcutdefinition
+  "Relation of pointcuts known to the weaver.
+   Note: these are instances of Pointcut rather than ResolvedPointcutDefinition."
+  [?pointcut]
+  (fresh [?aspect]
+         (aspect-pointcutdefinition ?aspect ?pointcut)))
+  
+
+
 ;(defn
 ;  aspect-pointcut+
 ;  [?aspect ?pointcut]
@@ -584,7 +573,9 @@
 ;    (aspect ?aspect)
 ;    (contains (iterator-seq (.getPointcuts ?aspect)) ?pointcut)))
 
-;; Declare
+;; Declare declarations
+;; --------------------
+
 
 (defn
   aspect-declare
@@ -644,7 +635,6 @@
 
 
 ;; Link between World (aka weaverworld) and AJProjectModelFacade (aka xcut)
-;; 
 
 (defn
   weaverworld-xcut
@@ -662,6 +652,8 @@
               (projectmodel/aspectj-project-models)))
     (succeeds (.hasModel ?xcut))))
     
+;; Shadows
+
 
 ;(defn
 ;  advice-shadow
@@ -700,7 +692,6 @@
                        (xcut/xcut-aje-pe ?xcut ?shadowh ?shadow)))))
 
 
-;; Shadows
 
 
 ;;todo:
@@ -720,6 +711,8 @@
   (damp.ekeko/ekeko* [?aspect ?pointcut] (aspect-pointcutdefinition ?aspect ?pointcut))
   
   (damp.ekeko/ekeko* [?advice] (advice ?advice))
+  
+  (damp.ekeko/ekeko* [?advice ?location] (advice-sourcelocation ?advice ?location))
 
   (damp.ekeko/ekeko* [?advice ?pointcut]  (advice-pointcut ?advice ?pointcut))
   
