@@ -343,9 +343,11 @@
   intertype-element
   "Relation between an intertype declaration and its resulting member element (a ProgramElement) 
    in the program element hierarchy.
-   These are of the same type as the shadows we return for an advice.
 
-   Prefer to use the above intertype-type-member instead, as it does not escape the weaver world."
+   These are of the same type as the shadows we return for an advice, thus allowing checking
+   whether a shadow stems from an intertype declaration.
+
+   Prefer to use the above intertype-member-type instead, as it does not escape the weaver world."
   [?intertype ?member]
   (fresh [?equivalentmember ?signaturestring]
          (intertype ?intertype)
@@ -446,12 +448,111 @@
     (contains (.getDeclaredJavaMethods ?aspect) ?method)))
 
 (defn
-  aspect-interface
+  aspect-declaredinterface
   "Relation between an aspect and one of the interfaces it declares to be implementing."
   [?aspect ?interface]
   (all
     (aspect ?aspect)
     (contains (.getDeclaredInterfaces ?aspect) ?interface)))
+
+(defn
+  aspect-declaredsuper
+  "Relation between an aspect and its super class (including java.lang.Object for aspects
+   that do not declare a super aspect)."
+  [?aspect ?super]
+  (all
+    (aspect ?aspect)
+    (equals ?super (.getSuperclass ?aspect))))
+
+(defn
+  aspect-declaredsuperaspect
+  "Relation between an aspect and its declared super aspect. 
+   Excludes non-aspect super types (e.g., the implicit java.lang.Object). "
+  [?aspect ?super]
+  (all
+    (aspect-declaredsuper ?aspect ?super)
+    (aspect ?super)))
+
+(defn
+  aspect-declaredsuperclass
+  "Relation between an aspect and its declared super class.
+   Excludes aspect super types."
+  [?aspect ?super]
+  (all
+    (aspect-declaredsuper ?aspect ?super)
+    (succeeds (.isClass  ?super))))
+
+
+(def
+  aspect-declaredsuper+
+  "Relation between an aspect and one of the ancestors in its declared super hierarchy."
+  (tabled
+    [?aspect ?ancestor]
+    (conde
+      [(aspect-declaredsuper ?aspect ?ancestor) ]
+      [(fresh [?inbetween]
+              (aspect-declaredsuper+ ?aspect ?inbetween)
+              (aspect-declaredsuper ?inbetween ?ancestor))])))
+
+(defn
+  aspect-declaredsuperaspect+
+  "Relation between an aspect and one of the ancestor aspects in its declared super hierarchy."
+  [?aspect ?ancestor]
+  (all
+    (aspect-declaredsuper+ ?aspect ?ancestor)
+    (aspect ?ancestor)))
+
+(defn
+  aspect-declaredsuperclass+
+  "Relation between an aspect and one of the ancestor classes in its declared super hierarchy."
+  [?aspect ?ancestor]
+  (all
+    (aspect-declaredsuper+ ?aspect ?ancestor)
+    (succeeds (.isClass  ?ancestor))))
+
+
+;todo: wantgenerics is false, check whether this is compatible with the types returned by the other predicates
+;(i.e., test with a parameterized aspec)
+(defn
+  aspect-super+
+  "Relation between an aspect and one of its direct or indirect
+   super types (classes, aspects as well as interfaces),
+   including those that stem from an intertype declaration."
+  [?aspect ?type]
+  (all
+    (!= ?type ?aspect)
+    (aspect ?aspect)
+    (contains (iterator-seq (.getHierarchy ?aspect false true)) ?type)))
+
+(defn
+  aspect-superaspect+
+  "Relation between an aspect and one of its direct or indirect
+   super aspects, including those that stem from an intertype declaration."
+  [?aspect ?type]
+  (all
+    (aspect-super+ ?aspect ?type)
+    (aspect ?type)))
+
+
+(defn
+  aspect-superinterface+
+  "Relation between an aspect and one of its direct or indirect
+   super interfaces, including those that stem from an intertype declaration."
+  [?aspect ?type]
+  (all
+    (aspect-super+ ?aspect ?type)
+    (succeeds (.isInterface ?type))))
+
+(defn
+  aspect-superclass+
+  "Relation between an aspect and one of its direct or indirect
+   super classes, including those that stem from an intertype declaration."
+  [?aspect ?type]
+  (all
+    (aspect-super+ ?aspect ?type)
+    (succeeds (.isClass ?type))))
+  
+
 
 ;(defn
 ;  aspect-pointcut+
@@ -581,13 +682,19 @@
 
 ;;todo:
 ;;super-type info
+;;location info
+;;take into account kinds of advice
 ;;implicit precedence, precedence assumption
-;;advice-shadow info
-;;inter-aspect-shadow
+;;inter-aspect-shadow: done (certain?)
 ;;soot?
 
 
 (comment 
+  
+  (damp.ekeko/ekeko* [?aspect ?super] (aspect-declaredsuper+ ?aspect ?super))
+  
+  ;to check: these should include indirect supers (class/interface/aspect) stemming from intertype declarations
+  (damp.ekeko/ekeko* [?aspect ?super] (aspect-super+ ?aspect ?super))
   
   (damp.ekeko/ekeko* [?aspect ?pointcut] (aspect-pointcutdefinition ?aspect ?pointcut))
   
@@ -597,6 +704,7 @@
   
   (damp.ekeko/ekeko* [?advice ?shadow] (advice-shadow ?advice ?shadow))
   
+  
   ;to check: pairs of different shadows for the same advice
   (damp.ekeko/ekeko* [?advice ?shadow1 ?shadow2] 
                      (advice-shadow ?advice ?shadow1) 
@@ -605,23 +713,27 @@
 
   ;to check: pairs of advices on same shadow
   ;(looks cool!)
-  (damp.ekeko/ekeko* [?advice1 ?advice2 ?shadow ] 
+  (damp.ekeko/ekeko* [?advice1 ?advice2 ?shadow] 
                       (advice-shadow ?advice1 ?shadow) 
                       (advice-shadow ?advice2 ?shadow)
                       (!= ?advice1 ?advice2))
   
   
-
   (damp.ekeko/ekeko* [?aspect ?intertype] (aspect-intertype ?aspect ?intertype))
   
   (damp.ekeko/ekeko* [?intertype ?member ?type] (intertype-member-type ?intertype ?member))
   
   ;;intertype declarations that add a member to an aspect
-
   (damp.ekeko/ekeko* [?declaringaspect ?intertype ?member ?targetaspect] 
                      (aspect-intertype ?declaringaspect ?intertype)
                      (intertype-member-type ?intertype ?member ?targetaspect)
                      (aspect ?targetaspect))
+  
+  ;;adviced shadows that stem from an intertype declaration
+  (damp.ekeko/ekeko* [?advice ?shadow ?intertype]
+                     (intertype-element ?intertype ?shadow)
+                     (advice-shadow ?advice ?shadow))
+                     
 
   
   
