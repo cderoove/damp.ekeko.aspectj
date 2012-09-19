@@ -15,8 +15,9 @@
        [org.aspectj.weaver.patterns Declare DeclarePrecedence]
        [damp.ekeko EkekoModel]
        [damp.ekeko.aspectj AspectJProjectModel]
-       [org.aspectj.weaver World]
-       [org.aspectj.asm IProgramElement IProgramElement$Kind]))
+       [org.aspectj.weaver World ResolvedTypeMunger ConcreteTypeMunger UnresolvedType ResolvedType  Member]
+       [org.aspectj.asm AsmManager IProgramElement IProgramElement$Kind IHierarchy ]
+       [org.aspectj.weaver.bcel BcelTypeMunger]))
               
 
 ;(set! *warn-on-reflection* true)
@@ -212,21 +213,22 @@
 
 ;; Advice
 
-;(defn
-;  aspect-advice
-;  "Relation between an aspect and one of the advices it declares."
-;  [?aspect ?advice]
-;  (fresh [?members]
-;         (aspect-crosscuttingmembers ?aspect ?members)
-;         (contains (.getShadowMungers ?members) ?advice)))
-
 (defn
   aspect-advice
   "Relation between an aspect and one of the advices it declares."
   [?aspect ?advice]
-  (all
-    (aspect ?aspect)
-    (contains (.getDeclaredAdvice ?aspect) ?advice)))
+  (fresh [?members]
+         (aspect-crosscuttingmembers ?aspect ?members)
+         (contains (.getShadowMungers ?members) ?advice)))
+
+; Prefer the above because going through the CrosscuttingMembersSet has proven more reliable for intertype declarations
+;(defn
+;  aspect-advice
+;  "Relation between an aspect and one of the advices it declares."
+;  [?aspect ?advice]
+;  (all
+;    (aspect ?aspect)
+;    (contains (.getDeclaredAdvice ?aspect) ?advice)))
 
 (defn
   advice
@@ -254,7 +256,115 @@
     (equals ?handle 
             (AsmRelationshipProvider/getHandle  (-> ?aspect .getWorld .getModel) ?advice))))
 
-    
+
+;; Intertype declarations
+
+;Only returned one ITD of XCutTest
+;(defn
+;  aspect-intertype 
+; "Relation between an aspect and one of its intertype declarations."
+; [?aspect ?intertype]
+;  (all
+;    (aspect ?aspect)
+;    (contains (.getInterTypeMungers ?aspect) ?intertype)))
+
+
+
+(defn
+  aspect-intertype 
+  "Relation between an aspect and one of its intertype declarations (a ConcreteTypeMunger)."
+  [?aspect ?intertype]
+  (fresh [?members]
+    (aspect-crosscuttingmembers ?aspect ?members)
+    (contains (.getTypeMungers ?members) ?intertype)))
+
+
+(defn
+  intertype
+  [?intertype]
+  "Relation of intertype declarations."
+  (conda
+    [(v+ ?intertype) 
+     (succeeds (instance? ConcreteTypeMunger ?intertype))]
+    [(v- ?intertype) 
+     (fresh [?aspect]
+         (aspect-intertype ?aspect ?intertype))]))         
+  
+;note: ConcreteTypeMunger.getMunger returns a ResolvedTypeMunger (from a previous weaving stage)
+
+(defn
+  intertype-kind
+  "Relation between an intertype declaration and its kind."
+  [?intertype ?kind]
+  (all
+    (intertype ?intertype)
+    (equals ?kind (-> ?intertype .getMunger .getKind))))
+
+(defn
+  intertype-field
+  "Relation of field intertype declarations."
+  [?intertype]
+  (fresh [?kind]
+         (intertype-kind ?intertype ?kind)
+         (equals ?kind (ResolvedTypeMunger/Field))))
+
+(defn
+  intertype-method
+  "Relation of method intertype declarations."
+  [?intertype]
+  (fresh [?kind]
+         (intertype-kind ?intertype ?kind)
+         (equals ?kind (ResolvedTypeMunger/Method))))
+
+(defn
+  intertype-constructor
+  "Relation of constructor intertype declarations."
+  [?intertype]
+  (fresh [?kind]
+         (intertype-kind ?intertype ?kind)
+         (equals ?kind (ResolvedTypeMunger/Constructor))))
+
+
+(defn
+  intertype-member-type
+  "Relation between an intertype declaration, the field/method/constructor member it declares
+  (a ResolvedMemberImpl), and the type to which this member is added (a ResolvedType). "
+  [?intertype ?member ?type]
+  (fresh [?unresolved]
+    (intertype ?intertype)
+    (equals ?member (.getSignature ?intertype))
+    (equals ?unresolved (.getDeclaringType ?member))
+    (equals ?type (.resolve ?unresolved (.getWorld ?intertype)))))
+  
+   
+;; implemented in this manner because I don't know how to create a handle for a ConcreteTypeMunger / ResolvedMemberImpl 
+;; AsmRelationShipProviver.createIntertypeDeclaredChild(AsmManager model, ResolvedType aspect, BcelTypeMunger itd) {
+(defn
+  intertype-element
+  "Relation between an intertype declaration and its resulting member element (a ProgramElement) 
+   in the program element hierarchy.
+   These are of the same type as the shadows we return for an advice.
+
+   Prefer to use the above intertype-type-member instead, as it does not escape the weaver world."
+  [?intertype ?member]
+  (fresh [?equivalentmember ?signaturestring]
+         (intertype ?intertype)
+         (equals 
+           ?equivalentmember
+           (interop/call-invisible-method 
+             AsmRelationshipProvider
+             'createIntertypeDeclaredChild
+             [AsmManager ResolvedType BcelTypeMunger]
+             nil
+             (-> ?intertype .getWorld .getModel)
+             (-> ?intertype .getAspectType)
+             ?intertype))
+         (equals ?signaturestring (.toSignatureString ?equivalentmember))
+         (element-signature ?member ?signaturestring))) 
+  
+
+
+          
 ;; Pointcuts
 
 (defn
@@ -499,6 +609,20 @@
                       (advice-shadow ?advice1 ?shadow) 
                       (advice-shadow ?advice2 ?shadow)
                       (!= ?advice1 ?advice2))
+  
+  
+
+  (damp.ekeko/ekeko* [?aspect ?intertype] (aspect-intertype ?aspect ?intertype))
+  
+  (damp.ekeko/ekeko* [?intertype ?member ?type] (intertype-member-type ?intertype ?member))
+  
+  ;;intertype declarations that add a member to an aspect
+
+  (damp.ekeko/ekeko* [?declaringaspect ?intertype ?member ?targetaspect] 
+                     (aspect-intertype ?declaringaspect ?intertype)
+                     (intertype-member-type ?intertype ?member ?targetaspect)
+                     (aspect ?targetaspect))
+
   
   
   )
