@@ -366,8 +366,31 @@
   
 
 
-          
+;; SourceLocation
+
+(defn
+  sourcelocation-filename-startline-endline-column-offset 
+  "Non-relational. Unifies ?filename with the name of the file for the given ?sourcelocation, 
+   ?startline with the line at which it starts, ?endline with the line at which it ends, 
+   ?column with the column at which it starts, and ?offset with its offset."
+  [?sourcelocation ?filename ?startline ?endline ?column ?offset]
+  (all
+    (equals ?filename (.getSourceFileName ?sourcelocation))
+    (equals ?startline (.getLine ?sourcelocation))
+    (equals ?endline (.getEndLine ?sourcelocation))
+    (equals ?column (.getColumn ?sourcelocation))
+    (equals ?offset (.getOffset ?sourcelocation))))
+
 ;; Pointcuts
+
+(defn
+  advice-sourcelocation
+  "Relation between an advice and its location in the source code (an ISourceLocation)."
+  [?advice ?location]
+  (all
+    (advice ?advice)
+    (equals ?location (.getSourceLocation ?advice))))
+
 
 (defn
   advice-pointcut
@@ -681,8 +704,6 @@
 
 
 ;;todo:
-;;super-type info
-;;location info
 ;;take into account kinds of advice
 ;;implicit precedence, precedence assumption
 ;;inter-aspect-shadow: done (certain?)
