@@ -1,7 +1,7 @@
 (ns
     ^{:doc "Low-level AJDT relations."
     :author "Coen De Roover"}
-     damp.ekeko.aspectj.reification
+     damp.ekeko.aspectj.ajdt
     (:refer-clojure :exclude [== type declare])
     (:use [clojure.core.logic])
     (:use [damp.ekeko logic])
@@ -20,9 +20,6 @@
        [org.eclipse.ajdt.core.model AJProjectModelFacade AJRelationshipType AJRelationshipManager]
        [org.eclipse.ajdt.core.javaelements IAspectJElement AspectElement IntertypeElement AdviceElement DeclareElement PointcutElement AJCompilationUnit FieldIntertypeElement MethodIntertypeElement]
        ))
-
-(set! *warn-on-reflection* true)
-
 
 (clojure.core/declare nodes-of-type)
 

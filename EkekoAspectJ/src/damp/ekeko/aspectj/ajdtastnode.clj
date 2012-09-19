@@ -1,6 +1,8 @@
 (ns damp.ekeko.aspectj.ajdtastnode
-  (:require [damp.ekeko.jdt [astnode :as jdt]]
-            [damp.ekeko.aspectj [projectmodel :as projectmodel]])
+  (:require 
+    [damp.util [interop :as interop]]
+    [damp.ekeko.jdt [astnode :as jdt]]
+    [damp.ekeko.aspectj [projectmodel :as projectmodel]])
   (:import 
     [damp.ekeko.aspectj AspectJProjectModel]
     [java.lang Class]
@@ -167,14 +169,14 @@
     (instance? ASTNode n-or-nlist)
     (.getParent ^ASTNode n-or-nlist)
     ;outer instance of nodelist is owner
-    (jdt/get-invisible-field (class ^ASTNode$NodeList n-or-nlist) (symbol "this$0") n-or-nlist)))
+    (interop/get-invisible-field (class ^ASTNode$NodeList n-or-nlist) (symbol "this$0") n-or-nlist)))
 
 ;cannot reuse because of type annotations
 (defn owner-property [n-or-nlist]
    (if 
      (instance? ASTNode n-or-nlist)
      (.getLocationInParent ^ASTNode n-or-nlist)
-     (jdt/get-invisible-field (class ^ASTNode$NodeList n-or-nlist) 'propertyDescriptor n-or-nlist)))
+     (interop/get-invisible-field (class ^ASTNode$NodeList n-or-nlist) 'propertyDescriptor n-or-nlist)))
 
 
 (defprotocol IAJAST
@@ -251,7 +253,9 @@
 (defn
   ast-to-ajcompilationunit
   [^CompilationUnit cu]
-  (some (fn [x] (not (nil? x)) x)
+  (some (fn [x] (when 
+                  (not (nil? x))
+                  x))
         (map (fn [^AspectJProjectModel model] (.getAJCompilationUnitForCompilationUnit model cu)) 
              (projectmodel/aspectj-project-models))))
 
@@ -259,7 +263,10 @@
 (defn
   ajcompilationunit-to-ast
   [^AJCompilationUnit icu]
-    (some (fn [x] (not (nil? x)) x)
+    (some 
+      (fn [x] (when 
+                (not (nil? x))
+                x))
         (map (fn [^AspectJProjectModel model]
                (.getCompilationUnitForAJCompilationUnit model icu)) 
              (projectmodel/aspectj-project-models))))

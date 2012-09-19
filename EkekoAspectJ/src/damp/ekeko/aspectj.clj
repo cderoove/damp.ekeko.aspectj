@@ -4,7 +4,10 @@
 ;  (:use [clojure.core.logic])
   (:use [damp.ekeko logic])
   (:use [damp.ekeko])
-  (:require [damp.ekeko.aspectj [reification :as aj] [ajdtastnode :as ajnode] [weaverworld :as world]]))
+  (:require [damp.ekeko.aspectj
+             [ajdt :as ajdt]
+             [xcut :as xcut] 
+             [weaverworld :as world]]))
 
 (defn
   make-query-views-aspectj-aware!
