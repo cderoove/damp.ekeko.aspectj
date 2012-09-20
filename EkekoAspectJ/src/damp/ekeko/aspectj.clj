@@ -21,21 +21,56 @@
 (comment
   
   (use 'damp.ekeko.aspectj)
-  (in-ns 'damp.ekeko.aspectj)
+  (in-ns 'damp.ekeko.aspectj.weaverworld)
   
-  ;results from model elements
-  (ekeko* [?aspect ?advice] (aj/aspect-advice ?aspect ?advice))
+  ;;before trying these out, make sure that the AspectJ project has been built at least in this Eclipse session
   
-  (ekeko* [?aspect ?pc] (aj/aspect-pointcut ?aspect ?pc))
+  (damp.ekeko/ekeko* [?aspect ?super] (aspect-declaredsuper+ ?aspect ?super))
   
-  (ekeko* [?key ?element] (aj/element ?key ?element))
+  ;to check: these should include indirect supers (class/interface/aspect) stemming from intertype declarations
+  (damp.ekeko/ekeko* [?aspect ?super] (aspect-super+ ?aspect ?super))
   
-  ;results from xcut model
-  (ekeko* [?advice ?shadow] (aj/advice-shadow ?advice ?shadow))
+  (damp.ekeko/ekeko* [?aspect ?pointcut] (aspect-pointcutdefinition ?aspect ?pointcut))
+  
+  (damp.ekeko/ekeko* [?advice] (advice ?advice))
+  
+  (damp.ekeko/ekeko* [?advice]  (advicebefore ?advice))
+  
+  (damp.ekeko/ekeko* [?advice ?location] (advice-sourcelocation ?advice ?location))
 
-  ;;all xcut relations and their type ... only 4 contain info for the test project
-  ;;TODO: check on HealthWatcher, AJHotdraw
-  (ekeko* [?xcut ?reltype ?rel] (aj/xcut-relationtype-relation ?xcut ?reltype ?rel))
+  (damp.ekeko/ekeko* [?advice ?pointcut]  (advice-pointcut ?advice ?pointcut))
+  
+  (damp.ekeko/ekeko* [?advice ?shadow] (advice-shadow ?advice ?shadow))
+  
+  
+  ;to check: pairs of different shadows for the same advice
+  (damp.ekeko/ekeko* [?advice ?shadow1 ?shadow2] 
+                     (advice-shadow ?advice ?shadow1) 
+                     (advice-shadow ?advice ?shadow2) 
+                     (!= ?shadow1 ?shadow2))
+
+  ;to check: pairs of advices on same shadow
+  ;(looks cool!)
+  (damp.ekeko/ekeko* [?advice1 ?advice2 ?shadow] 
+                      (advice-shadow ?advice1 ?shadow) 
+                      (advice-shadow ?advice2 ?shadow)
+                      (!= ?advice1 ?advice2))
+  
+  
+  (damp.ekeko/ekeko* [?aspect ?intertype] (aspect-intertype ?aspect ?intertype))
+  
+  (damp.ekeko/ekeko* [?intertype ?member ?type] (intertype-member-type ?intertype ?member))
+  
+  ;;intertype declarations that add a member to an aspect
+  (damp.ekeko/ekeko* [?declaringaspect ?intertype ?member ?targetaspect] 
+                     (aspect-intertype ?declaringaspect ?intertype)
+                     (intertype-member-type ?intertype ?member ?targetaspect)
+                     (aspect ?targetaspect))
+  
+  ;;adviced shadows that stem from an intertype declaration
+  (damp.ekeko/ekeko* [?advice ?shadow ?intertype]
+                     (intertype-element ?intertype ?shadow)
+                     (advice-shadow ?advice ?shadow))
   
   
   

@@ -100,12 +100,6 @@
   (all
     (equals ?signature-string (.toSignatureString ?program-element))))
 
-
-(comment
-  
-  ;; XCut shadows and advice
-  ;; commented out because prefer to go through the WeaverWorld
-
 (defn
   xcut-advicehandle-shadowhandle
   [?xcut ?advicehandle ?shadowhandle]
@@ -114,6 +108,12 @@
          (contains ?relation ?relelement)
          (equals ?advicehandle (.getSourceHandle ?relelement))
          (contains (.getTargets ?relelement) ?shadowhandle)))
+
+
+(comment
+  
+  ;; XCut shadows and advice
+  ;; commented out because prefer to go through the WeaverWorld
 
   
   (defn
