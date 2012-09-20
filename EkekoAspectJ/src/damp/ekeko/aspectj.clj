@@ -5,6 +5,7 @@
   (:use [damp.ekeko logic])
   (:use [damp.ekeko])
   (:require [damp.ekeko.aspectj
+             [soot :as soot]
              [ajdt :as ajdt]
              [xcut :as xcut] 
              [weaverworld :as world]]))

@@ -10,7 +10,7 @@
        [projectmodel :as projectmodel]
        [xcut :as xcut]
        [weaverworld :as world]]
-      [damp.ekeko.jdt [soot :as soot]]))
+      [damp.ekeko.soot [soot :as soot]]))
 
 
 ;;todo: allow WholeProgramAnalysiModel to co-exist with AspectJModel
