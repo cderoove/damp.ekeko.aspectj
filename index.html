@@ -1,0 +1,1214 @@
+<html>
+  <head>
+    <title>damp.ekeko.aspectj - EkekoAspectJ API documentation</title>
+    <link href="static/favicon.png" rel="icon" />
+    <link href="static/favicon.png" rel="shortcut icon" />
+    <link media="all" type="text/css" href="static/clojure.css" rel="stylesheet" />
+    <link media="all" type="text/css" href="static/wiki.css" rel="stylesheet" />
+    <link media="all" type="text/css" href="static/internal.css" rel="stylesheet" />
+    <style>.menuWrapper{height: 36px;}</style>
+    <!--[if lte IE 6]>
+    <link rel="stylesheet" href="http://www.wikispaces.com/_/2009051601/s/internal_ie.css" type="text/css" />
+    <![endif]-->
+  </head>
+<!--
+This document was auto-generated from the source by the clojure autodoc system.
+To report errors or ask questions about the overall documentation structure, formatting,
+etc., contact Tom Faulhaber (google mail name: tomfaulhaber).
+For errors in the documentation of a particular namespace, contact the author of that
+namespace.
+-->
+  <body>
+    <div id="AllContentContainer">
+      <div id="Header">
+	<a id="Logo" href="index.html"><img alt="Clojure" height="100" width="100" src="static/clojure-icon.gif" /></a>
+	<h1><a title="page header title" id="page-header" href="index.html">EkekoAspectJ</a></h1>
+      </div>
+      <div id="leftcolumn"><div style="text-align: center;"></div>
+<div class="menu">
+  <div class="WikiCustomNav WikiElement wiki">
+    <span class="toc-header"><span id="project-name">EkekoAspectJ</span> <span id="version"></span> API</span><br />
+    <ul>
+      <li><a class="wiki_link" href="index.html">Overview</a></li>
+      <li><a class="wiki_link" href="api-index.html">API Index</a></li>
+    </ul>
+    
+    
+    <a href="http://clojure.org" class="wiki_link">Clojure Home</a>
+  </div>
+</div>
+</div>
+      <div id="rightcolumn">
+	<div id="Content">
+	  <div class="contentBox"><div class="innerContentBox">
+              <div id="content_view" class="wiki wikiPage">
+                <div id="right-sidebar"><div id="toc">
+  <h1 class="nopad">Table of Contents</h1>
+  <div style="margin-left: 1em;" class="toc-section">
+    <a href="#toc0">Overview</a>
+    
+    <br />
+  </div><div style="margin-left: 1em;" class="toc-section">
+    <a href="#damp.ekeko.aspectj.ajdt">damp.ekeko.aspectj.ajdt</a>
+    <div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.ajdt/advice">advice</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.ajdt/ajcu-aspectbyannotation">ajcu-aspectbyannotation</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.ajdt/aspect-advice">aspect-advice</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.ajdt/aspect-declare">aspect-declare</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.ajdt/aspect-field">aspect-field</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.ajdt/aspect-intertype">aspect-intertype</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.ajdt/aspect-intertypefield">aspect-intertypefield</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.ajdt/aspect-intertypemethod">aspect-intertypemethod</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.ajdt/aspect-method">aspect-method</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.ajdt/aspect-pointcut">aspect-pointcut</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.ajdt/ast">ast</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.ajdt/child">child</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.ajdt/child+">child+</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.ajdt/compilationunit">compilationunit</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.ajdt/compilationunit-aspect">compilationunit-aspect</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.ajdt/declare">declare</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.ajdt/element">element</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.ajdt/field">field</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.ajdt/has">has</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.ajdt/intertype">intertype</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.ajdt/intertypefield">intertypefield</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.ajdt/intertypemethod">intertypemethod</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.ajdt/method">method</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.ajdt/pointcut">pointcut</a>
+    </div>
+    <br />
+  </div><div style="margin-left: 1em;" class="toc-section">
+    <a href="#damp.ekeko.aspectj.ajdtastnode">damp.ekeko.aspectj.ajdtastnode</a>
+    <div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.ajdtastnode/reifiers">reifiers</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.ajdtastnode/source-string">source-string</a>
+    </div>
+    <br />
+  </div><div style="margin-left: 1em;" class="toc-section">
+    <a href="#damp.ekeko.aspectj.projectmodel">damp.ekeko.aspectj.projectmodel</a>
+    <div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.projectmodel/aspectj-project-models">aspectj-project-models</a>
+    </div>
+    <br />
+  </div><div style="margin-left: 1em;" class="toc-section">
+    <a href="#damp.ekeko.aspectj.soot">damp.ekeko.aspectj.soot</a>
+    
+    <br />
+  </div><div style="margin-left: 1em;" class="toc-section">
+    <a href="#damp.ekeko.aspectj.weaverworld">damp.ekeko.aspectj.weaverworld</a>
+    <div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.weaverworld/advice">advice</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.weaverworld/advice-handle">advice-handle</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.weaverworld/advice-kind">advice-kind</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.weaverworld/advice-kindprecedence">advice-kindprecedence</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.weaverworld/advice-pointcut">advice-pointcut</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.weaverworld/advice-shadow">advice-shadow</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.weaverworld/advice-sourcelocation">advice-sourcelocation</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.weaverworld/adviceafter">adviceafter</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.weaverworld/adviceafterreturning">adviceafterreturning</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.weaverworld/adviceafterthrowing">adviceafterthrowing</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.weaverworld/advicearound">advicearound</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.weaverworld/advicebefore">advicebefore</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.weaverworld/aspect">aspect</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.weaverworld/aspect-advice">aspect-advice</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.weaverworld/aspect-declare">aspect-declare</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.weaverworld/aspect-declaredinterface">aspect-declaredinterface</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.weaverworld/aspect-declaredsuper">aspect-declaredsuper</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.weaverworld/aspect-declaredsuper+">aspect-declaredsuper+</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.weaverworld/aspect-declaredsuperaspect">aspect-declaredsuperaspect</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.weaverworld/aspect-declaredsuperaspect+">aspect-declaredsuperaspect+</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.weaverworld/aspect-declaredsuperclass">aspect-declaredsuperclass</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.weaverworld/aspect-declaredsuperclass+">aspect-declaredsuperclass+</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.weaverworld/aspect-dominates-aspect-explicitly">aspect-dominates-aspect-explicitly</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.weaverworld/aspect-intertype">aspect-intertype</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.weaverworld/aspect-pointcutdefinition">aspect-pointcutdefinition</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.weaverworld/aspect-super+">aspect-super+</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.weaverworld/aspect-superaspect+">aspect-superaspect+</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.weaverworld/aspect-superclass+">aspect-superclass+</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.weaverworld/aspect-superinterface+">aspect-superinterface+</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.weaverworld/declare">declare</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.weaverworld/declareprecedence">declareprecedence</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.weaverworld/declareprecedence-patterns">declareprecedence-patterns</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.weaverworld/element">element</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.weaverworld/element-child">element-child</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.weaverworld/element-handle">element-handle</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.weaverworld/element-kind">element-kind</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.weaverworld/element-parent">element-parent</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.weaverworld/element-signature">element-signature</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.weaverworld/element-sourcelocation">element-sourcelocation</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.weaverworld/intertype-constructor">intertype-constructor</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.weaverworld/intertype-element">intertype-element</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.weaverworld/intertype-field">intertype-field</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.weaverworld/intertype-kind">intertype-kind</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.weaverworld/intertype-member-type">intertype-member-type</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.weaverworld/intertype-method">intertype-method</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.weaverworld/pointcut">pointcut</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.weaverworld/pointcutdefinition">pointcutdefinition</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.weaverworld/root">root</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.weaverworld/sourcelocation-filename-startline-endline-column-offset">sourcelocation-filename-startline-endline-column-offset</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.weaverworld/type">type</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.weaverworld/weaverworld-model-hierarchy">weaverworld-model-hierarchy</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.weaverworld/weaverworld-signature-resolvedtype">weaverworld-signature-resolvedtype</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.weaverworld/weaverworld-xcut">weaverworld-xcut</a>
+    </div>
+    <br />
+  </div><div style="margin-left: 1em;" class="toc-section">
+    <a href="#damp.ekeko.aspectj.xcut">damp.ekeko.aspectj.xcut</a>
+    <div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.xcut/pe-signature">pe-signature</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.xcut/xcut-handle-je">xcut-handle-je</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.xcut/xcut-handle-pe">xcut-handle-pe</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.xcut/xcut-je-pe">xcut-je-pe</a>
+    </div><div style="margin-left: 1em;" class="toc-entry">
+      <a href="#damp.ekeko.aspectj.xcut/xcut-relationtype-relation">xcut-relationtype-relation</a>
+    </div>
+    <br />
+  </div>
+</div>
+</div>
+                <div id="content-tag"><h1 id="overview">API for <span id="namespace-name">damp.ekeko.aspectj</span>
+  - <span id="header-project">EkekoAspectJ</span> <span id="header-version"></span>
+  </h1>
+
+<br />Full namespace name: <span id="long-name">damp.ekeko.aspectj</span>
+<p></p>
+<h2>Overview</h2>
+<pre id="namespace-docstr"></pre>
+
+
+<br />
+<h2>Public Variables and Functions</h2>
+
+<h2 id="namespace-name">damp.ekeko.aspectj.ajdt</h2>
+<pre id="namespace-docstr">Low-level AJDT relations.</pre>
+
+
+<br />
+<div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.ajdt/advice">advice</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (advice ?advice)
+</pre>
+  <pre id="var-docstr">Relation of advices.</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/8168fb9c1ad1934f1306ef406dce75201787e0f4/EkekoAspectJ/src/damp/ekeko/aspectj/ajdt.clj#L187" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.ajdt/ajcu-aspectbyannotation">ajcu-aspectbyannotation</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (ajcu-aspectbyannotation ?ajcu ?sourcetype)
+</pre>
+  <pre id="var-docstr">Relation between an AJCompilationUnit and one of the aspects 
+it defines using the @aspect annotation on a class. </pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/8168fb9c1ad1934f1306ef406dce75201787e0f4/EkekoAspectJ/src/damp/ekeko/aspectj/ajdt.clj#L169" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.ajdt/aspect-advice">aspect-advice</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (aspect-advice ?aspect ?advice)
+</pre>
+  <pre id="var-docstr">Relation between an aspect and one if its advices.</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/8168fb9c1ad1934f1306ef406dce75201787e0f4/EkekoAspectJ/src/damp/ekeko/aspectj/ajdt.clj#L179" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.ajdt/aspect-declare">aspect-declare</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (aspect-declare ?aspect ?declare)
+</pre>
+  <pre id="var-docstr">Relation between an aspect and one of its declares.</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/8168fb9c1ad1934f1306ef406dce75201787e0f4/EkekoAspectJ/src/damp/ekeko/aspectj/ajdt.clj#L196" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.ajdt/aspect-field">aspect-field</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (aspect-field ?aspect ?field)
+</pre>
+  <pre id="var-docstr">Relation between an aspect and one of its fields.</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/8168fb9c1ad1934f1306ef406dce75201787e0f4/EkekoAspectJ/src/damp/ekeko/aspectj/ajdt.clj#L275" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.ajdt/aspect-intertype">aspect-intertype</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (aspect-intertype ?aspect ?itd)
+</pre>
+  <pre id="var-docstr">Relation between an aspect and one of its intertype declarations.</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/8168fb9c1ad1934f1306ef406dce75201787e0f4/EkekoAspectJ/src/damp/ekeko/aspectj/ajdt.clj#L228" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.ajdt/aspect-intertypefield">aspect-intertypefield</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (aspect-intertypefield ?aspect ?itd)
+</pre>
+  <pre id="var-docstr">Relation between an aspect and one of its intertype field declarations.</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/8168fb9c1ad1934f1306ef406dce75201787e0f4/EkekoAspectJ/src/damp/ekeko/aspectj/ajdt.clj#L259" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.ajdt/aspect-intertypemethod">aspect-intertypemethod</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (aspect-intertypemethod ?aspect ?itd)
+</pre>
+  <pre id="var-docstr">Relation between an aspect and one of its intertype method declarations.</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/8168fb9c1ad1934f1306ef406dce75201787e0f4/EkekoAspectJ/src/damp/ekeko/aspectj/ajdt.clj#L244" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.ajdt/aspect-method">aspect-method</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (aspect-method ?aspect ?method)
+</pre>
+  <pre id="var-docstr">Relation between an aspect and one of its methods.</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/8168fb9c1ad1934f1306ef406dce75201787e0f4/EkekoAspectJ/src/damp/ekeko/aspectj/ajdt.clj#L299" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.ajdt/aspect-pointcut">aspect-pointcut</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (aspect-pointcut ?aspect ?pointcut)
+</pre>
+  <pre id="var-docstr">Relation between an aspect and one of its pointcuts.</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/8168fb9c1ad1934f1306ef406dce75201787e0f4/EkekoAspectJ/src/damp/ekeko/aspectj/ajdt.clj#L212" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.ajdt/ast">ast</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (ast ?keyword ?node)
+</pre>
+  <pre id="var-docstr">AJDT version of ast/2.
+
+ See also:
+ API documentation of org.aspectj.org.eclipse.jdt.core.dom.ASTNode</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/8168fb9c1ad1934f1306ef406dce75201787e0f4/EkekoAspectJ/src/damp/ekeko/aspectj/ajdt.clj#L33" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.ajdt/child">child</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (child ?keyword ?node ?child)
+</pre>
+  <pre id="var-docstr">AJDT version of child/3</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/8168fb9c1ad1934f1306ef406dce75201787e0f4/EkekoAspectJ/src/damp/ekeko/aspectj/ajdt.clj#L78" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.ajdt/child+">child+</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (child+ ?node ?child)
+</pre>
+  <pre id="var-docstr">AJDT version of child+  
+
+See also:
+Ternary predicate child/3</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/8168fb9c1ad1934f1306ef406dce75201787e0f4/EkekoAspectJ/src/damp/ekeko/aspectj/ajdt.clj#L88" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.ajdt/compilationunit">compilationunit</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (compilationunit ?ajcu)
+</pre>
+  <pre id="var-docstr">Relation of AJCompilationUnit instances.</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/8168fb9c1ad1934f1306ef406dce75201787e0f4/EkekoAspectJ/src/damp/ekeko/aspectj/ajdt.clj#L141" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.ajdt/compilationunit-aspect">compilationunit-aspect</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (compilationunit-aspect ?ajcu ?aspect)
+</pre>
+  <pre id="var-docstr">Relation between an AJCompilationUnit and one of the aspects 
+its defines using the aspect keyword.</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/8168fb9c1ad1934f1306ef406dce75201787e0f4/EkekoAspectJ/src/damp/ekeko/aspectj/ajdt.clj#L152" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.ajdt/declare">declare</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (declare ?declare)
+</pre>
+  <pre id="var-docstr">Relation of declares.</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/8168fb9c1ad1934f1306ef406dce75201787e0f4/EkekoAspectJ/src/damp/ekeko/aspectj/ajdt.clj#L204" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.ajdt/element">element</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (element ?key ?element)
+</pre>
+  <pre id="var-docstr">Relation of IAspectJElement instances ?element and the keyword ?key representing their kind.</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/8168fb9c1ad1934f1306ef406dce75201787e0f4/EkekoAspectJ/src/damp/ekeko/aspectj/ajdt.clj#L316" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.ajdt/field">field</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (field ?field)
+</pre>
+  <pre id="var-docstr">Relation of fields declared within an aspect.</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/8168fb9c1ad1934f1306ef406dce75201787e0f4/EkekoAspectJ/src/damp/ekeko/aspectj/ajdt.clj#L283" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.ajdt/has">has</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (has ?keyword ?node ?child)
+</pre>
+  <pre id="var-docstr">AJDT version of has/3
+
+See also: 
+Ternary predicate child/3 
+API documentation of org.aspectj.eclipse.jdt.core.dom.ASTNode 
+and org.aspectj.org.eclipse.jdt.core.dom.StructuralPropertyDescriptor</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/8168fb9c1ad1934f1306ef406dce75201787e0f4/EkekoAspectJ/src/damp/ekeko/aspectj/ajdt.clj#L54" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.ajdt/intertype">intertype</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (intertype ?intertype)
+</pre>
+  <pre id="var-docstr">Relation of intertype declarations.</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/8168fb9c1ad1934f1306ef406dce75201787e0f4/EkekoAspectJ/src/damp/ekeko/aspectj/ajdt.clj#L236" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.ajdt/intertypefield">intertypefield</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (intertypefield ?intertype)
+</pre>
+  <pre id="var-docstr">Relation of intertype field declarations.</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/8168fb9c1ad1934f1306ef406dce75201787e0f4/EkekoAspectJ/src/damp/ekeko/aspectj/ajdt.clj#L267" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.ajdt/intertypemethod">intertypemethod</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (intertypemethod ?intertype)
+</pre>
+  <pre id="var-docstr">Relation of intertype method declarations.</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/8168fb9c1ad1934f1306ef406dce75201787e0f4/EkekoAspectJ/src/damp/ekeko/aspectj/ajdt.clj#L252" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.ajdt/method">method</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (method ?method)
+</pre>
+  <pre id="var-docstr">Relation of methods declared within an aspect.</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/8168fb9c1ad1934f1306ef406dce75201787e0f4/EkekoAspectJ/src/damp/ekeko/aspectj/ajdt.clj#L308" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.ajdt/pointcut">pointcut</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (pointcut ?pointcut)
+</pre>
+  <pre id="var-docstr">Relation of pointcuts.</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/8168fb9c1ad1934f1306ef406dce75201787e0f4/EkekoAspectJ/src/damp/ekeko/aspectj/ajdt.clj#L220" id="var-source">Source</a>
+</div>
+<h2 id="namespace-name">damp.ekeko.aspectj.ajdtastnode</h2>
+<pre id="namespace-docstr"></pre>
+
+
+<br />
+<div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.ajdtastnode/reifiers">reifiers</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (reifiers this)
+</pre>
+  <pre id="var-docstr">Returns a map of keywords to reifier functions. The latter will return an Ekeko-specific child of the AST node.</pre>
+  
+  
+  
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.ajdtastnode/source-string">source-string</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (source-string this)
+</pre>
+  <pre id="var-docstr">Returns a string corresponding to the actual AspectJ source code.</pre>
+  
+  
+  
+</div>
+<h2 id="namespace-name">damp.ekeko.aspectj.projectmodel</h2>
+<pre id="namespace-docstr"></pre>
+
+
+<br />
+<div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.projectmodel/aspectj-project-models">aspectj-project-models</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (aspectj-project-models)
+</pre>
+  <pre id="var-docstr">Returns all AspectJProjectModel instances that are to be queried.
+Subset of (queried-project-models), which is itself 
+a subset of (all-project-models).</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/692dd7080858aaec2b3121f6cd50c6d963359e92/EkekoAspectJ/src/damp/ekeko/aspectj/projectmodel.clj#L10" id="var-source">Source</a>
+</div>
+<h2 id="namespace-name">damp.ekeko.aspectj.soot</h2>
+<pre id="namespace-docstr">Low-level AspectJ-specific Soot relations.</pre>
+
+
+<br />
+
+<h2 id="namespace-name">damp.ekeko.aspectj.weaverworld</h2>
+<pre id="namespace-docstr">Low-level AspectJ WeaverWorld relations.</pre>
+
+
+<br />
+<div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.weaverworld/advice">advice</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (advice ?advice)
+</pre>
+  <pre id="var-docstr">Relation of advices known to the weaver.</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L353" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.weaverworld/advice-handle">advice-handle</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (advice-handle ?advice ?handle)
+</pre>
+  <pre id="var-docstr">Relation between an advice and the handle for its corresponding ProgramElement.</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L370" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.weaverworld/advice-kind">advice-kind</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (advice-kind ?advice ?kind)
+</pre>
+  <pre id="var-docstr">Relation between an advice and its kind (an AdviceKind).</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L387" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.weaverworld/advice-kindprecedence">advice-kindprecedence</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (advice-kindprecedence ?advice ?precedence)
+</pre>
+  <pre id="var-docstr">Relation between an advice and a number representing
+the precedence associated with its kind (see AdviceKind).
+E.g., before=1, after=2, afterThrowing=3, afterReturning=4,around=5</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L395" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.weaverworld/advice-pointcut">advice-pointcut</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (advice-pointcut ?advice ?pointcut)
+</pre>
+  <pre id="var-docstr">Relation between an Advice ?advice and its Pointcut ?pointcut.
+Note that these are different from the ResolvedPointcutDefinition instances returned
+by aspect-pointcutdefinition.</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L580" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.weaverworld/advice-shadow">advice-shadow</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (advice-shadow ?advice ?shadow)
+</pre>
+  <pre id="var-docstr">Relation between an advice ?advice and one of its shadows, as the AspectJ IProgramElement ?shadow</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L741" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.weaverworld/advice-sourcelocation">advice-sourcelocation</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (advice-sourcelocation ?advice ?location)
+</pre>
+  <pre id="var-docstr">Relation between an advice and its location in the source code (an ISourceLocation).</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L379" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.weaverworld/adviceafter">adviceafter</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (adviceafter ?advice)
+</pre>
+  <pre id="var-docstr">Relation of after advices.</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L415" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.weaverworld/adviceafterreturning">adviceafterreturning</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (adviceafterreturning ?advice)
+</pre>
+  <pre id="var-docstr">Relation of after returning advices.</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L431" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.weaverworld/adviceafterthrowing">adviceafterthrowing</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (adviceafterthrowing ?advice)
+</pre>
+  <pre id="var-docstr">Relation of after throwing advices.</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L423" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.weaverworld/advicearound">advicearound</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (advicearound ?advice)
+</pre>
+  <pre id="var-docstr">Relation of around advices.</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L439" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.weaverworld/advicebefore">advicebefore</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (advicebefore ?advice)
+</pre>
+  <pre id="var-docstr">Relation of before advices.</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L407" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.weaverworld/aspect">aspect</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (aspect ?aspect)
+</pre>
+  <pre id="var-docstr">Relation of aspects known to the weaver.</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L185" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.weaverworld/aspect-advice">aspect-advice</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (aspect-advice ?aspect ?advice)
+</pre>
+  <pre id="var-docstr">Relation between an aspect and one of the advices it declares.</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L336" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.weaverworld/aspect-declare">aspect-declare</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (aspect-declare ?aspect ?declare)
+</pre>
+  <pre id="var-docstr">Relation between an aspect and one of its aspect-specific declarations.</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L640" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.weaverworld/aspect-declaredinterface">aspect-declaredinterface</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (aspect-declaredinterface ?aspect ?interface)
+</pre>
+  <pre id="var-docstr">Relation between an aspect and one of the interfaces it declares to be implementing.</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L226" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.weaverworld/aspect-declaredsuper">aspect-declaredsuper</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (aspect-declaredsuper ?aspect ?super)
+</pre>
+  <pre id="var-docstr">Relation between an aspect and its super class (including java.lang.Object for aspects
+that do not declare a super aspect).</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L234" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.weaverworld/aspect-declaredsuper+">aspect-declaredsuper+</h2>
+  <span id="var-type">var</span><br />
+  <pre id="var-usage"></pre>
+  <pre id="var-docstr">Relation between an aspect and one of the ancestors in its declared super hierarchy.</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L262" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.weaverworld/aspect-declaredsuperaspect">aspect-declaredsuperaspect</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (aspect-declaredsuperaspect ?aspect ?super)
+</pre>
+  <pre id="var-docstr">Relation between an aspect and its declared super aspect. 
+Excludes non-aspect super types (e.g., the implicit java.lang.Object). </pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L243" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.weaverworld/aspect-declaredsuperaspect+">aspect-declaredsuperaspect+</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (aspect-declaredsuperaspect+ ?aspect ?ancestor)
+</pre>
+  <pre id="var-docstr">Relation between an aspect and one of the ancestor aspects in its declared super hierarchy.</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L273" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.weaverworld/aspect-declaredsuperclass">aspect-declaredsuperclass</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (aspect-declaredsuperclass ?aspect ?super)
+</pre>
+  <pre id="var-docstr">Relation between an aspect and its declared super class.
+Excludes aspect super types.</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L252" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.weaverworld/aspect-declaredsuperclass+">aspect-declaredsuperclass+</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (aspect-declaredsuperclass+ ?aspect ?ancestor)
+</pre>
+  <pre id="var-docstr">Relation between an aspect and one of the ancestor classes in its declared super hierarchy.</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L281" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.weaverworld/aspect-dominates-aspect-explicitly">aspect-dominates-aspect-explicitly</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (aspect-dominates-aspect-explicitly ?dominator ?subordinate ?decprec)
+</pre>
+  <pre id="var-docstr">Relation between an aspect ?dominator that has a higher declared
+precedence than aspect ?subordinate because of DeclarePrecedence 
+declaration ?decprec.</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L679" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.weaverworld/aspect-intertype">aspect-intertype</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (aspect-intertype ?aspect ?intertype)
+</pre>
+  <pre id="var-docstr">Relation between an aspect and one of its intertype declarations (a ConcreteTypeMunger).</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L463" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.weaverworld/aspect-pointcutdefinition">aspect-pointcutdefinition</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (aspect-pointcutdefinition ?aspect ?pointcutdefinition)
+</pre>
+  <pre id="var-docstr">Relation between an aspect and one of the pointcuts it declares.
+Note that these are instances of ResolvedPointcutDefinition,
+rather than the Pointcut instances within ShadowMungers (advice).
+
+Link between PointcutDefinition and Pointcut (.getPointcut) seems broken though...</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L606" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.weaverworld/aspect-super+">aspect-super+</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (aspect-super+ ?aspect ?type)
+</pre>
+  <pre id="var-docstr">Relation between an aspect and one of its direct or indirect
+super types (classes, aspects as well as interfaces),
+including those that stem from an intertype declaration.</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L292" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.weaverworld/aspect-superaspect+">aspect-superaspect+</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (aspect-superaspect+ ?aspect ?type)
+</pre>
+  <pre id="var-docstr">Relation between an aspect and one of its direct or indirect
+super aspects, including those that stem from an intertype declaration.</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L303" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.weaverworld/aspect-superclass+">aspect-superclass+</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (aspect-superclass+ ?aspect ?type)
+</pre>
+  <pre id="var-docstr">Relation between an aspect and one of its direct or indirect
+super classes, including those that stem from an intertype declaration.</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L322" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.weaverworld/aspect-superinterface+">aspect-superinterface+</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (aspect-superinterface+ ?aspect ?type)
+</pre>
+  <pre id="var-docstr">Relation between an aspect and one of its direct or indirect
+super interfaces, including those that stem from an intertype declaration.</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L313" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.weaverworld/declare">declare</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (declare ?declare)
+</pre>
+  <pre id="var-docstr">Relation of all aspect-specific declarations known to the weaver.</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L649" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.weaverworld/declareprecedence">declareprecedence</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (declareprecedence ?declare)
+</pre>
+  <pre id="var-docstr">Relation of all precedence declarations.</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L660" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.weaverworld/declareprecedence-patterns">declareprecedence-patterns</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (declareprecedence-patterns ?declare ?patterns)
+</pre>
+  <pre id="var-docstr">Relation between a DeclarePrecedence ?declare and its TypePatternList ?patterns</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L669" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.weaverworld/element">element</h2>
+  <span id="var-type">var</span><br />
+  <pre id="var-usage"></pre>
+  <pre id="var-docstr">Relation of elements of the ProgramElement hierarchy.</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L94" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.weaverworld/element-child">element-child</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (element-child ?element ?child-element)
+</pre>
+  <pre id="var-docstr">Relation of roots of the weaver world ProgramElement hierarchy.</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L86" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.weaverworld/element-handle">element-handle</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (element-handle ?element ?handle)
+</pre>
+  <pre id="var-docstr">Relation between a ProgramElement and its handle.</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L134" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.weaverworld/element-kind">element-kind</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (element-kind ?element ?kind)
+</pre>
+  <pre id="var-docstr">Relation between a ProgramElement ?element and its kind ?kind.</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L118" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.weaverworld/element-parent">element-parent</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (element-parent ?element ?parent)
+</pre>
+  <pre id="var-docstr">Relation between a ProgramElement and its parent ProgramElement.</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L110" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.weaverworld/element-signature">element-signature</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (element-signature ?element ?signature)
+</pre>
+  <pre id="var-docstr">Relation between a ProgramElement and its signature string.</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L126" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.weaverworld/element-sourcelocation">element-sourcelocation</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (element-sourcelocation ?element ?handle)
+</pre>
+  <pre id="var-docstr">Relation between a ProgramElement and its SourceLocation.</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L142" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.weaverworld/intertype-constructor">intertype-constructor</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (intertype-constructor ?intertype)
+</pre>
+  <pre id="var-docstr">Relation of constructor intertype declarations.</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L509" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.weaverworld/intertype-element">intertype-element</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (intertype-element ?intertype ?member)
+</pre>
+  <pre id="var-docstr">Relation between an intertype declaration and its resulting member element (a ProgramElement) 
+in the program element hierarchy.
+
+These are of the same type as the shadows we return for an advice, thus allowing checking
+whether a shadow stems from an intertype declaration.
+
+Prefer to use the above intertype-member-type instead, as it does not escape the weaver world.</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L532" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.weaverworld/intertype-field">intertype-field</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (intertype-field ?intertype)
+</pre>
+  <pre id="var-docstr">Relation of field intertype declarations.</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L493" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.weaverworld/intertype-kind">intertype-kind</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (intertype-kind ?intertype ?kind)
+</pre>
+  <pre id="var-docstr">Relation between an intertype declaration and its kind.</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L485" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.weaverworld/intertype-member-type">intertype-member-type</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (intertype-member-type ?intertype ?member ?type)
+</pre>
+  <pre id="var-docstr">Relation between an intertype declaration, the field/method/constructor member it declares
+(a ResolvedMemberImpl), and the type to which this member is added (a ResolvedType). </pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L518" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.weaverworld/intertype-method">intertype-method</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (intertype-method ?intertype)
+</pre>
+  <pre id="var-docstr">Relation of method intertype declarations.</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L501" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.weaverworld/pointcut">pointcut</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (pointcut ?advice)
+</pre>
+  <pre id="var-docstr">Relation of all pointcuts known to the AspectJ weaver.
+Note that these are not pointcut definitions.</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L591" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.weaverworld/pointcutdefinition">pointcutdefinition</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (pointcutdefinition ?pointcut)
+</pre>
+  <pre id="var-docstr">Relation of pointcuts known to the weaver.
+Note: these are instances of Pointcut rather than ResolvedPointcutDefinition.</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L619" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.weaverworld/root">root</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (root ?element)
+</pre>
+  <pre id="var-docstr">Relation of ProgramElement hierarchy roots.</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L76" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.weaverworld/sourcelocation-filename-startline-endline-column-offset">sourcelocation-filename-startline-endline-column-offset</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (sourcelocation-filename-startline-endline-column-offset ?sourcelocation ?filename ?startline ?endline ?column ?offset)
+</pre>
+  <pre id="var-docstr">Non-relational. Unifies ?filename with the name of the file for the given ?sourcelocation, 
+?startline with the line at which it starts, ?endline with the line at which it ends, 
+?column with the column at which it starts, and ?offset with its offset.</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L563" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.weaverworld/type">type</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (type ?resolvedtype)
+</pre>
+  <pre id="var-docstr">Relation of non-expandable (i.e., project-defined) types known to the AspectJ weaver.</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L165" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.weaverworld/weaverworld-model-hierarchy">weaverworld-model-hierarchy</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (weaverworld-model-hierarchy ?world ?model ?hierarchy)
+</pre>
+  <pre id="var-docstr">Relation between an AspectJ weaver world and its ProgramElement hierarchy.</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L63" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.weaverworld/weaverworld-signature-resolvedtype">weaverworld-signature-resolvedtype</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (weaverworld-signature-resolvedtype ?world ?signature ?resolved-type)
+</pre>
+  <pre id="var-docstr">Non-relational. Unifies ?resolved-type with the type known to the AspectJ weaver
+?world with the given ?signature string. 
+
+Can be used to go from XCut types to weaver world types.</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L175" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.weaverworld/weaverworld-xcut">weaverworld-xcut</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (weaverworld-xcut ?world ?xcut)
+</pre>
+  <pre id="var-docstr">Relation between an AspectJ weaverworld and its corresponding XCut model (AJProjectModelFacade).
+Relations for the latter are available in the damp.ekeko.aspectj.xcut namespace.</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L701" id="var-source">Source</a>
+</div>
+<h2 id="namespace-name">damp.ekeko.aspectj.xcut</h2>
+<pre id="namespace-docstr">Low-level XCUT (AJProjctModelFacade) relations.</pre>
+
+
+<br />
+<div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.xcut/pe-signature">pe-signature</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (pe-signature ?program-element ?signature-string)
+</pre>
+  <pre id="var-docstr">Non-relational. Unifies ?signature-string with the signature 
+of the given AspectJ ProgramElement ?program-element</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/xcut.clj#L95" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.xcut/xcut-handle-je">xcut-handle-je</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (xcut-handle-je ?xcut ?handle ?j-element)
+</pre>
+  <pre id="var-docstr">Non-relational. Unifies ?j-element with the JDT IJavaElement that corresponds to the 
+given ?handle of an AspectJ ProgramElement in the given XCut model ?xcut (an AJProjectModelFacade).</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/xcut.clj#L69" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.xcut/xcut-handle-pe">xcut-handle-pe</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (xcut-handle-pe ?xcut ?handle ?p-element)
+</pre>
+  <pre id="var-docstr">Non-relational. Unifies ?p-element with the AspectJ ProgramElement that corresponds to the 
+given ?handle in the given XCut model ?xcut (an AJProjectModelFacade).</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/xcut.clj#L78" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.xcut/xcut-je-pe">xcut-je-pe</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (xcut-je-pe ?xcut ?jdt-element ?aj-element)
+</pre>
+  <pre id="var-docstr">Non-relational. Unifies ?aj-element with the AspectJ ProgramElement that corresponds to the 
+given JDT IJavaElement ?jdt-element in the given XCut model ?xcut (an AJProjectModelFacade).</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/xcut.clj#L87" id="var-source">Source</a>
+</div><div id="var-entry">
+  <hr />
+  <h2 id="damp.ekeko.aspectj.xcut/xcut-relationtype-relation">xcut-relationtype-relation</h2>
+  <span id="var-type">function</span><br />
+  <pre id="var-usage">Usage: (xcut-relationtype-relation ?xcut ?relation-type ?relation)
+</pre>
+  <pre id="var-docstr">Relation between an XCut model ?xcut (an AJProjectModelFacade) and one of its relations ?relation, of type ?relation-type.</pre>
+  
+  
+  <a href="http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/xcut.clj#L58" id="var-source">Source</a>
+</div>
+
+
+</div>
+              </div>
+            </div>
+          </div>
+	</div>
+	<div id="foot">
+	  <div style="text-align: center;" id="copyright">(c) 2012 Ekeko AspectJ Contributors</div>
+	</div>
+      </div>
+      <div id="DesignedBy">Logo &amp; site design by <a title="Visit Tom Hickey's website." href="http://www.tomhickey.com">Tom Hickey</a>.<br />
+      Clojure auto-documentation system by Tom Faulhaber.</div>
+    </div>
+    <!-- /AllContentContainer -->
+  </body>
+
+</html>
