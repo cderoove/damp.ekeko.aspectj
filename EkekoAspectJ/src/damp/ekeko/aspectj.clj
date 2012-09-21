@@ -26,7 +26,7 @@
   
   ;;before trying these out, make sure that the AspectJ project has been built at least in this Eclipse session
   
-  (damp.ekeko/ekeko* [?aspect ?super] (aspect-declaredsuper+ ?aspect ?super))
+  (in-ns 'damp.ekeko.aspectj.weaverworld)
   
   ;to check: these should include indirect supers (class/interface/aspect) stemming from intertype declarations
   (damp.ekeko/ekeko* [?aspect ?super] (aspect-super+ ?aspect ?super))
@@ -60,7 +60,7 @@
   
   (damp.ekeko/ekeko* [?aspect ?intertype] (aspect-intertype ?aspect ?intertype))
   
-  (damp.ekeko/ekeko* [?intertype ?member ?type] (intertype-member-type ?intertype ?member))
+  (damp.ekeko/ekeko* [?intertype ?member ?type] (intertype-member-type ?intertype ?member ?type))
   
   ;;intertype declarations that add a member to an aspect
   (damp.ekeko/ekeko* [?declaringaspect ?intertype ?member ?targetaspect] 

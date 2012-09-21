@@ -17,14 +17,47 @@
 
 ;;todo: should check that model of advice is model of soot scene
 
+
+(defprotocol
+  IHasSootSignature
+  (sootsignature [this] "Returns the soot signature for an element of the AspectJ weaver world."))
+
+(defprotocol 
+  IHasSootSignatureAsMethod
+  (sootsignature-as-method [this] "Returns the soot method signature for an element of the Aspectj weaver world that gets compiled into a method."))
+
+(extend-protocol
+  IHasSootSignature
+  org.aspectj.weaver.UnresolvedType
+  (sootsignature [this]
+                 (.getRawName this))
+  org.aspectj.weaver.Advice
+  (sootsignature [this]
+                 (sootsignature-as-method (.getSignature this))))
+
+(extend-type
+  org.aspectj.weaver.Member 
+  IHasSootSignatureAsMethod
+  (sootsignature-as-method [this] 
+                           (str "<" 
+                                (sootsignature (.getDeclaringType this)) 
+                                ": " 
+                                (.getName this)
+                                "("
+                                (apply str (interpose "," (map (fn [pt] (.getName pt)) (.getParameterTypes this))))
+                                ")"
+                                ">")))
+
+
 (defn
   advice-sootmethod 
   [?advice ?soot]
   (fresh [?model ?scene ?signature]
+         (world/advice ?advice)
+         (equals ?signature (sootsignature ?advice))
          (soot/soot-model-scene ?model ?scene)
          (soot/soot-method-signature ?soot ?signature)))
 
-
 (comment
-  
+  (damp.ekeko/ekeko* [?advice ?method] (advice-sootmethod ?advice ?method))
   (damp.ekeko/ekeko* [?method ?signature] (soot/soot-method-signature ?method ?signature)))
