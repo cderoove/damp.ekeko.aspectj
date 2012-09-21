@@ -1,6 +1,6 @@
 (ns
     ^{:doc "Low-level AspectJ WeaverWorld relations."
-    :author "Coen De Roover"}
+    :author "Coen De Roover, Johan Fabry" }
      damp.ekeko.aspectj.weaverworld
     (:refer-clojure :exclude [== type declare])
     (:use [clojure.core.logic])
@@ -688,11 +688,38 @@
     (aspect ?subordinate)
     (equals 1 (.compare ?decprec ?dominator ?subordinate))))
 
-
+(defn
+  aspect-dominates-aspect-explicitly+
+  "Transitive explicit dominates relationship"
+    [?dominator ?subordinate]
+    (conde [(fresh [?prec]
+                   (aspect-dominates-aspect-explicitly ?dominator ?subordinate ?prec))]
+           [(fresh [?intermediate ?prec]
+                   (aspect-dominates-aspect-explicitly ?dominator ?intermediate ?prec)
+                   (aspect-dominates-aspect-explicitly+ ?intermediate ?subordinate))]))
 
 ;	precedence regels: sub-aspects implicitly have precedence over their super-aspect;	lexically first advice has implicit precedence over second advice;	(voor advice van hetzelfde aspect)
 
+(defn
+  aspect-dominates-aspect-implicitly+
+  "Implicit aspect domination relationship: a subaspect dominates its superaspect."
+  [?dominator ?subordinate]
+  (all
+    (aspect-superaspect+ ?dominator ?subordinate)))
 
+(def
+  aspect-dominates-aspect
+  "Precedence domination relation between an aspect and its subordinate,
+   by combining explicit precedence declarations with implicit precedence relations."
+  (tabled [?dominator ?subordinate]
+          (all
+            (conde
+              [(aspect-dominates-aspect-explicitly+ ?dominator ?subordinate)]
+              [(aspect-dominates-aspect-implicitly+ ?dominator ?subordinate)]
+              [(fresh [?intermediate]
+                      (aspect-dominates-aspect ?dominator ?intermediate)
+                      (aspect-dominates-aspect ?intermediate ?dominator))])
+            (fails (aspect-dominates-aspect-explicitly+ ?subordinate ?dominator)))))
 
 ;; Link between World (aka weaverworld) and AJProjectModelFacade (aka xcut)
 
