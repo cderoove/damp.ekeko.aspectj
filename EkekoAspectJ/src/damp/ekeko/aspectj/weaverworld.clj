@@ -686,7 +686,7 @@
     (declareprecedence ?decprec)
     (aspect ?dominator)
     (aspect ?subordinate)
-    (equals -1 (.compare ?decprec ?dominator ?subordinate))))
+    (equals 1 (.compare ?decprec ?dominator ?subordinate))))
 
 
 
