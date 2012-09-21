@@ -115,6 +115,7 @@
     (element ?element)
     (equals ?parent (.getParent ?element))))
 
+
 (defn
   element-kind
   "Relation between a ProgramElement ?element and its kind ?kind."
@@ -122,6 +123,20 @@
   (all
     (element ?element)
     (equals ?kind (.getKind ?element))))
+
+;does not work yet
+(defn
+  element-enclosing-aspect
+  "Relation between a ProgramElement and its enclosing aspect (if any)."
+  [?element ?aspect]
+  (fresh [?aspkind]
+         (equals ?aspkind (IProgramElement$Kind/ASPECT))
+         (conde [(element-parent ?element ?aspect)
+                 (!= ?aspect nil)
+                 (element-kind ?aspect ?aspkind)]
+                [(fresh [?intermediate]
+                        (element-parent ?element ?intermediate)
+                        (element-enclosing-aspect ?element ?aspect))])))
 
 (defn
   element-signature
