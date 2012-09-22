@@ -130,7 +130,7 @@
     (element ?element)
     (equals ?kind (.getKind ?element))))
 
-;todo: check how this behaves for generic types, align with weaverworld-signature-resolvedtype
+;note that these are not JVM signature strings, as produced for ResolvedType hierarchy
 (defn
   element-signature
   "Relation between a ProgramElement and its signature string."
@@ -246,6 +246,8 @@
     (weaverworld ?world)
     (equals ?typemap (-> ?world .getTypeMap .getMainMap))))
 
+  
+
 (defn
   type
   "Relation of non-expandable (i.e., project-defined) types known to the AspectJ weaver."
@@ -256,15 +258,15 @@
        (equals ?resolvedtype (.getValue ?entry))))
  
 ;can be used to go from xcut to weaverworld types
-;todo: check how this behaves for generic types, align with element-signature
-(defn
-  weaverworld-signature-resolvedtype
-  "Non-relational. Unifies ?resolved-type with the type known to the AspectJ weaver
-   ?world with the given ?signature string. 
-
-   Can be used to go from XCut types to weaver world types." 
-  [?world ?signature ?resolved-type]
-  (equals ?resolved-type (.resolve ?world ?signature)))
+;NO: because need JVM signature rather than what is returned by the xcut elements
+;(defn
+;  weaverworld-signature-resolvedtype
+;  "Non-relational. Unifies ?resolved-type with the type known to the AspectJ weaver
+;   ?world with the given ?signature string. 
+;
+;   Can be used to go from XCut types to weaver world types." 
+;  [?world ?signature ?resolved-type]
+;  (equals ?resolved-type (.resolve ?world ?signature)))
 
 
 (defn
@@ -272,14 +274,11 @@
   "Relation between a ProgramElement of kind Aspect/Enum/Class
    and the ResolvedType instance from the weaver world it corresponds to."
   [?element ?type]
-  (fresh [?world ?signature]
+  (fresh [?element-name] ;todo: take correct world into account
          (elementtypedeclaration ?element)
-         (element-signature ?element ?signature)
-         (weaverworld ?world) ;todo: go straight from element to correct weaverworld (see weaverworld-model-hierarchy)
-         (weaverworld-signature-resolvedtype ?world ?signature ?type)))
-
-
-
+         (equals ?element-name (str (.getPackageName ?element) "." (.getName ?element))) ;todo: check what this returns for parameterized types
+         (type ?type) 
+         (equals ?element-name (.getName ?type)))) ;or .getBaseName if above includes type parameters
 
 (defn
   aspect
@@ -924,12 +923,19 @@
                        (xcut/xcut-handle-pe ?xcut ?shadowh ?shadow)))))
 
 
+(defn
+  shadow
+  [?shadow]
+  (fresh [?advice]
+         (advice-shadow ?advice ?shadow)))
 
-;;todo:
-;;take into account kinds of advice
-;;implicit precedence, precedence assumption
-;;inter-aspect-shadow: done (certain?)
-;;soot?
+(defn
+  shadow-enclosingtypedeclaration
+  [?shadow ?type]
+  (fresh [?element]
+    (shadow ?shadow)
+    (element-enclosingtypedeclaration-element  ?shadow ?element)
+    (element-type ?element ?type)))
 
   
 

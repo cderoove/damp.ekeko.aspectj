@@ -24,6 +24,7 @@
     (fails (aspect-dominates-aspect ?second ?first))))
 
 
+;;Assumption: implicit precedence is overridden
 ;Seems to work -- modified test package after checking expl, impl, trans expl - recheck
 (defn
   overriden-implicit-precedence
@@ -32,15 +33,13 @@
     (aspect-dominates-aspect ?second ?first)
     (aspect-dominates-aspect-implicitly+ ?first ?second)))
 
-;Does not work yet - bug in element-enclosing-aspect
-; should return the tuple: SecondAspect FirstAspect
+;;Assumption: aspect modifies other aspect
 (defn 
   modifies-aspect
   [?modifier ?modified]
   (fresh [?advice ?shadow]
          (aspect-advice ?modifier ?advice)
          (advice-shadow ?advice ?shadow)
-         (equals ?modified (.getDeclaringType ?shadow))))
-         ;(element-enclosing-aspect ?shadow ?modified))
-    
+         (shadow-enclosingtypedeclaration ?shadow ?modified)
+         (aspect ?modified)))
   
