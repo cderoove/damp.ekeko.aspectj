@@ -162,6 +162,15 @@
     (element ?element)
     (equals ?handle (.getSourceLocation ?element))))
 
+(defn
+  element-worldthing
+  "Relation between a ProgramElement and the corresponding
+   thing in the weaver world, if it exists."
+  [?element ?thing]
+  (fresh [?signaturestring]
+         (element-signature ?element ?signaturestring)
+         )
+
  
 ;above is about programelement hierarchy, which is still managed by facade
 ;created by AsmRelationshipProvider
