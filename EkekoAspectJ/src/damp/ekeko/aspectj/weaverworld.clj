@@ -756,10 +756,7 @@
   domination-edge
   [?d ?s]
   (all 
-    (aspect ?d)
-    (aspect ?s)
-    (!= ?d ?s)
-    (conda ;;to shortcut edges that would succeeds for both
+    (conde 
       [(aspect-dominates-aspect-explicitly+ ?d ?s)]
       [(aspect-dominates-aspect-implicitly+ ?d ?s)])))
 
@@ -775,14 +772,14 @@
       (aspect-dominates-aspect ?dominator ?subordinate [])))
   ([?dominator ?subordinate ?explored-subs]
     (fresh [?sub]
-           (conde
-             [(aspect-dominates-aspect-explicitly+ ?dominator ?sub)]
-             [(aspect-dominates-aspect-implicitly+ ?dominator ?sub)])
+           (domination-edge ?dominator ?sub)
+           (fails (contains ?explored-subs ?sub))
            (conde
              [(== ?subordinate ?sub)]
              [(fresh [?new-explored-subs]
                      (equals ?new-explored-subs (conj ?explored-subs ?sub))
-                     (aspect-dominates-aspect ?sub ?subordinate ?new-explored-subs))]))))
+                     (aspect-dominates-aspect ?sub ?subordinate ?new-explored-subs))])
+           (fails (aspect-dominates-aspect-explicitly+ ?subordinate ?dominator)))))
            
 
 ;; Link between World (aka weaverworld) and AJProjectModelFacade (aka xcut)
