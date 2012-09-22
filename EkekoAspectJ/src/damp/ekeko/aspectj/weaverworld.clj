@@ -91,21 +91,27 @@
     (element ?element) 
     (contains (.getChildren ?element) ?child-element)))
 
-(def
+(defn
+  element-child+
+  "Relation between a ProgramElement ?element and one of its descendants ?child."
+  [?element ?child]
+  (fresh [?ch]
+         (element-child ?element ?ch)
+         (conde [(== ?ch ?child)]	
+                [(element-child+ ?ch ?child)])))
+
+(defn
   element
   "Relation of elements of the ProgramElement hierarchy."
-  (tabled
-    [?element]
-    (conda
-      [(v+ ?element)
-       (succeeds (instance? IProgramElement ?element))]
-      [(v- ?element)
-       (conde 
-         [(root ?element)]
-         [(fresh [?parent]
-                 (element ?parent)
-                 (element-child ?parent ?element))])])))
-
+  [?element]
+  (conda
+    [(v+ ?element)
+     (succeeds (instance? IProgramElement ?element))]
+    [(v- ?element)
+     (fresh [?root]
+            (root ?root)
+            (conde [(== ?element ?root)]
+                   [(element-child+ ?root ?element)]))]))       
 
 (defn
   element-parent
@@ -123,20 +129,6 @@
   (all
     (element ?element)
     (equals ?kind (.getKind ?element))))
-
-;does not work yet
-(defn
-  element-enclosing-aspect
-  "Relation between a ProgramElement and its enclosing aspect (if any)."
-  [?element ?aspect]
-  (fresh [?aspkind]
-         (equals ?aspkind (IProgramElement$Kind/ASPECT))
-         (conde [(element-parent ?element ?aspect)
-                 (!= ?aspect nil)
-                 (element-kind ?aspect ?aspkind)]
-                [(fresh [?intermediate]
-                        (element-parent ?element ?intermediate)
-                        (element-enclosing-aspect ?element ?aspect))])))
 
 (defn
   element-signature
@@ -162,16 +154,40 @@
     (element ?element)
     (equals ?handle (.getSourceLocation ?element))))
 
-(defn
-  element-worldthing
-  "Relation between a ProgramElement and the corresponding
-   thing in the weaver world, if it exists."
-  [?element ?thing]
-  (fresh [?signaturestring]
-         (element-signature ?element ?signaturestring)
-         )
 
- 
+
+(defn
+  ancestors-of-element
+  "Returns the lazy sequence of non-nil ancestors of the given ProgramElement. "
+  [element]
+  (filter (complement nil?)
+          (iterate (fn [ancestor] (.getParent ancestor)))))
+
+
+
+
+  
+
+
+
+
+;does not work yet
+(defn
+  element-enclosing-aspect
+  "Relation between a ProgramElement and its enclosing aspect (if any)."
+  [?element ?aspect]
+  (fresh [?aspkind]
+         (equals ?aspkind (IProgramElement$Kind/ASPECT))
+         (conde [(element-parent ?element ?aspect)
+                 (!= ?aspect nil)
+                 (element-kind ?aspect ?aspkind)]
+                [(fresh [?intermediate]
+                        (element-parent ?element ?intermediate)
+                        (element-enclosing-aspect ?element ?aspect))])))
+
+
+
+
 ;above is about programelement hierarchy, which is still managed by facade
 ;created by AsmRelationshipProvider
 
