@@ -8,9 +8,12 @@
   (:use [damp.ekeko])
   (:use [damp.ekeko.aspectj weaverworld])
   (:require [damp.ekeko.aspectj
-             [soot :as soot]
+             [soot :as ajsoot]
              [ajdt :as ajdt]
-             [xcut :as xcut]]))
+             [xcut :as xcut]]
+            [damp.ekeko.soot
+             [soot :as ssoot]]
+            ))
 
 ;; Assumption: incomplete precedence
 (defn
@@ -42,4 +45,20 @@
          (advice-shadow ?advice ?shadow)
          (shadow-enclosingtypedeclaration ?shadow ?modified)
          (aspect ?modified)))
+
+;;Assumption itd use: intertype method is introduced, but never called
+;;Seems to work: returns cl.uchile.dcc.pleiad.test.Two.itdInAspect(int) on XCutReportTest
+(defn 
+  intertypemethod-unused
+  [?itmethod]
+  (fresh [?sootmethod ?caller]
+         (intertypemethod ?itmethod)
+         (fails 
+           (all
+             (ajsoot/intertypemethod-sootmethod ?itmethod ?sootmethod)
+             (ssoot/soot-method-called-by-method ?sootmethod ?caller)))))
+
+
+
+
   
