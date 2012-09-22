@@ -42,12 +42,13 @@
                            (str "<" 
                                 (sootsignature (.getDeclaringType this)) 
                                 ": " 
+                                (sootsignature (.getReturnType this))
+                                " " 
                                 (.getName this)
                                 "("
                                 (apply str (interpose "," (map (fn [pt] (.getName pt)) (.getParameterTypes this))))
                                 ")"
                                 ">")))
-
 
 (defn
   advice-sootmethod 
