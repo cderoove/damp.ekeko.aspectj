@@ -130,6 +130,7 @@
     (element ?element)
     (equals ?kind (.getKind ?element))))
 
+;todo: check how this behaves for generic types, align with weaverworld-signature-resolvedtype
 (defn
   element-signature
   "Relation between a ProgramElement and its signature string."
@@ -156,35 +157,78 @@
 
 
 
-(defn
+(defn-
   ancestors-of-element
-  "Returns the lazy sequence of non-nil ancestors of the given ProgramElement. "
-  [element]
-  (filter (complement nil?)
-          (iterate (fn [ancestor] (.getParent ancestor)))))
+  "Returns the ancestor chain of the given ProgramElement.
+   First element is the immediate parent."
+  ([element] 
+    (ancestors-of-element (.getParent element) []))
+  ([parent sofar]
+    (if-not
+      (nil? parent)
+      (recur (.getParent parent) (conj sofar parent))
+      sofar)))
 
-
-
-
-  
-
-
-
-
-;does not work yet
+(defn-
+  enclosingtypedeclaration-of-element
+  "Returns the most enclosing class, aspect or enum declaration
+   in which the given ProgramElement resides."
+  [element] 
+  (letfn [(typedeclaration? 
+            [element]
+            (let [kind (.getKind element)]
+              (or (= kind (IProgramElement$Kind/CLASS))
+                  (= kind (IProgramElement$Kind/ENUM))
+                  (= kind (IProgramElement$Kind/ASPECT)))))
+          (ancestortypedeclaration 
+            [parent]
+            (if-not
+              (nil? parent)
+              (if 
+                (typedeclaration? parent)
+                parent
+                (recur (.getParent parent)))))]
+         (ancestortypedeclaration (.getParent element))))
+    
 (defn
-  element-enclosing-aspect
+  element-enclosingtypedeclaration-element
   "Relation between a ProgramElement and its enclosing aspect (if any)."
-  [?element ?aspect]
-  (fresh [?aspkind]
-         (equals ?aspkind (IProgramElement$Kind/ASPECT))
-         (conde [(element-parent ?element ?aspect)
-                 (!= ?aspect nil)
-                 (element-kind ?aspect ?aspkind)]
-                [(fresh [?intermediate]
-                        (element-parent ?element ?intermediate)
-                        (element-enclosing-aspect ?element ?aspect))])))
+  [?element ?typedeclaration]
+  (all
+    (element ?element)
+    (equals ?typedeclaration (enclosingtypedeclaration-of-element ?element))
+    (!= nil ?typedeclaration)))
 
+(defn
+  elementaspect
+  [?element]
+  (all
+    (element ?element)
+    (equals (IProgramElement$Kind/ASPECT) (.getKind ?element))))
+
+(defn
+  elementclass
+  [?element]
+  (all
+    (element ?element)
+    (equals (IProgramElement$Kind/CLASS) (.getKind ?element))))
+
+(defn
+  elementenum
+  [?element]
+  (all
+    (element ?element)
+    (equals (IProgramElement$Kind/ENUM) (.getKind ?element))))
+
+(defn
+  elementtypedeclaration
+  [?element]
+  (conde
+    [(elementenum ?element)]
+    [(elementclass ?element)]
+    [(elementaspect ?element)]))
+
+    
 
 
 
@@ -212,6 +256,7 @@
        (equals ?resolvedtype (.getValue ?entry))))
  
 ;can be used to go from xcut to weaverworld types
+;todo: check how this behaves for generic types, align with element-signature
 (defn
   weaverworld-signature-resolvedtype
   "Non-relational. Unifies ?resolved-type with the type known to the AspectJ weaver
@@ -219,7 +264,21 @@
 
    Can be used to go from XCut types to weaver world types." 
   [?world ?signature ?resolved-type]
-  (equals ?resolved-type (.lookupBySignature ?world ?signature)))
+  (equals ?resolved-type (.resolve ?world ?signature)))
+
+
+(defn
+  element-type
+  "Relation between a ProgramElement of kind Aspect/Enum/Class
+   and the ResolvedType instance from the weaver world it corresponds to."
+  [?element ?type]
+  (fresh [?world ?signature]
+         (elementtypedeclaration ?element)
+         (element-signature ?element ?signature)
+         (weaverworld ?world) ;todo: go straight from element to correct weaverworld (see weaverworld-model-hierarchy)
+         (weaverworld-signature-resolvedtype ?world ?signature ?type)))
+
+
 
 
 (defn
@@ -863,7 +922,6 @@
                        (equals ?adviceh (AsmRelationshipProvider/getHandle ?model ?advice))
                        (xcut/xcut-advicehandle-shadowhandle ?xcut ?adviceh ?shadowh)
                        (xcut/xcut-handle-pe ?xcut ?shadowh ?shadow)))))
-
 
 
 
