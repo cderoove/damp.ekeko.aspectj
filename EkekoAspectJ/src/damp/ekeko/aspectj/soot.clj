@@ -33,7 +33,18 @@
                  (.getRawName this))
   org.aspectj.weaver.Advice
   (sootsignature [this]
-                 (sootsignature-as-method (.getSignature this))))
+                 (sootsignature-as-method (.getSignature this)))
+  org.aspectj.weaver.ConcreteTypeMunger
+  (sootsignature [this]
+                 (sootsignature (.getMunger this)))
+  org.aspectj.weaver.ResolvedTypeMunger
+  (sootsignature [this]
+                 (let [kind (.getKind this)]
+                   (cond 
+                     (= kind (org.aspectj.weaver.ResolvedTypeMunger/Method))
+                     (sootsignature-as-method (.getSignature this))
+                     :else "")))  ;todo: field
+  )
 
 (extend-type
   org.aspectj.weaver.Member 
@@ -49,6 +60,7 @@
                                 (apply str (interpose "," (map (fn [pt] (.getName pt)) (.getParameterTypes this))))
                                 ")"
                                 ">")))
+  
 
 (defn
   advice-sootmethod 
@@ -59,6 +71,18 @@
          (soot/soot-model-scene ?model ?scene)
          (soot/soot-method-signature ?soot ?signature)))
 
+(defn
+  intertypemethod-sootmethod
+  [?itmethod ?soot]
+  (fresh [?model ?scene ?signature]
+         (world/intertypemethod ?itmethod)
+         (equals ?signature (sootsignature ?itmethod))
+         (soot/soot-model-scene ?model ?scene)
+         (soot/soot-method-signature ?soot ?signature)))
+
 (comment
   (damp.ekeko/ekeko* [?advice ?method] (advice-sootmethod ?advice ?method))
+  
+  (damp.ekeko/ekeko* [?itmethod ?sootmethod] (intertypemethod-sootmethod ?itmethod ?sootmethod))
+  
   (damp.ekeko/ekeko* [?method ?signature] (soot/soot-method-signature ?method ?signature)))

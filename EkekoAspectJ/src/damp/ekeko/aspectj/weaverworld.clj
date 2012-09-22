@@ -595,7 +595,7 @@
     (equals ?kind (-> ?intertype .getMunger .getKind))))
 
 (defn
-  intertype-field
+  intertypefield
   "Relation of field intertype declarations."
   [?intertype]
   (fresh [?kind]
@@ -603,7 +603,7 @@
          (equals ?kind (ResolvedTypeMunger/Field))))
 
 (defn
-  intertype-method
+  intertypemethod
   "Relation of method intertype declarations."
   [?intertype]
   (fresh [?kind]
@@ -611,7 +611,7 @@
          (equals ?kind (ResolvedTypeMunger/Method))))
 
 (defn
-  intertype-constructor
+  intertypeconstructor
   "Relation of constructor intertype declarations."
   [?intertype]
   (fresh [?kind]
