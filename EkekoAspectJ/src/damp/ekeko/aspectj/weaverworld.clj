@@ -775,9 +775,6 @@
       (aspect-dominates-aspect ?dominator ?subordinate [])))
   ([?dominator ?subordinate ?explored-subs]
     (fresh [?sub]
-           (aspect ?dominator)
-           (aspect ?sub)
-           (fails (contains ?explored-subs ?sub))
            (conde
              [(aspect-dominates-aspect-explicitly+ ?dominator ?sub)]
              [(aspect-dominates-aspect-implicitly+ ?dominator ?sub)])
