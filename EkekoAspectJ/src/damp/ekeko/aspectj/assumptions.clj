@@ -12,22 +12,7 @@
              [ajdt :as ajdt]
              [xcut :as xcut]]))
 
-(defn 
-  ada 
-  [?dom ?sub]
-  (aspect-dominates-aspect ?dom ?sub))
-
-(defn
-  incomplete-left
-  [?first ?second]
-  (fresh [?dom ?sub]
-    (aspect ?first)
-    (aspect ?second)
-    (!= ?first ?second)
-    (aspect-dominates-aspect ?dom ?sub)
-    (!= ?first ?dom)
-    (!= ?second ?sub)))
-
+;; Assumption: incomplete precedence
 (defn
   incomplete-precedence
   [?first ?second]
@@ -35,24 +20,8 @@
     (aspect ?first)
     (aspect ?second)
     (!= ?first ?second)
-    (incomplete-left ?first ?second)
-    (incomplete-left ?second ?first)))
-  
-;  (fresh [?dom1 ?sub1 ?dom2 ?sub2]
-;    (aspect ?first)
-;    (aspect ?second)
-;    (!= ?first ?second)
-;    (aspect-dominates-aspect ?dom1 ?sub1)
-;    (aspect-dominates-aspect ?dom2 ?sub2)
-;    (!= ?first ?dom)
-;    (!= ?second ?sub)
-;    (!= ?first ?sub)
- ;   (!= ?second ?dom)))
-    ;    (fails (aspect-dominates-aspect ?first ?second))
-
-;    (all
-;       [(fails (aspect-dominates-aspect ?first ?second))]
-;       [(fails (aspect-dominates-aspect ?second ?first))])))
+    (fails (aspect-dominates-aspect ?first ?second))
+    (fails (aspect-dominates-aspect ?second ?first))))
 
 
 ;Seems to work -- modified test package after checking expl, impl, trans expl - recheck

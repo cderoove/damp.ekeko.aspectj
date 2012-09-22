@@ -15,7 +15,7 @@
        [org.aspectj.weaver.patterns Declare DeclarePrecedence]
        [damp.ekeko EkekoModel]
        [damp.ekeko.aspectj AspectJProjectModel]
-       [org.aspectj.weaver AdviceKind World ResolvedTypeMunger ConcreteTypeMunger UnresolvedType ResolvedType  Member]
+       [org.aspectj.weaver AdviceKind World ResolvedTypeMunger ConcreteTypeMunger ReferenceType UnresolvedType ResolvedType  Member]
        [org.aspectj.asm AsmManager IProgramElement IProgramElement$Kind IHierarchy ]
        [org.aspectj.weaver.bcel BcelTypeMunger]))
               
@@ -202,7 +202,13 @@
   "Relation of aspects known to the weaver."
   [?aspect]
   (all
-    (type ?aspect)
+    ;;would normally use a conda here, but gives an exception in type
+    ;;even though ?aspect is untouched in the first condition of each clause
+    (conde 
+      [(v+ ?aspect) 
+       (succeeds (instance? ReferenceType ?aspect))]
+      [(v- ?aspect)
+       (type ?aspect)])
     (succeeds (.isAspect ?aspect))))
 
 (defn-
@@ -722,19 +728,65 @@
   (all
     (aspect-superaspect+ ?dominator ?subordinate)))
 
-(def
+
+(comment
+  ;; TODO: check how core.logic implements tabling
+  ;; this one worked fine when used as (damp.ekeko/ekeko* [?dom ?sub] (aspect-dominates-aspect ?dom ?sub)) but:
+  ;; 1) an exception is raised when used as follows:
+  ;;      (damp.ekeko/ekeko* [?first ?second] (aspect ?first) (aspect ?second) (!= ?first ?second)  (fails (aspect-dominates-aspect ?first ?second)))
+  ;;      IllegalArgumentException No implementation of method: :ifu of protocol: #'clojure.core.logic/IIfU found for class: clojure.lang.PersistentVector  clojure.core/-cache-protocol-fn (core_deftype.clj:495)
+  ;;   where fails implements negation as failure through condu
+  ;; 2) the atom used by the tabled macro to store results is not aware of workspace changes (e.g., new aspects)
+  (def
+    aspect-dominates-aspect
+    "Precedence domination relation between an aspect and its subordinate,
+   by combining explicit precedence declarations with implicit precedence relations."
+  (tabled 
+    [?dominator ?subordinate]
+    (all
+      (conde
+        [(aspect-dominates-aspect-explicitly+ ?dominator ?subordinate)]
+        [(aspect-dominates-aspect-implicitly+ ?dominator ?subordinate)]
+        [(fresh [?intermediate]
+                (aspect-dominates-aspect ?dominator ?intermediate)
+                (aspect-dominates-aspect ?intermediate ?subordinate))])
+      (fails (aspect-dominates-aspect-explicitly+ ?subordinate ?dominator))))))
+
+(defn- 
+  domination-edge
+  [?d ?s]
+  (all 
+    (aspect ?d)
+    (aspect ?s)
+    (!= ?d ?s)
+    (conda ;;to shortcut edges that would succeeds for both
+      [(aspect-dominates-aspect-explicitly+ ?d ?s)]
+      [(aspect-dominates-aspect-implicitly+ ?d ?s)])))
+
+;not very declarative, see TODO about tabling above
+;perhaps todo: 1-dom->5 is repeatd in results
+(defn
   aspect-dominates-aspect
   "Precedence domination relation between an aspect and its subordinate,
    by combining explicit precedence declarations with implicit precedence relations."
-  (tabled [?dominator ?subordinate]
-          (all
-            (conde
-              [(aspect-dominates-aspect-explicitly+ ?dominator ?subordinate)]
-              [(aspect-dominates-aspect-implicitly+ ?dominator ?subordinate)]
-              [(fresh [?intermediate]
-                      (aspect-dominates-aspect ?dominator ?intermediate)
-                      (aspect-dominates-aspect ?intermediate ?dominator))])
-            (fails (aspect-dominates-aspect-explicitly+ ?subordinate ?dominator)))))
+  ([?dominator ?subordinate]
+    (all
+      (!= ?dominator ?subordinate)
+      (aspect-dominates-aspect ?dominator ?subordinate [])))
+  ([?dominator ?subordinate ?explored-subs]
+    (fresh [?sub]
+           (aspect ?dominator)
+           (aspect ?sub)
+           (fails (contains ?explored-subs ?sub))
+           (conde
+             [(aspect-dominates-aspect-explicitly+ ?dominator ?sub)]
+             [(aspect-dominates-aspect-implicitly+ ?dominator ?sub)])
+           (conde
+             [(== ?subordinate ?sub)]
+             [(fresh [?new-explored-subs]
+                     (equals ?new-explored-subs (conj ?explored-subs ?sub))
+                     (aspect-dominates-aspect ?sub ?subordinate ?new-explored-subs))]))))
+           
 
 ;; Link between World (aka weaverworld) and AJProjectModelFacade (aka xcut)
 
