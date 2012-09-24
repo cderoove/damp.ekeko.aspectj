@@ -366,13 +366,12 @@
 (def
   aspect-declaredsuper+
   "Relation between an aspect and one of the ancestors in its declared super hierarchy."
-  (tabled
-    [?aspect ?ancestor]
-    (conde
-      [(aspect-declaredsuper ?aspect ?ancestor) ]
-      [(fresh [?inbetween]
-              (aspect-declaredsuper+ ?aspect ?inbetween)
-              (aspect-declaredsuper ?inbetween ?ancestor))])))
+  [?aspect ?ancestor]
+  (conde
+    [(aspect-declaredsuper ?aspect ?ancestor) ]
+    [(fresh [?inbetween]
+              (aspect-declaredsuper ?aspect ?inbetween)
+              (aspect-declaredsuper+ ?inbetween ?ancestor))]))
 
 (defn
   aspect-declaredsuperaspect+
