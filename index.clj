@@ -1,6 +1,6 @@
 {:namespaces
  ({:source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj.clj",
+   "http://github.com/cderoove/damp.ekeko.aspectj/blob/d1a5934c2848d05b635e1f51cb78b8e1721f6c26/EkekoAspectJ/src/damp/ekeko/aspectj.clj",
    :wiki-url
    "http://cderoove.github.com/damp.ekeko.aspectj/damp.ekeko.aspectj-api.html",
    :name "damp.ekeko.aspectj",
@@ -19,24 +19,32 @@
    :name "damp.ekeko.aspectj.ajdtastnode",
    :doc nil}
   {:source-url
+   "http://github.com/cderoove/damp.ekeko.aspectj/blob/7d6e6f195bc3b7098d271683d365084b33353c23/EkekoAspectJ/src/damp/ekeko/aspectj/assumptions.clj",
+   :wiki-url
+   "http://cderoove.github.com/damp.ekeko.aspectj/damp.ekeko.aspectj.assumptions-api.html",
+   :name "damp.ekeko.aspectj.assumptions",
+   :author "Coen De Roover, Johan Fabry",
+   :doc
+   "Relations for implementing parts of the 'aspect assumptions' paper."}
+  {:source-url
    "http://github.com/cderoove/damp.ekeko.aspectj/blob/692dd7080858aaec2b3121f6cd50c6d963359e92/EkekoAspectJ/src/damp/ekeko/aspectj/projectmodel.clj",
    :wiki-url
    "http://cderoove.github.com/damp.ekeko.aspectj/damp.ekeko.aspectj.projectmodel-api.html",
    :name "damp.ekeko.aspectj.projectmodel",
    :doc nil}
   {:source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/blob/0eb74e4f2f76c3502a400be15f7e1396f86dda0c/EkekoAspectJ/src/damp/ekeko/aspectj/soot.clj",
+   "http://github.com/cderoove/damp.ekeko.aspectj/blob/9220beb310eaeca040480b1a3b5acc11dd7bbb69/EkekoAspectJ/src/damp/ekeko/aspectj/soot.clj",
    :wiki-url
    "http://cderoove.github.com/damp.ekeko.aspectj/damp.ekeko.aspectj.soot-api.html",
    :name "damp.ekeko.aspectj.soot",
    :author "Coen De Roover",
    :doc "Low-level AspectJ-specific Soot relations."}
   {:source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
+   "http://github.com/cderoove/damp.ekeko.aspectj/blob/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
    :wiki-url
    "http://cderoove.github.com/damp.ekeko.aspectj/damp.ekeko.aspectj.weaverworld-api.html",
    :name "damp.ekeko.aspectj.weaverworld",
-   :author "Coen De Roover",
+   :author "Coen De Roover, Johan Fabry",
    :doc "Low-level AspectJ WeaverWorld relations."}
   {:source-url
    "http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/xcut.clj",
@@ -403,245 +411,267 @@
    :var-type "function",
    :line 10,
    :file "EkekoAspectJ/src/damp/ekeko/aspectj/projectmodel.clj"}
+  {:file nil,
+   :raw-source-url nil,
+   :source-url nil,
+   :wiki-url
+   "http://cderoove.github.com/damp.ekeko.aspectj//damp.ekeko.aspectj-api.html#damp.ekeko.aspectj.soot/sootsignature",
+   :namespace "damp.ekeko.aspectj.soot",
+   :var-type "function",
+   :arglists ([this]),
+   :doc
+   "Returns the soot signature for an element of the AspectJ weaver world.",
+   :name "sootsignature"}
+  {:file nil,
+   :raw-source-url nil,
+   :source-url nil,
+   :wiki-url
+   "http://cderoove.github.com/damp.ekeko.aspectj//damp.ekeko.aspectj-api.html#damp.ekeko.aspectj.soot/sootsignature-as-method",
+   :namespace "damp.ekeko.aspectj.soot",
+   :var-type "function",
+   :arglists ([this]),
+   :doc
+   "Returns the soot method signature for an element of the Aspectj weaver world that gets compiled into a method.",
+   :name "sootsignature-as-method"}
   {:arglists ([?advice]),
    :name "advice",
    :namespace "damp.ekeko.aspectj.weaverworld",
    :source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L353",
+   "http://github.com/cderoove/damp.ekeko.aspectj/blob/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L457",
    :raw-source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/raw/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
+   "http://github.com/cderoove/damp.ekeko.aspectj/raw/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
    :wiki-url
    "http://cderoove.github.com/damp.ekeko.aspectj//damp.ekeko.aspectj-api.html#damp.ekeko.aspectj.weaverworld/advice",
    :doc "Relation of advices known to the weaver.",
    :var-type "function",
-   :line 353,
+   :line 457,
    :file "EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj"}
   {:arglists ([?advice ?handle]),
    :name "advice-handle",
    :namespace "damp.ekeko.aspectj.weaverworld",
    :source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L370",
+   "http://github.com/cderoove/damp.ekeko.aspectj/blob/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L474",
    :raw-source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/raw/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
+   "http://github.com/cderoove/damp.ekeko.aspectj/raw/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
    :wiki-url
    "http://cderoove.github.com/damp.ekeko.aspectj//damp.ekeko.aspectj-api.html#damp.ekeko.aspectj.weaverworld/advice-handle",
    :doc
    "Relation between an advice and the handle for its corresponding ProgramElement.",
    :var-type "function",
-   :line 370,
+   :line 474,
    :file "EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj"}
   {:arglists ([?advice ?kind]),
    :name "advice-kind",
    :namespace "damp.ekeko.aspectj.weaverworld",
    :source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L387",
+   "http://github.com/cderoove/damp.ekeko.aspectj/blob/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L491",
    :raw-source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/raw/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
+   "http://github.com/cderoove/damp.ekeko.aspectj/raw/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
    :wiki-url
    "http://cderoove.github.com/damp.ekeko.aspectj//damp.ekeko.aspectj-api.html#damp.ekeko.aspectj.weaverworld/advice-kind",
    :doc "Relation between an advice and its kind (an AdviceKind).",
    :var-type "function",
-   :line 387,
+   :line 491,
    :file "EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj"}
   {:arglists ([?advice ?precedence]),
    :name "advice-kindprecedence",
    :namespace "damp.ekeko.aspectj.weaverworld",
    :source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L395",
+   "http://github.com/cderoove/damp.ekeko.aspectj/blob/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L499",
    :raw-source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/raw/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
+   "http://github.com/cderoove/damp.ekeko.aspectj/raw/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
    :wiki-url
    "http://cderoove.github.com/damp.ekeko.aspectj//damp.ekeko.aspectj-api.html#damp.ekeko.aspectj.weaverworld/advice-kindprecedence",
    :doc
    "Relation between an advice and a number representing\nthe precedence associated with its kind (see AdviceKind).\nE.g., before=1, after=2, afterThrowing=3, afterReturning=4,around=5",
    :var-type "function",
-   :line 395,
+   :line 499,
    :file "EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj"}
   {:arglists ([?advice ?pointcut]),
    :name "advice-pointcut",
    :namespace "damp.ekeko.aspectj.weaverworld",
    :source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L580",
+   "http://github.com/cderoove/damp.ekeko.aspectj/blob/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L684",
    :raw-source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/raw/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
+   "http://github.com/cderoove/damp.ekeko.aspectj/raw/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
    :wiki-url
    "http://cderoove.github.com/damp.ekeko.aspectj//damp.ekeko.aspectj-api.html#damp.ekeko.aspectj.weaverworld/advice-pointcut",
    :doc
    "Relation between an Advice ?advice and its Pointcut ?pointcut.\nNote that these are different from the ResolvedPointcutDefinition instances returned\nby aspect-pointcutdefinition.",
    :var-type "function",
-   :line 580,
+   :line 684,
    :file "EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj"}
   {:arglists ([?advice ?shadow]),
    :name "advice-shadow",
    :namespace "damp.ekeko.aspectj.weaverworld",
    :source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L741",
+   "http://github.com/cderoove/damp.ekeko.aspectj/blob/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L912",
    :raw-source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/raw/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
+   "http://github.com/cderoove/damp.ekeko.aspectj/raw/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
    :wiki-url
    "http://cderoove.github.com/damp.ekeko.aspectj//damp.ekeko.aspectj-api.html#damp.ekeko.aspectj.weaverworld/advice-shadow",
    :doc
    "Relation between an advice ?advice and one of its shadows, as the AspectJ IProgramElement ?shadow",
    :var-type "function",
-   :line 741,
+   :line 912,
    :file "EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj"}
   {:arglists ([?advice ?location]),
    :name "advice-sourcelocation",
    :namespace "damp.ekeko.aspectj.weaverworld",
    :source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L379",
+   "http://github.com/cderoove/damp.ekeko.aspectj/blob/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L483",
    :raw-source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/raw/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
+   "http://github.com/cderoove/damp.ekeko.aspectj/raw/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
    :wiki-url
    "http://cderoove.github.com/damp.ekeko.aspectj//damp.ekeko.aspectj-api.html#damp.ekeko.aspectj.weaverworld/advice-sourcelocation",
    :doc
    "Relation between an advice and its location in the source code (an ISourceLocation).",
    :var-type "function",
-   :line 379,
+   :line 483,
    :file "EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj"}
   {:arglists ([?advice]),
    :name "adviceafter",
    :namespace "damp.ekeko.aspectj.weaverworld",
    :source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L415",
+   "http://github.com/cderoove/damp.ekeko.aspectj/blob/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L519",
    :raw-source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/raw/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
+   "http://github.com/cderoove/damp.ekeko.aspectj/raw/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
    :wiki-url
    "http://cderoove.github.com/damp.ekeko.aspectj//damp.ekeko.aspectj-api.html#damp.ekeko.aspectj.weaverworld/adviceafter",
    :doc "Relation of after advices.",
    :var-type "function",
-   :line 415,
+   :line 519,
    :file "EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj"}
   {:arglists ([?advice]),
    :name "adviceafterreturning",
    :namespace "damp.ekeko.aspectj.weaverworld",
    :source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L431",
+   "http://github.com/cderoove/damp.ekeko.aspectj/blob/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L535",
    :raw-source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/raw/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
+   "http://github.com/cderoove/damp.ekeko.aspectj/raw/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
    :wiki-url
    "http://cderoove.github.com/damp.ekeko.aspectj//damp.ekeko.aspectj-api.html#damp.ekeko.aspectj.weaverworld/adviceafterreturning",
    :doc "Relation of after returning advices.",
    :var-type "function",
-   :line 431,
+   :line 535,
    :file "EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj"}
   {:arglists ([?advice]),
    :name "adviceafterthrowing",
    :namespace "damp.ekeko.aspectj.weaverworld",
    :source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L423",
+   "http://github.com/cderoove/damp.ekeko.aspectj/blob/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L527",
    :raw-source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/raw/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
+   "http://github.com/cderoove/damp.ekeko.aspectj/raw/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
    :wiki-url
    "http://cderoove.github.com/damp.ekeko.aspectj//damp.ekeko.aspectj-api.html#damp.ekeko.aspectj.weaverworld/adviceafterthrowing",
    :doc "Relation of after throwing advices.",
    :var-type "function",
-   :line 423,
+   :line 527,
    :file "EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj"}
   {:arglists ([?advice]),
    :name "advicearound",
    :namespace "damp.ekeko.aspectj.weaverworld",
    :source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L439",
+   "http://github.com/cderoove/damp.ekeko.aspectj/blob/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L543",
    :raw-source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/raw/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
+   "http://github.com/cderoove/damp.ekeko.aspectj/raw/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
    :wiki-url
    "http://cderoove.github.com/damp.ekeko.aspectj//damp.ekeko.aspectj-api.html#damp.ekeko.aspectj.weaverworld/advicearound",
    :doc "Relation of around advices.",
    :var-type "function",
-   :line 439,
+   :line 543,
    :file "EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj"}
   {:arglists ([?advice]),
    :name "advicebefore",
    :namespace "damp.ekeko.aspectj.weaverworld",
    :source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L407",
+   "http://github.com/cderoove/damp.ekeko.aspectj/blob/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L511",
    :raw-source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/raw/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
+   "http://github.com/cderoove/damp.ekeko.aspectj/raw/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
    :wiki-url
    "http://cderoove.github.com/damp.ekeko.aspectj//damp.ekeko.aspectj-api.html#damp.ekeko.aspectj.weaverworld/advicebefore",
    :doc "Relation of before advices.",
    :var-type "function",
-   :line 407,
+   :line 511,
    :file "EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj"}
   {:arglists ([?aspect]),
    :name "aspect",
    :namespace "damp.ekeko.aspectj.weaverworld",
    :source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L185",
+   "http://github.com/cderoove/damp.ekeko.aspectj/blob/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L283",
    :raw-source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/raw/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
+   "http://github.com/cderoove/damp.ekeko.aspectj/raw/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
    :wiki-url
    "http://cderoove.github.com/damp.ekeko.aspectj//damp.ekeko.aspectj-api.html#damp.ekeko.aspectj.weaverworld/aspect",
    :doc "Relation of aspects known to the weaver.",
    :var-type "function",
-   :line 185,
+   :line 283,
    :file "EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj"}
   {:arglists ([?aspect ?advice]),
    :name "aspect-advice",
    :namespace "damp.ekeko.aspectj.weaverworld",
    :source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L336",
+   "http://github.com/cderoove/damp.ekeko.aspectj/blob/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L440",
    :raw-source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/raw/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
+   "http://github.com/cderoove/damp.ekeko.aspectj/raw/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
    :wiki-url
    "http://cderoove.github.com/damp.ekeko.aspectj//damp.ekeko.aspectj-api.html#damp.ekeko.aspectj.weaverworld/aspect-advice",
    :doc
    "Relation between an aspect and one of the advices it declares.",
    :var-type "function",
-   :line 336,
+   :line 440,
    :file "EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj"}
   {:arglists ([?aspect ?declare]),
    :name "aspect-declare",
    :namespace "damp.ekeko.aspectj.weaverworld",
    :source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L640",
+   "http://github.com/cderoove/damp.ekeko.aspectj/blob/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L744",
    :raw-source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/raw/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
+   "http://github.com/cderoove/damp.ekeko.aspectj/raw/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
    :wiki-url
    "http://cderoove.github.com/damp.ekeko.aspectj//damp.ekeko.aspectj-api.html#damp.ekeko.aspectj.weaverworld/aspect-declare",
    :doc
    "Relation between an aspect and one of its aspect-specific declarations.",
    :var-type "function",
-   :line 640,
+   :line 744,
    :file "EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj"}
   {:arglists ([?aspect ?interface]),
    :name "aspect-declaredinterface",
    :namespace "damp.ekeko.aspectj.weaverworld",
    :source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L226",
+   "http://github.com/cderoove/damp.ekeko.aspectj/blob/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L330",
    :raw-source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/raw/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
+   "http://github.com/cderoove/damp.ekeko.aspectj/raw/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
    :wiki-url
    "http://cderoove.github.com/damp.ekeko.aspectj//damp.ekeko.aspectj-api.html#damp.ekeko.aspectj.weaverworld/aspect-declaredinterface",
    :doc
    "Relation between an aspect and one of the interfaces it declares to be implementing.",
    :var-type "function",
-   :line 226,
+   :line 330,
    :file "EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj"}
   {:arglists ([?aspect ?super]),
    :name "aspect-declaredsuper",
    :namespace "damp.ekeko.aspectj.weaverworld",
    :source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L234",
+   "http://github.com/cderoove/damp.ekeko.aspectj/blob/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L338",
    :raw-source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/raw/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
+   "http://github.com/cderoove/damp.ekeko.aspectj/raw/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
    :wiki-url
    "http://cderoove.github.com/damp.ekeko.aspectj//damp.ekeko.aspectj-api.html#damp.ekeko.aspectj.weaverworld/aspect-declaredsuper",
    :doc
    "Relation between an aspect and its super class (including java.lang.Object for aspects\nthat do not declare a super aspect).",
    :var-type "function",
-   :line 234,
+   :line 338,
    :file "EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj"}
   {:file "EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
    :raw-source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/raw/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
+   "http://github.com/cderoove/damp.ekeko.aspectj/raw/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
    :source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L262",
+   "http://github.com/cderoove/damp.ekeko.aspectj/blob/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L366",
    :wiki-url
    "http://cderoove.github.com/damp.ekeko.aspectj//damp.ekeko.aspectj-api.html#damp.ekeko.aspectj.weaverworld/aspect-declaredsuper+",
    :namespace "damp.ekeko.aspectj.weaverworld",
-   :line 262,
+   :line 366,
    :var-type "var",
    :doc
    "Relation between an aspect and one of the ancestors in its declared super hierarchy.",
@@ -650,216 +680,260 @@
    :name "aspect-declaredsuperaspect",
    :namespace "damp.ekeko.aspectj.weaverworld",
    :source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L243",
+   "http://github.com/cderoove/damp.ekeko.aspectj/blob/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L347",
    :raw-source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/raw/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
+   "http://github.com/cderoove/damp.ekeko.aspectj/raw/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
    :wiki-url
    "http://cderoove.github.com/damp.ekeko.aspectj//damp.ekeko.aspectj-api.html#damp.ekeko.aspectj.weaverworld/aspect-declaredsuperaspect",
    :doc
    "Relation between an aspect and its declared super aspect. \nExcludes non-aspect super types (e.g., the implicit java.lang.Object). ",
    :var-type "function",
-   :line 243,
+   :line 347,
    :file "EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj"}
   {:arglists ([?aspect ?ancestor]),
    :name "aspect-declaredsuperaspect+",
    :namespace "damp.ekeko.aspectj.weaverworld",
    :source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L273",
+   "http://github.com/cderoove/damp.ekeko.aspectj/blob/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L377",
    :raw-source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/raw/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
+   "http://github.com/cderoove/damp.ekeko.aspectj/raw/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
    :wiki-url
    "http://cderoove.github.com/damp.ekeko.aspectj//damp.ekeko.aspectj-api.html#damp.ekeko.aspectj.weaverworld/aspect-declaredsuperaspect+",
    :doc
    "Relation between an aspect and one of the ancestor aspects in its declared super hierarchy.",
    :var-type "function",
-   :line 273,
+   :line 377,
    :file "EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj"}
   {:arglists ([?aspect ?super]),
    :name "aspect-declaredsuperclass",
    :namespace "damp.ekeko.aspectj.weaverworld",
    :source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L252",
+   "http://github.com/cderoove/damp.ekeko.aspectj/blob/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L356",
    :raw-source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/raw/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
+   "http://github.com/cderoove/damp.ekeko.aspectj/raw/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
    :wiki-url
    "http://cderoove.github.com/damp.ekeko.aspectj//damp.ekeko.aspectj-api.html#damp.ekeko.aspectj.weaverworld/aspect-declaredsuperclass",
    :doc
    "Relation between an aspect and its declared super class.\nExcludes aspect super types.",
    :var-type "function",
-   :line 252,
+   :line 356,
    :file "EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj"}
   {:arglists ([?aspect ?ancestor]),
    :name "aspect-declaredsuperclass+",
    :namespace "damp.ekeko.aspectj.weaverworld",
    :source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L281",
+   "http://github.com/cderoove/damp.ekeko.aspectj/blob/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L385",
    :raw-source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/raw/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
+   "http://github.com/cderoove/damp.ekeko.aspectj/raw/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
    :wiki-url
    "http://cderoove.github.com/damp.ekeko.aspectj//damp.ekeko.aspectj-api.html#damp.ekeko.aspectj.weaverworld/aspect-declaredsuperclass+",
    :doc
    "Relation between an aspect and one of the ancestor classes in its declared super hierarchy.",
    :var-type "function",
-   :line 281,
+   :line 385,
+   :file "EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj"}
+  {:arglists
+   ([?dominator ?subordinate]
+    [?dominator ?subordinate ?explored-subs]),
+   :name "aspect-dominates-aspect",
+   :namespace "damp.ekeko.aspectj.weaverworld",
+   :source-url
+   "http://github.com/cderoove/damp.ekeko.aspectj/blob/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L850",
+   :raw-source-url
+   "http://github.com/cderoove/damp.ekeko.aspectj/raw/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
+   :wiki-url
+   "http://cderoove.github.com/damp.ekeko.aspectj//damp.ekeko.aspectj-api.html#damp.ekeko.aspectj.weaverworld/aspect-dominates-aspect",
+   :doc
+   "Precedence domination relation between an aspect and its subordinate,\nby combining explicit precedence declarations with implicit precedence relations.",
+   :var-type "function",
+   :line 850,
    :file "EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj"}
   {:arglists ([?dominator ?subordinate ?decprec]),
    :name "aspect-dominates-aspect-explicitly",
    :namespace "damp.ekeko.aspectj.weaverworld",
    :source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L679",
+   "http://github.com/cderoove/damp.ekeko.aspectj/blob/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L783",
    :raw-source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/raw/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
+   "http://github.com/cderoove/damp.ekeko.aspectj/raw/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
    :wiki-url
    "http://cderoove.github.com/damp.ekeko.aspectj//damp.ekeko.aspectj-api.html#damp.ekeko.aspectj.weaverworld/aspect-dominates-aspect-explicitly",
    :doc
    "Relation between an aspect ?dominator that has a higher declared\nprecedence than aspect ?subordinate because of DeclarePrecedence \ndeclaration ?decprec.",
    :var-type "function",
-   :line 679,
+   :line 783,
+   :file "EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj"}
+  {:arglists ([?dominator ?subordinate]),
+   :name "aspect-dominates-aspect-explicitly+",
+   :namespace "damp.ekeko.aspectj.weaverworld",
+   :source-url
+   "http://github.com/cderoove/damp.ekeko.aspectj/blob/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L795",
+   :raw-source-url
+   "http://github.com/cderoove/damp.ekeko.aspectj/raw/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
+   :wiki-url
+   "http://cderoove.github.com/damp.ekeko.aspectj//damp.ekeko.aspectj-api.html#damp.ekeko.aspectj.weaverworld/aspect-dominates-aspect-explicitly+",
+   :doc "Transitive explicit dominates relationship",
+   :var-type "function",
+   :line 795,
+   :file "EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj"}
+  {:arglists ([?dominator ?subordinate]),
+   :name "aspect-dominates-aspect-implicitly+",
+   :namespace "damp.ekeko.aspectj.weaverworld",
+   :source-url
+   "http://github.com/cderoove/damp.ekeko.aspectj/blob/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L809",
+   :raw-source-url
+   "http://github.com/cderoove/damp.ekeko.aspectj/raw/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
+   :wiki-url
+   "http://cderoove.github.com/damp.ekeko.aspectj//damp.ekeko.aspectj-api.html#damp.ekeko.aspectj.weaverworld/aspect-dominates-aspect-implicitly+",
+   :doc
+   "Implicit aspect domination relationship: a subaspect dominates its superaspect.",
+   :var-type "function",
+   :line 809,
    :file "EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj"}
   {:arglists ([?aspect ?intertype]),
    :name "aspect-intertype",
    :namespace "damp.ekeko.aspectj.weaverworld",
    :source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L463",
+   "http://github.com/cderoove/damp.ekeko.aspectj/blob/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L567",
    :raw-source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/raw/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
+   "http://github.com/cderoove/damp.ekeko.aspectj/raw/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
    :wiki-url
    "http://cderoove.github.com/damp.ekeko.aspectj//damp.ekeko.aspectj-api.html#damp.ekeko.aspectj.weaverworld/aspect-intertype",
    :doc
    "Relation between an aspect and one of its intertype declarations (a ConcreteTypeMunger).",
    :var-type "function",
-   :line 463,
+   :line 567,
    :file "EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj"}
   {:arglists ([?aspect ?pointcutdefinition]),
    :name "aspect-pointcutdefinition",
    :namespace "damp.ekeko.aspectj.weaverworld",
    :source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L606",
+   "http://github.com/cderoove/damp.ekeko.aspectj/blob/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L710",
    :raw-source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/raw/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
+   "http://github.com/cderoove/damp.ekeko.aspectj/raw/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
    :wiki-url
    "http://cderoove.github.com/damp.ekeko.aspectj//damp.ekeko.aspectj-api.html#damp.ekeko.aspectj.weaverworld/aspect-pointcutdefinition",
    :doc
    "Relation between an aspect and one of the pointcuts it declares.\nNote that these are instances of ResolvedPointcutDefinition,\nrather than the Pointcut instances within ShadowMungers (advice).\n\nLink between PointcutDefinition and Pointcut (.getPointcut) seems broken though...",
    :var-type "function",
-   :line 606,
+   :line 710,
    :file "EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj"}
   {:arglists ([?aspect ?type]),
    :name "aspect-super+",
    :namespace "damp.ekeko.aspectj.weaverworld",
    :source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L292",
+   "http://github.com/cderoove/damp.ekeko.aspectj/blob/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L396",
    :raw-source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/raw/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
+   "http://github.com/cderoove/damp.ekeko.aspectj/raw/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
    :wiki-url
    "http://cderoove.github.com/damp.ekeko.aspectj//damp.ekeko.aspectj-api.html#damp.ekeko.aspectj.weaverworld/aspect-super+",
    :doc
    "Relation between an aspect and one of its direct or indirect\nsuper types (classes, aspects as well as interfaces),\nincluding those that stem from an intertype declaration.",
    :var-type "function",
-   :line 292,
+   :line 396,
    :file "EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj"}
   {:arglists ([?aspect ?type]),
    :name "aspect-superaspect+",
    :namespace "damp.ekeko.aspectj.weaverworld",
    :source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L303",
+   "http://github.com/cderoove/damp.ekeko.aspectj/blob/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L407",
    :raw-source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/raw/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
+   "http://github.com/cderoove/damp.ekeko.aspectj/raw/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
    :wiki-url
    "http://cderoove.github.com/damp.ekeko.aspectj//damp.ekeko.aspectj-api.html#damp.ekeko.aspectj.weaverworld/aspect-superaspect+",
    :doc
    "Relation between an aspect and one of its direct or indirect\nsuper aspects, including those that stem from an intertype declaration.",
    :var-type "function",
-   :line 303,
+   :line 407,
    :file "EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj"}
   {:arglists ([?aspect ?type]),
    :name "aspect-superclass+",
    :namespace "damp.ekeko.aspectj.weaverworld",
    :source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L322",
+   "http://github.com/cderoove/damp.ekeko.aspectj/blob/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L426",
    :raw-source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/raw/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
+   "http://github.com/cderoove/damp.ekeko.aspectj/raw/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
    :wiki-url
    "http://cderoove.github.com/damp.ekeko.aspectj//damp.ekeko.aspectj-api.html#damp.ekeko.aspectj.weaverworld/aspect-superclass+",
    :doc
    "Relation between an aspect and one of its direct or indirect\nsuper classes, including those that stem from an intertype declaration.",
    :var-type "function",
-   :line 322,
+   :line 426,
    :file "EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj"}
   {:arglists ([?aspect ?type]),
    :name "aspect-superinterface+",
    :namespace "damp.ekeko.aspectj.weaverworld",
    :source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L313",
+   "http://github.com/cderoove/damp.ekeko.aspectj/blob/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L417",
    :raw-source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/raw/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
+   "http://github.com/cderoove/damp.ekeko.aspectj/raw/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
    :wiki-url
    "http://cderoove.github.com/damp.ekeko.aspectj//damp.ekeko.aspectj-api.html#damp.ekeko.aspectj.weaverworld/aspect-superinterface+",
    :doc
    "Relation between an aspect and one of its direct or indirect\nsuper interfaces, including those that stem from an intertype declaration.",
    :var-type "function",
-   :line 313,
+   :line 417,
    :file "EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj"}
   {:arglists ([?declare]),
    :name "declare",
    :namespace "damp.ekeko.aspectj.weaverworld",
    :source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L649",
+   "http://github.com/cderoove/damp.ekeko.aspectj/blob/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L753",
    :raw-source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/raw/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
+   "http://github.com/cderoove/damp.ekeko.aspectj/raw/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
    :wiki-url
    "http://cderoove.github.com/damp.ekeko.aspectj//damp.ekeko.aspectj-api.html#damp.ekeko.aspectj.weaverworld/declare",
    :doc
    "Relation of all aspect-specific declarations known to the weaver.",
    :var-type "function",
-   :line 649,
+   :line 753,
    :file "EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj"}
   {:arglists ([?declare]),
    :name "declareprecedence",
    :namespace "damp.ekeko.aspectj.weaverworld",
    :source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L660",
+   "http://github.com/cderoove/damp.ekeko.aspectj/blob/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L764",
    :raw-source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/raw/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
+   "http://github.com/cderoove/damp.ekeko.aspectj/raw/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
    :wiki-url
    "http://cderoove.github.com/damp.ekeko.aspectj//damp.ekeko.aspectj-api.html#damp.ekeko.aspectj.weaverworld/declareprecedence",
    :doc "Relation of all precedence declarations.",
    :var-type "function",
-   :line 660,
+   :line 764,
    :file "EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj"}
   {:arglists ([?declare ?patterns]),
    :name "declareprecedence-patterns",
    :namespace "damp.ekeko.aspectj.weaverworld",
    :source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L669",
+   "http://github.com/cderoove/damp.ekeko.aspectj/blob/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L773",
    :raw-source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/raw/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
+   "http://github.com/cderoove/damp.ekeko.aspectj/raw/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
    :wiki-url
    "http://cderoove.github.com/damp.ekeko.aspectj//damp.ekeko.aspectj-api.html#damp.ekeko.aspectj.weaverworld/declareprecedence-patterns",
    :doc
    "Relation between a DeclarePrecedence ?declare and its TypePatternList ?patterns",
    :var-type "function",
-   :line 669,
+   :line 773,
    :file "EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj"}
-  {:file "EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
-   :raw-source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/raw/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
+  {:arglists ([?element]),
+   :name "element",
+   :namespace "damp.ekeko.aspectj.weaverworld",
    :source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L94",
+   "http://github.com/cderoove/damp.ekeko.aspectj/blob/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L103",
+   :raw-source-url
+   "http://github.com/cderoove/damp.ekeko.aspectj/raw/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
    :wiki-url
    "http://cderoove.github.com/damp.ekeko.aspectj//damp.ekeko.aspectj-api.html#damp.ekeko.aspectj.weaverworld/element",
-   :namespace "damp.ekeko.aspectj.weaverworld",
-   :line 94,
-   :var-type "var",
    :doc "Relation of elements of the ProgramElement hierarchy.",
-   :name "element"}
+   :var-type "function",
+   :line 103,
+   :file "EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj"}
   {:arglists ([?element ?child-element]),
    :name "element-child",
    :namespace "damp.ekeko.aspectj.weaverworld",
    :source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L86",
+   "http://github.com/cderoove/damp.ekeko.aspectj/blob/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L86",
    :raw-source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/raw/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
+   "http://github.com/cderoove/damp.ekeko.aspectj/raw/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
    :wiki-url
    "http://cderoove.github.com/damp.ekeko.aspectj//damp.ekeko.aspectj-api.html#damp.ekeko.aspectj.weaverworld/element-child",
    :doc
@@ -867,188 +941,230 @@
    :var-type "function",
    :line 86,
    :file "EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj"}
+  {:arglists ([?element ?child]),
+   :name "element-child+",
+   :namespace "damp.ekeko.aspectj.weaverworld",
+   :source-url
+   "http://github.com/cderoove/damp.ekeko.aspectj/blob/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L94",
+   :raw-source-url
+   "http://github.com/cderoove/damp.ekeko.aspectj/raw/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
+   :wiki-url
+   "http://cderoove.github.com/damp.ekeko.aspectj//damp.ekeko.aspectj-api.html#damp.ekeko.aspectj.weaverworld/element-child+",
+   :doc
+   "Relation between a ProgramElement ?element and one of its descendants ?child.",
+   :var-type "function",
+   :line 94,
+   :file "EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj"}
+  {:arglists ([?element ?typedeclaration]),
+   :name "element-enclosingtypedeclaration-element",
+   :namespace "damp.ekeko.aspectj.weaverworld",
+   :source-url
+   "http://github.com/cderoove/damp.ekeko.aspectj/blob/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L193",
+   :raw-source-url
+   "http://github.com/cderoove/damp.ekeko.aspectj/raw/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
+   :wiki-url
+   "http://cderoove.github.com/damp.ekeko.aspectj//damp.ekeko.aspectj-api.html#damp.ekeko.aspectj.weaverworld/element-enclosingtypedeclaration-element",
+   :doc
+   "Relation between a ProgramElement and its enclosing aspect (if any).",
+   :var-type "function",
+   :line 193,
+   :file "EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj"}
   {:arglists ([?element ?handle]),
    :name "element-handle",
    :namespace "damp.ekeko.aspectj.weaverworld",
    :source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L134",
+   "http://github.com/cderoove/damp.ekeko.aspectj/blob/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L142",
    :raw-source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/raw/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
+   "http://github.com/cderoove/damp.ekeko.aspectj/raw/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
    :wiki-url
    "http://cderoove.github.com/damp.ekeko.aspectj//damp.ekeko.aspectj-api.html#damp.ekeko.aspectj.weaverworld/element-handle",
    :doc "Relation between a ProgramElement and its handle.",
    :var-type "function",
-   :line 134,
+   :line 142,
    :file "EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj"}
   {:arglists ([?element ?kind]),
    :name "element-kind",
    :namespace "damp.ekeko.aspectj.weaverworld",
    :source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L118",
+   "http://github.com/cderoove/damp.ekeko.aspectj/blob/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L125",
    :raw-source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/raw/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
+   "http://github.com/cderoove/damp.ekeko.aspectj/raw/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
    :wiki-url
    "http://cderoove.github.com/damp.ekeko.aspectj//damp.ekeko.aspectj-api.html#damp.ekeko.aspectj.weaverworld/element-kind",
    :doc
    "Relation between a ProgramElement ?element and its kind ?kind.",
    :var-type "function",
-   :line 118,
+   :line 125,
    :file "EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj"}
   {:arglists ([?element ?parent]),
    :name "element-parent",
    :namespace "damp.ekeko.aspectj.weaverworld",
    :source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L110",
+   "http://github.com/cderoove/damp.ekeko.aspectj/blob/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L116",
    :raw-source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/raw/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
+   "http://github.com/cderoove/damp.ekeko.aspectj/raw/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
    :wiki-url
    "http://cderoove.github.com/damp.ekeko.aspectj//damp.ekeko.aspectj-api.html#damp.ekeko.aspectj.weaverworld/element-parent",
    :doc
    "Relation between a ProgramElement and its parent ProgramElement.",
    :var-type "function",
-   :line 110,
+   :line 116,
    :file "EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj"}
   {:arglists ([?element ?signature]),
    :name "element-signature",
    :namespace "damp.ekeko.aspectj.weaverworld",
    :source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L126",
+   "http://github.com/cderoove/damp.ekeko.aspectj/blob/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L134",
    :raw-source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/raw/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
+   "http://github.com/cderoove/damp.ekeko.aspectj/raw/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
    :wiki-url
    "http://cderoove.github.com/damp.ekeko.aspectj//damp.ekeko.aspectj-api.html#damp.ekeko.aspectj.weaverworld/element-signature",
    :doc "Relation between a ProgramElement and its signature string.",
    :var-type "function",
-   :line 126,
+   :line 134,
    :file "EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj"}
   {:arglists ([?element ?handle]),
    :name "element-sourcelocation",
    :namespace "damp.ekeko.aspectj.weaverworld",
    :source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L142",
+   "http://github.com/cderoove/damp.ekeko.aspectj/blob/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L150",
    :raw-source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/raw/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
+   "http://github.com/cderoove/damp.ekeko.aspectj/raw/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
    :wiki-url
    "http://cderoove.github.com/damp.ekeko.aspectj//damp.ekeko.aspectj-api.html#damp.ekeko.aspectj.weaverworld/element-sourcelocation",
    :doc "Relation between a ProgramElement and its SourceLocation.",
    :var-type "function",
-   :line 142,
+   :line 150,
    :file "EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj"}
-  {:arglists ([?intertype]),
-   :name "intertype-constructor",
+  {:arglists ([?element ?type]),
+   :name "element-type",
    :namespace "damp.ekeko.aspectj.weaverworld",
    :source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L509",
+   "http://github.com/cderoove/damp.ekeko.aspectj/blob/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L272",
    :raw-source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/raw/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
+   "http://github.com/cderoove/damp.ekeko.aspectj/raw/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
    :wiki-url
-   "http://cderoove.github.com/damp.ekeko.aspectj//damp.ekeko.aspectj-api.html#damp.ekeko.aspectj.weaverworld/intertype-constructor",
-   :doc "Relation of constructor intertype declarations.",
+   "http://cderoove.github.com/damp.ekeko.aspectj//damp.ekeko.aspectj-api.html#damp.ekeko.aspectj.weaverworld/element-type",
+   :doc
+   "Relation between a ProgramElement of kind Aspect/Enum/Class\nand the ResolvedType instance from the weaver world it corresponds to.",
    :var-type "function",
-   :line 509,
+   :line 272,
    :file "EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj"}
   {:arglists ([?intertype ?member]),
    :name "intertype-element",
    :namespace "damp.ekeko.aspectj.weaverworld",
    :source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L532",
+   "http://github.com/cderoove/damp.ekeko.aspectj/blob/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L636",
    :raw-source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/raw/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
+   "http://github.com/cderoove/damp.ekeko.aspectj/raw/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
    :wiki-url
    "http://cderoove.github.com/damp.ekeko.aspectj//damp.ekeko.aspectj-api.html#damp.ekeko.aspectj.weaverworld/intertype-element",
    :doc
    "Relation between an intertype declaration and its resulting member element (a ProgramElement) \nin the program element hierarchy.\n\nThese are of the same type as the shadows we return for an advice, thus allowing checking\nwhether a shadow stems from an intertype declaration.\n\nPrefer to use the above intertype-member-type instead, as it does not escape the weaver world.",
    :var-type "function",
-   :line 532,
-   :file "EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj"}
-  {:arglists ([?intertype]),
-   :name "intertype-field",
-   :namespace "damp.ekeko.aspectj.weaverworld",
-   :source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L493",
-   :raw-source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/raw/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
-   :wiki-url
-   "http://cderoove.github.com/damp.ekeko.aspectj//damp.ekeko.aspectj-api.html#damp.ekeko.aspectj.weaverworld/intertype-field",
-   :doc "Relation of field intertype declarations.",
-   :var-type "function",
-   :line 493,
+   :line 636,
    :file "EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj"}
   {:arglists ([?intertype ?kind]),
    :name "intertype-kind",
    :namespace "damp.ekeko.aspectj.weaverworld",
    :source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L485",
+   "http://github.com/cderoove/damp.ekeko.aspectj/blob/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L589",
    :raw-source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/raw/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
+   "http://github.com/cderoove/damp.ekeko.aspectj/raw/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
    :wiki-url
    "http://cderoove.github.com/damp.ekeko.aspectj//damp.ekeko.aspectj-api.html#damp.ekeko.aspectj.weaverworld/intertype-kind",
    :doc "Relation between an intertype declaration and its kind.",
    :var-type "function",
-   :line 485,
+   :line 589,
    :file "EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj"}
   {:arglists ([?intertype ?member ?type]),
    :name "intertype-member-type",
    :namespace "damp.ekeko.aspectj.weaverworld",
    :source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L518",
+   "http://github.com/cderoove/damp.ekeko.aspectj/blob/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L622",
    :raw-source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/raw/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
+   "http://github.com/cderoove/damp.ekeko.aspectj/raw/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
    :wiki-url
    "http://cderoove.github.com/damp.ekeko.aspectj//damp.ekeko.aspectj-api.html#damp.ekeko.aspectj.weaverworld/intertype-member-type",
    :doc
    "Relation between an intertype declaration, the field/method/constructor member it declares\n(a ResolvedMemberImpl), and the type to which this member is added (a ResolvedType). ",
    :var-type "function",
-   :line 518,
+   :line 622,
    :file "EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj"}
   {:arglists ([?intertype]),
-   :name "intertype-method",
+   :name "intertypeconstructor",
    :namespace "damp.ekeko.aspectj.weaverworld",
    :source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L501",
+   "http://github.com/cderoove/damp.ekeko.aspectj/blob/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L613",
    :raw-source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/raw/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
+   "http://github.com/cderoove/damp.ekeko.aspectj/raw/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
    :wiki-url
-   "http://cderoove.github.com/damp.ekeko.aspectj//damp.ekeko.aspectj-api.html#damp.ekeko.aspectj.weaverworld/intertype-method",
+   "http://cderoove.github.com/damp.ekeko.aspectj//damp.ekeko.aspectj-api.html#damp.ekeko.aspectj.weaverworld/intertypeconstructor",
+   :doc "Relation of constructor intertype declarations.",
+   :var-type "function",
+   :line 613,
+   :file "EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj"}
+  {:arglists ([?intertype]),
+   :name "intertypefield",
+   :namespace "damp.ekeko.aspectj.weaverworld",
+   :source-url
+   "http://github.com/cderoove/damp.ekeko.aspectj/blob/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L597",
+   :raw-source-url
+   "http://github.com/cderoove/damp.ekeko.aspectj/raw/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
+   :wiki-url
+   "http://cderoove.github.com/damp.ekeko.aspectj//damp.ekeko.aspectj-api.html#damp.ekeko.aspectj.weaverworld/intertypefield",
+   :doc "Relation of field intertype declarations.",
+   :var-type "function",
+   :line 597,
+   :file "EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj"}
+  {:arglists ([?intertype]),
+   :name "intertypemethod",
+   :namespace "damp.ekeko.aspectj.weaverworld",
+   :source-url
+   "http://github.com/cderoove/damp.ekeko.aspectj/blob/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L605",
+   :raw-source-url
+   "http://github.com/cderoove/damp.ekeko.aspectj/raw/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
+   :wiki-url
+   "http://cderoove.github.com/damp.ekeko.aspectj//damp.ekeko.aspectj-api.html#damp.ekeko.aspectj.weaverworld/intertypemethod",
    :doc "Relation of method intertype declarations.",
    :var-type "function",
-   :line 501,
+   :line 605,
    :file "EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj"}
   {:arglists ([?advice]),
    :name "pointcut",
    :namespace "damp.ekeko.aspectj.weaverworld",
    :source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L591",
+   "http://github.com/cderoove/damp.ekeko.aspectj/blob/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L695",
    :raw-source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/raw/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
+   "http://github.com/cderoove/damp.ekeko.aspectj/raw/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
    :wiki-url
    "http://cderoove.github.com/damp.ekeko.aspectj//damp.ekeko.aspectj-api.html#damp.ekeko.aspectj.weaverworld/pointcut",
    :doc
    "Relation of all pointcuts known to the AspectJ weaver.\nNote that these are not pointcut definitions.",
    :var-type "function",
-   :line 591,
+   :line 695,
    :file "EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj"}
   {:arglists ([?pointcut]),
    :name "pointcutdefinition",
    :namespace "damp.ekeko.aspectj.weaverworld",
    :source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L619",
+   "http://github.com/cderoove/damp.ekeko.aspectj/blob/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L723",
    :raw-source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/raw/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
+   "http://github.com/cderoove/damp.ekeko.aspectj/raw/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
    :wiki-url
    "http://cderoove.github.com/damp.ekeko.aspectj//damp.ekeko.aspectj-api.html#damp.ekeko.aspectj.weaverworld/pointcutdefinition",
    :doc
    "Relation of pointcuts known to the weaver.\nNote: these are instances of Pointcut rather than ResolvedPointcutDefinition.",
    :var-type "function",
-   :line 619,
+   :line 723,
    :file "EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj"}
   {:arglists ([?element]),
    :name "root",
    :namespace "damp.ekeko.aspectj.weaverworld",
    :source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L76",
+   "http://github.com/cderoove/damp.ekeko.aspectj/blob/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L76",
    :raw-source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/raw/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
+   "http://github.com/cderoove/damp.ekeko.aspectj/raw/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
    :wiki-url
    "http://cderoove.github.com/damp.ekeko.aspectj//damp.ekeko.aspectj-api.html#damp.ekeko.aspectj.weaverworld/root",
    :doc "Relation of ProgramElement hierarchy roots.",
@@ -1060,37 +1176,37 @@
    :name "sourcelocation-filename-startline-endline-column-offset",
    :namespace "damp.ekeko.aspectj.weaverworld",
    :source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L563",
+   "http://github.com/cderoove/damp.ekeko.aspectj/blob/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L667",
    :raw-source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/raw/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
+   "http://github.com/cderoove/damp.ekeko.aspectj/raw/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
    :wiki-url
    "http://cderoove.github.com/damp.ekeko.aspectj//damp.ekeko.aspectj-api.html#damp.ekeko.aspectj.weaverworld/sourcelocation-filename-startline-endline-column-offset",
    :doc
    "Non-relational. Unifies ?filename with the name of the file for the given ?sourcelocation, \n?startline with the line at which it starts, ?endline with the line at which it ends, \n?column with the column at which it starts, and ?offset with its offset.",
    :var-type "function",
-   :line 563,
+   :line 667,
    :file "EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj"}
   {:arglists ([?resolvedtype]),
    :name "type",
    :namespace "damp.ekeko.aspectj.weaverworld",
    :source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L165",
+   "http://github.com/cderoove/damp.ekeko.aspectj/blob/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L251",
    :raw-source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/raw/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
+   "http://github.com/cderoove/damp.ekeko.aspectj/raw/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
    :wiki-url
    "http://cderoove.github.com/damp.ekeko.aspectj//damp.ekeko.aspectj-api.html#damp.ekeko.aspectj.weaverworld/type",
    :doc
    "Relation of non-expandable (i.e., project-defined) types known to the AspectJ weaver.",
    :var-type "function",
-   :line 165,
+   :line 251,
    :file "EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj"}
   {:arglists ([?world ?model ?hierarchy]),
    :name "weaverworld-model-hierarchy",
    :namespace "damp.ekeko.aspectj.weaverworld",
    :source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L63",
+   "http://github.com/cderoove/damp.ekeko.aspectj/blob/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L63",
    :raw-source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/raw/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
+   "http://github.com/cderoove/damp.ekeko.aspectj/raw/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
    :wiki-url
    "http://cderoove.github.com/damp.ekeko.aspectj//damp.ekeko.aspectj-api.html#damp.ekeko.aspectj.weaverworld/weaverworld-model-hierarchy",
    :doc
@@ -1098,33 +1214,19 @@
    :var-type "function",
    :line 63,
    :file "EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj"}
-  {:arglists ([?world ?signature ?resolved-type]),
-   :name "weaverworld-signature-resolvedtype",
-   :namespace "damp.ekeko.aspectj.weaverworld",
-   :source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L175",
-   :raw-source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/raw/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
-   :wiki-url
-   "http://cderoove.github.com/damp.ekeko.aspectj//damp.ekeko.aspectj-api.html#damp.ekeko.aspectj.weaverworld/weaverworld-signature-resolvedtype",
-   :doc
-   "Non-relational. Unifies ?resolved-type with the type known to the AspectJ weaver\n?world with the given ?signature string. \n\nCan be used to go from XCut types to weaver world types.",
-   :var-type "function",
-   :line 175,
-   :file "EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj"}
   {:arglists ([?world ?xcut]),
    :name "weaverworld-xcut",
    :namespace "damp.ekeko.aspectj.weaverworld",
    :source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/blob/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L701",
+   "http://github.com/cderoove/damp.ekeko.aspectj/blob/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj#L872",
    :raw-source-url
-   "http://github.com/cderoove/damp.ekeko.aspectj/raw/f18b8b9683c5555aee855bb8fa32ab7fc7b98da4/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
+   "http://github.com/cderoove/damp.ekeko.aspectj/raw/966ee14a2d70a222da46441f40aeefd3db12d7b8/EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj",
    :wiki-url
    "http://cderoove.github.com/damp.ekeko.aspectj//damp.ekeko.aspectj-api.html#damp.ekeko.aspectj.weaverworld/weaverworld-xcut",
    :doc
    "Relation between an AspectJ weaverworld and its corresponding XCut model (AJProjectModelFacade).\nRelations for the latter are available in the damp.ekeko.aspectj.xcut namespace.",
    :var-type "function",
-   :line 701,
+   :line 872,
    :file "EkekoAspectJ/src/damp/ekeko/aspectj/weaverworld.clj"}
   {:arglists ([?program-element ?signature-string]),
    :name "pe-signature",
