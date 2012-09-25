@@ -47,7 +47,6 @@
          (aspect ?modified)))
 
 ;;Assumption itd use: intertype method is introduced, but never called
-;;Seems to work: returns cl.uchile.dcc.pleiad.test.Two.itdInAspect(int) on XCutReportTest
 (defn 
   intertypemethod-unused
   [?itmethod]

@@ -16,4 +16,9 @@ public class BaseClass {
 		baseMethod1();
 		System.out.println("BaseClass-M2-2");
 	}
+	
+	public void baseMethod3(){
+		System.out.println("BaseClass-M3");
+	}
+	
 }

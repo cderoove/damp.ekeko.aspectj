@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>AJ-LMP-ITD</name>
+	<comment></comment>
+	<projects>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>org.eclipse.ajdt.core.ajbuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
+			<name>damp.ekeko.plugin.ekekoBuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>org.eclipse.ajdt.ui.ajnature</nature>
+		<nature>org.eclipse.jdt.core.javanature</nature>
+		<nature>damp.ekeko.plugin.ekekoNature</nature>
+		<nature>damp.ekeko.plugin.sootNature</nature>
+	</natures>
+</projectDescription>
