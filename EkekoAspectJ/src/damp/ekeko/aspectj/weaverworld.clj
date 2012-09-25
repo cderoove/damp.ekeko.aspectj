@@ -608,6 +608,13 @@
   (fresh [?kind]
          (intertype-kind ?intertype ?kind)
          (equals ?kind (ResolvedTypeMunger/Method))))
+ 
+(defn
+  intertypemethod-name
+  "Relation of method intertype declarations and their name."
+  [?intertype ?name]
+  (all (intertypemethod ?intertype)
+       (equals ?name (.toString (.getSignature (.getMunger ?intertype))))))
 
 (defn
   intertypeconstructor

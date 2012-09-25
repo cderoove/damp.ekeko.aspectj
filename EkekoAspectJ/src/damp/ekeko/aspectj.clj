@@ -75,8 +75,12 @@
                      (intertype-element ?intertype ?shadow)
                      (advice-shadow ?advice ?shadow))
   
-  
-  
+  ;;printing out the names of the aspect instead of their simple toString
+  (damp.ekeko/ekeko [?firstname, ?secondname]
+      (fresh [?first, ?second]
+          (overriden-implicit-precedence ?first ?second)
+          (equals ?firstname (.getName ?first))
+          (equals ?secondname (.getName ?second))))
   )
 
 
