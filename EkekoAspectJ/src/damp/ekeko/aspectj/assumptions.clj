@@ -58,6 +58,14 @@
              (ssoot/soot-method-called-by-method ?sootmethod ?caller)))))
 
 
-
+;;Assumption no double concretization of abstract pointcuts
+(defn 
+  abstractpointcut-concretized-reconcretized
+  [?abpointcut ?concpointcut1 ?concpointcut2]
+  (all
+    (pointcut-concretizedby ?abpointcut ?concpointcut1)
+    (pointcut-concretizedby ?concpointcut1 ?concpointcut2)))
+    
+    
 
   

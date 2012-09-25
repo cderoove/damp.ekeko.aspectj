@@ -294,6 +294,14 @@
        (type ?aspect)])
     (succeeds (.isAspect ?aspect))))
 
+(defn
+  abstractaspect
+  "Relation of abstract aspects known to the weaver"
+  [?aspect]
+  (all
+    (aspect ?aspect)
+    (succeeds (.isAbstract ?aspect))))
+
 (defn-
   aspect-crosscuttingmembers
   "Relation between an aspect and its CrosscuttingMembersSet."
@@ -717,24 +725,59 @@
   aspect-pointcutdefinition
   "Relation between an aspect and one of the pointcuts it declares.
    Note that these are instances of ResolvedPointcutDefinition,
-   rather than the Pointcut instances within ShadowMungers (advice).
-
-   Link between PointcutDefinition and Pointcut (.getPointcut) seems broken though..."
+   rather than the Pointcut instances within ShadowMungers (advice)."
   [?aspect ?pointcutdefinition]
   (all 
     (aspect ?aspect)
-    (contains (.getDeclaredPointcuts ?aspect) ?pointcutdefinition) ;instance of ResolvedPointcutDefinition
+    (contains (.getDeclaredPointcuts ?aspect) ?pointcutdefinition)
     ))
 
 (defn
   pointcutdefinition
   "Relation of pointcuts known to the weaver.
-   Note: these are instances of Pointcut rather than ResolvedPointcutDefinition."
+   Note: these are instances of ResolvedPointcutDefinition."
   [?pointcut]
   (fresh [?aspect]
          (aspect-pointcutdefinition ?aspect ?pointcut)))
-  
 
+(defn
+  pointcut-name
+  "Relation of pointcuts and their name.
+   Note that pointcuts cannot be overloaded!"
+  [?pointcut ?name]
+  (all
+    (pointcutdefinition ?pointcut)
+    (equals ?name (.getName ?pointcut))))
+
+(defn
+  abstractpointcut
+  "Relation of abstract pointcut definitions."
+  [?pointcut]
+  (all
+    (pointcutdefinition ?pointcut)
+    (succeeds (.isAbstract ?pointcut))))
+
+(defn
+  concretepointcut
+  "Relation of concrete pointcut definitions."
+  [?pointcut]
+  (all
+    (pointcutdefinition ?pointcut)
+    (equals false (.isAbstract ?pointcut))))
+
+(defn
+  pointcut-concretizedby
+  "Relation of (possibly abstract) pointcuts and their concretizing pointcuts.
+   Note that pointcuts cannot be overloaded!"
+  [?abstractpc ?concretepc]
+  (fresh [?abaspect ?concaspect ?name]
+         (abstractaspect ?abaspect) ;actually this clause is just an optimisation
+         (aspect-super+ ?concaspect ?abaspect)
+         (aspect-pointcutdefinition ?abaspect ?abstractpc)
+         (aspect-pointcutdefinition ?concaspect ?concretepc)
+         (pointcut-name ?abstractpc ?name)
+         (pointcut-name ?concretepc ?name)))
+         
 
 ;(defn
 ;  aspect-pointcut+
