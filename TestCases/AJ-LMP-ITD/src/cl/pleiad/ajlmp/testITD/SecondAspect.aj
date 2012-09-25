@@ -1,4 +1,4 @@
-package cl.pleiad.ajlmp.itd;
+package cl.pleiad.ajlmp.testITD;
 
 public aspect SecondAspect {
 	after(): execution(* BaseClass.*1(..)) {
