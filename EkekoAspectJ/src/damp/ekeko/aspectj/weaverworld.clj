@@ -363,7 +363,7 @@
     (succeeds (.isClass  ?super))))
 
 
-(def
+(defn
   aspect-declaredsuper+
   "Relation between an aspect and one of the ancestors in its declared super hierarchy."
   [?aspect ?ancestor]

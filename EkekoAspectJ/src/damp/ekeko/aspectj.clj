@@ -8,7 +8,9 @@
              [soot :as soot]
              [ajdt :as ajdt]
              [xcut :as xcut] 
-             [weaverworld :as world]]))
+             [weaverworld :as world]
+             [assumptions :as assumptions]
+             ]))
 
 (defn
   make-query-views-aspectj-aware!
