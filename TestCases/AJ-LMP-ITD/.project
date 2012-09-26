@@ -14,6 +14,5 @@
 	<natures>
 		<nature>org.eclipse.ajdt.ui.ajnature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
-		<nature>damp.ekeko.plugin.sootNature</nature>
 	</natures>
 </projectDescription>
