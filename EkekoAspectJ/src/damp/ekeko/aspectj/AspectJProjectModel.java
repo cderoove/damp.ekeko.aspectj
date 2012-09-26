@@ -21,8 +21,10 @@ import org.eclipse.ajdt.core.javaelements.AJCompilationUnitManager;
 import org.eclipse.ajdt.core.model.AJProjectModelFacade;
 import org.eclipse.ajdt.core.model.AJProjectModelFactory;
 import org.eclipse.ajdt.core.model.AJWorldFacade;
+import org.eclipse.core.resources.IBuildConfiguration;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.ICompilationUnit;
@@ -60,7 +62,7 @@ public class AspectJProjectModel extends JavaProjectModel {
 
 	
 	
-	private void updateAJBuildInformation() {
+	private void updateAJBuildInformation() throws CoreException {
 		updateAJProjectFacade();
 		updateAJWorldFacade();
 		updateAJWorldAsSeenByWeaver();
@@ -74,6 +76,8 @@ public class AspectJProjectModel extends JavaProjectModel {
 	private void updateAJWorldAsSeenByWeaver() {
 		IProject p = getProject();
 		AjCompiler compiler = AspectJPlugin.getDefault().getCompilerFactory().getCompilerForProject(p);
+		//causes a NPE in ajde internals
+		//compiler.buildFresh();
 		AjState state = IncrementalStateManager.retrieveStateFor(compiler.getId());
 		if (state != null) 
 			ajWorld = state.getAjBuildManager().getWorld();
@@ -81,12 +85,33 @@ public class AspectJProjectModel extends JavaProjectModel {
 			ajWorld = null;
 	}
 	
-	private void updateAJProjectFacade() {
+	private void updateAJProjectFacade() throws CoreException {
 		IProject p = getProject();
 		System.out.println("Updating AspectJ project model facade for:" + p.getName());
 		ajFacade = AJProjectModelFactory.getInstance().getModelForProject(getProject());
+		if(!ajFacade.hasModel()) {
+			System.out.println("Forcing AspectJ re-build of project:"  + p.getName());
+			performCleanProjectBuild();
+		}
 	}
 	
+	private void performCleanProjectBuild() throws CoreException {
+		//does not have intended effect...
+		getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
+		
+		/*
+		IProject p = getProject();
+		IBuildConfiguration[] buildConfigs = p.getBuildConfigs();
+		for(IBuildConfiguration  bc : buildConfigs) {
+			if(bc instanceof org.eclipse.ajdt.internal.buildconfig.BuildConfiguration) 
+						p.build(bc,IncrementalProjectBuilder.FULL_BUILD, null);
+
+		}
+	 
+	 */ 
+		
+	}
+
 	public AJProjectModelFacade getAJProjectFacade() {
 		return ajFacade;
 	}
