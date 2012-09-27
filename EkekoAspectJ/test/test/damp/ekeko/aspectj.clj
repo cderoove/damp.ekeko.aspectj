@@ -118,6 +118,12 @@
            (assumptions/intertypemethod-unused ?itmethod))
     "#{(\"(BcelTypeMunger ResolvedTypeMunger(Method, void cl.pleiad.ajlmp.testITD.BaseClass.itdB()))\")}"))
 
+(deftest 
+  overriden-implicit-precedence-test
+  (tuples-are
+    (ekeko [?first ?second]
+           (assumptions/overriden-implicit-precedence ?first ?second))
+    "#{(\"cl.pleiad.ajlmp.testPrecedence.FourthAspect\" \"cl.pleiad.ajlmp.testPrecedence.ThirdAspect\")}"))
 
 ;; Test Suite
 ;; ----------
@@ -128,7 +134,9 @@
 (deftest
   test-suite 
   (against-project-named "AJ-LMP-Precedence" aspect-test )
-  (against-project-named "AJ-LMP-Pointcuts" concretization-test))
+  (against-project-named "AJ-LMP-Pointcuts" concretization-test)
+  (against-project-named "AJ-LMP-ITD" intertypemethod-unused-test)
+  (against-project-named "AJ-LMP-Precedence" overriden-implicit-precedence-test))
 
 (defn 
   test-ns-hook 
