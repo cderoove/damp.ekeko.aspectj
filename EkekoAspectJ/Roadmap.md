@@ -4,8 +4,6 @@ A roadmap for damp.ekeko.aspectj
 
 ## To Do
 
-Architecture: A-> I -> B
-
 * Find a name for this sucker
 
 * (CDR) Have walks over call graph work.
