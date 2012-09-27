@@ -69,7 +69,12 @@
   tuples-to-stringsetstring
   "For a sequence of sequences (e.g., query results), converts each inner sequence 
    element to a string and returns the string representation of the resulting set of
-   converted inner sequences."
+   converted inner sequences.
+
+   Run this on the results of a working query to transform them to a string that is
+   used for the tests. For example:
+   (tuples-to-stringsetstring (damp.ekeko/ekeko [?itmethod]
+           (assumptions/intertypemethod-unused ?itmethod)))"
   [seqofseqs]
   (str (tuples-to-stringset seqofseqs)))
 
@@ -104,8 +109,15 @@
   (tuples-are 
     (ekeko [?abpointcut ?concpointcut1 ?concpointcut2]
            (assumptions/abstractpointcut-concretized-reconcretized ?abpointcut ?concpointcut1 ?concpointcut2))
-    
     "#{(\"pointcut cl.pleiad.ajlmp.testPointcuts.AbstractAspect.abstractpc1()\" \"pointcut cl.pleiad.ajlmp.testPointcuts.FirstAspect.abstractpc1()\" \"pointcut cl.pleiad.ajlmp.testPointcuts.SecondAspect.abstractpc1()\")}"))
+
+(deftest
+  intertypemethod-unused-test
+  (tuples-are
+    (ekeko [?itmethod]
+           (assumptions/intertypemethod-unused ?itmethod))
+    "#{(\"(BcelTypeMunger ResolvedTypeMunger(Method, void cl.pleiad.ajlmp.testITD.BaseClass.itdB()))\")}"))
+
 
 ;; Test Suite
 ;; ----------
