@@ -6,6 +6,8 @@
   (:require
     [damp.ekeko.workspace
      [workspace :as ws]]
+    [damp.ekeko.soot
+     [projectmodel :as spm]]
     [damp.ekeko.aspectj
      [soot :as soot]
      [ajdt :as ajdt]
@@ -34,26 +36,37 @@
   with-ekeko-disabled
   [f]
   (println "Disabling Ekeko nature on all projects.")
+  (spm/workspace-disable-soot!)
   (ws/workspace-disable-ekeko!)
   (ws/workspace-wait-for-builds-to-finish)
   (f))
     
 (defn
   against-project
-  [p f]
+  [p enable-soot? f]
   (try
     (println "Enabling Ekeko nature on project: " p)
     (ws/workspace-project-enable-ekeko! p)
     (ws/workspace-wait-for-builds-to-finish)
+    (when 
+      enable-soot?
+      (do
+        (println "Enabling Soot nature on project: " p)
+        (spm/enable-soot-nature! p)))
     (f)
     (finally
-      (println "Disabling Ekeko nature on project: " p)
+      (println "Disabling Ekeko nature for project: " p)
+      (when 
+        enable-soot?
+        (do
+          (println "Disabling Soot nature for project: " p)
+          (spm/disable-soot-nature! p)))
       (ws/workspace-project-disable-ekeko! p))))
 
 (defn
   against-project-named
-  [n f]
-  (against-project (ws/workspace-project-named  n) f))
+  [n enable-soot? f]
+  (against-project (ws/workspace-project-named n) enable-soot? f))
 
 
 ;; Query results
