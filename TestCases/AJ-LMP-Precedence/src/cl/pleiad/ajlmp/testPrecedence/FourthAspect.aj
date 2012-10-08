@@ -1,6 +1,6 @@
 package cl.pleiad.ajlmp.testPrecedence;
 
-public aspect FourthAspect extends ThirdAspect {
+public abstract aspect FourthAspect extends ThirdAspect {
 
 	declare precedence: ThirdAspect, FourthAspect;
 	

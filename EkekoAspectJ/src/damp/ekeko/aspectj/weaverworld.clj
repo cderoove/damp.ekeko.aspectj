@@ -851,7 +851,7 @@
                    (aspect-dominates-aspect-explicitly ?dominator ?intermediate ?prec)
                    (aspect-dominates-aspect-explicitly+ ?intermediate ?subordinate))]))
 
-;	precedence regels: sub-aspects implicitly have precedence over their super-aspect;	lexically first advice has implicit precedence over second advice;	(voor advice van hetzelfde aspect)
+;	precedence rules: sub-aspects implicitly have precedence over their super-aspect;	Not reified: for advice of same aspect lexically first advice has implicit precedence over second advice
 
 (defn
   aspect-dominates-aspect-implicitly+

@@ -28,7 +28,6 @@
 
 
 ;;Assumption: implicit precedence is overridden
-;Seems to work -- modified test package after checking expl, impl, trans expl - recheck
 (defn
   overriden-implicit-precedence
   [?first ?second]

@@ -20,8 +20,6 @@
 ;NOTE: do not forget to clean all tested projects before running the tests
 ;TODO: fix that :)
 
-;todo: add parameter to against-project-named that controls whether soot should be run as well
-
 
 ;see http://richhickey.github.com/clojure/clojure.test-api.html for api
 ;followed http://twoguysarguing.wordpress.com/2010/03/24/fixies/ to workaround limitations regarding setup/teardown of in
@@ -118,6 +116,29 @@
         (is (empty? (clojure.set/difference (set grounding) (set grounding-and-checking))))))
 
 (deftest
+  explicit-decprec+-test 
+  (tuples-are 
+    (ekeko [?dom ?sub]
+           (world/aspect-dominates-aspect-explicitly+ ?dom ?sub))
+"#{(\"cl.pleiad.ajlmp.testPrecedence.FirstAspect\" \"cl.pleiad.ajlmp.testPrecedence.FifthAspect\") (\"cl.pleiad.ajlmp.testPrecedence.ThirdAspect\" \"cl.pleiad.ajlmp.testPrecedence.EightAspect\") (\"cl.pleiad.ajlmp.testPrecedence.FirstAspect\" \"cl.pleiad.ajlmp.testPrecedence.SecondAspect\") (\"cl.pleiad.ajlmp.testPrecedence.SeventhAspect\" \"cl.pleiad.ajlmp.testPrecedence.FifthAspect\") (\"cl.pleiad.ajlmp.testPrecedence.ThirdAspect\" \"cl.pleiad.ajlmp.testPrecedence.FourthAspect\") (\"cl.pleiad.ajlmp.testPrecedence.SecondAspect\" \"cl.pleiad.ajlmp.testPrecedence.FifthAspect\")}"))
+
+(deftest
+  implicit-precedence+-test 
+  (tuples-are 
+    (ekeko [?dom ?sub]
+           (world/aspect-dominates-aspect-implicitly+ ?dom ?sub))
+ "#{(\"cl.pleiad.ajlmp.testPrecedence.FourthAspect\" \"cl.pleiad.ajlmp.testPrecedence.ThirdAspect\") (\"cl.pleiad.ajlmp.testPrecedence.SixthAspect\" \"cl.pleiad.ajlmp.testPrecedence.FourthAspect\") (\"cl.pleiad.ajlmp.testPrecedence.SixthAspect\" \"cl.pleiad.ajlmp.testPrecedence.ThirdAspect\") (\"cl.pleiad.ajlmp.testPrecedence.EightAspect\" \"cl.pleiad.ajlmp.testPrecedence.SeventhAspect\")}"))
+
+;This test is so-so:
+;JF not check if there are missing results or duplicates, just that the results make sense
+(deftest
+  aspect-dominates-aspect-test 
+  (tuples-are 
+    (ekeko [?dom ?sub]
+           (world/aspect-dominates-aspect ?dom ?sub))
+"#{(\"cl.pleiad.ajlmp.testPrecedence.FourthAspect\" \"cl.pleiad.ajlmp.testPrecedence.SeventhAspect\") (\"cl.pleiad.ajlmp.testPrecedence.SixthAspect\" \"cl.pleiad.ajlmp.testPrecedence.FifthAspect\") (\"cl.pleiad.ajlmp.testPrecedence.FirstAspect\" \"cl.pleiad.ajlmp.testPrecedence.FifthAspect\") (\"cl.pleiad.ajlmp.testPrecedence.ThirdAspect\" \"cl.pleiad.ajlmp.testPrecedence.EightAspect\") (\"cl.pleiad.ajlmp.testPrecedence.EightAspect\" \"cl.pleiad.ajlmp.testPrecedence.FifthAspect\") (\"cl.pleiad.ajlmp.testPrecedence.SixthAspect\" \"cl.pleiad.ajlmp.testPrecedence.SeventhAspect\") (\"cl.pleiad.ajlmp.testPrecedence.SixthAspect\" \"cl.pleiad.ajlmp.testPrecedence.FourthAspect\") (\"cl.pleiad.ajlmp.testPrecedence.FirstAspect\" \"cl.pleiad.ajlmp.testPrecedence.SecondAspect\") (\"cl.pleiad.ajlmp.testPrecedence.FourthAspect\" \"cl.pleiad.ajlmp.testPrecedence.EightAspect\") (\"cl.pleiad.ajlmp.testPrecedence.ThirdAspect\" \"cl.pleiad.ajlmp.testPrecedence.FifthAspect\") (\"cl.pleiad.ajlmp.testPrecedence.SixthAspect\" \"cl.pleiad.ajlmp.testPrecedence.ThirdAspect\") (\"cl.pleiad.ajlmp.testPrecedence.EightAspect\" \"cl.pleiad.ajlmp.testPrecedence.SeventhAspect\") (\"cl.pleiad.ajlmp.testPrecedence.FourthAspect\" \"cl.pleiad.ajlmp.testPrecedence.FifthAspect\") (\"cl.pleiad.ajlmp.testPrecedence.SeventhAspect\" \"cl.pleiad.ajlmp.testPrecedence.FifthAspect\") (\"cl.pleiad.ajlmp.testPrecedence.SixthAspect\" \"cl.pleiad.ajlmp.testPrecedence.EightAspect\") (\"cl.pleiad.ajlmp.testPrecedence.ThirdAspect\" \"cl.pleiad.ajlmp.testPrecedence.SeventhAspect\") (\"cl.pleiad.ajlmp.testPrecedence.ThirdAspect\" \"cl.pleiad.ajlmp.testPrecedence.FourthAspect\") (\"cl.pleiad.ajlmp.testPrecedence.SecondAspect\" \"cl.pleiad.ajlmp.testPrecedence.FifthAspect\")}"))
+
+(deftest
   concretization-test
   (tuples-are 
     (ekeko [?abpointcut ?concpointcut1 ?concpointcut2]
@@ -146,10 +167,17 @@
 
 (deftest
   test-suite 
+  ; testing precedence logic
   (against-project-named "AJ-LMP-Precedence" false aspect-test )
+  (against-project-named "AJ-LMP-Precedence" false explicit-decprec+-test)
+  (against-project-named "AJ-LMP-Precedence" false implicit-precedence+-test)
+  (against-project-named "AJ-LMP-Precedence" false aspect-dominates-aspect-test)
+  
+  ;testing assumptions
+  (against-project-named "AJ-LMP-Precedence" false overriden-implicit-precedence-test)
   (against-project-named "AJ-LMP-Pointcuts" false concretization-test)
   (against-project-named "AJ-LMP-ITD" true intertypemethod-unused-test)
-  (against-project-named "AJ-LMP-Precedence" false overriden-implicit-precedence-test))
+  )
 
 (defn 
   test-ns-hook 
