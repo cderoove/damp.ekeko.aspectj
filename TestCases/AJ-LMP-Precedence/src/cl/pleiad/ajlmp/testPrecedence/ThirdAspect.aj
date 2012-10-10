@@ -6,4 +6,8 @@ public abstract aspect ThirdAspect {
 	before() : pc(){
 		System.out.println("ThirdAspect-BeforePC");
 	}
+
+	before(): call(* BaseClass.*2(..)){
+		System.out.println("ThirdAspect-BeforeCall");
+	}
 }
