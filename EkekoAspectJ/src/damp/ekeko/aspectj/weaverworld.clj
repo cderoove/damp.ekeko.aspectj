@@ -481,7 +481,7 @@
     [(v+ ?advice) 
      (succeeds (instance? org.aspectj.weaver.ShadowMunger ?advice))]
     [(v- ?advice) 
-     (fresh [?world ?set]
+     (fresh [?world]
             (weaverworld ?world)
             (contains (-> ?world .getCrosscuttingMembersSet .getShadowMungers) ?advice))]))
 
@@ -597,14 +597,24 @@
 ;    (contains (.getInterTypeMungers ?aspect) ?intertype)))
 
 
-
+(clojure.core/declare intertype)
+                     
 (defn
-  aspect-intertype 
+  aspect-intertype
   "Relation between an aspect and one of its intertype declarations (a ConcreteTypeMunger)."
   [?aspect ?intertype]
-  (fresh [?members]
-    (aspect-crosscuttingmembers ?aspect ?members)
-    (contains (.getTypeMungers ?members) ?intertype)))
+  (all
+    (intertype ?intertype)
+    (equals ?aspect (.getAspectType ?intertype))))
+
+;changed in order to be analogous to aspect-advice
+;(defn
+;  aspect-intertype 
+;  "Relation between an aspect and one of its intertype declarations (a ConcreteTypeMunger)."
+;  [?aspect ?intertype]
+;  (fresh [?members]
+;    (aspect-crosscuttingmembers ?aspect ?members)
+;    (contains (.getTypeMungers ?members) ?intertype)))
 
 
 (defn
@@ -615,8 +625,24 @@
     [(v+ ?intertype) 
      (succeeds (instance? ConcreteTypeMunger ?intertype))]
     [(v- ?intertype) 
-     (fresh [?aspect]
-         (aspect-intertype ?aspect ?intertype))]))         
+     (fresh [?world ?set]
+            (weaverworld ?world)
+            (equals ?set (.getCrosscuttingMembersSet ?world))
+            (conde [(contains (.getTypeMungers ?set) ?intertype)]
+                   [(contains (.getLateTypeMungers ?set) ?intertype)]))]))
+
+;(defn
+;  intertype
+;  [?intertype]
+;  "Relation of intertype declarations."
+;  (conda
+;    [(v+ ?intertype) 
+;     (succeeds (instance? ConcreteTypeMunger ?intertype))]
+;    [(v- ?intertype) 
+;     (fresh [?aspect]
+;         (aspect-intertype ?aspect ?intertype))]))         
+
+
   
 ;note: ConcreteTypeMunger.getMunger returns a ResolvedTypeMunger (from a previous weaving stage)
 
