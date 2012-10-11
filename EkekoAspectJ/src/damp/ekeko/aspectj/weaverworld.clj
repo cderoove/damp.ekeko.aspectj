@@ -440,17 +440,29 @@
     (succeeds (.isClass ?type))))
   
 
-
 ;; Advice
 ;; ------
+
+(clojure.core/declare advice)
 
 (defn
   aspect-advice
   "Relation between an aspect and one of the advices it declares."
   [?aspect ?advice]
-  (fresh [?members]
-         (aspect-crosscuttingmembers ?aspect ?members)
-         (contains (.getShadowMungers ?members) ?advice)))
+  (all
+    (advice ?advice)
+    (equals ?aspect (.getDeclaringType ?advice))))
+  
+
+;Incorrect: for some aspects, does not return all advices
+;(defn
+;  aspect-advice
+;  "Relation between an aspect and one of the advices it declares."
+;  [?aspect ?advice]
+;  (fresh [?members]
+;         (aspect-crosscuttingmembers ?aspect ?members)
+;         (contains (.getShadowMungers ?members) ?advice)))
+
 
 ; Prefer the above because going through the CrosscuttingMembersSet has proven more reliable for intertype declarations
 ;(defn
@@ -465,8 +477,23 @@
   advice
   "Relation of advices known to the weaver."
   [?advice]
-  (fresh [?aspect]
-         (aspect-advice ?aspect ?advice)))
+  (conda
+    [(v+ ?advice) 
+     (succeeds (instance? org.aspectj.weaver.ShadowMunger ?advice))]
+    [(v- ?advice) 
+     (fresh [?world ?set]
+            (weaverworld ?world)
+            (contains (-> ?world .getCrosscuttingMembersSet .getShadowMungers) ?advice))]))
+
+
+;(defn
+;  advice
+;  "Relation of advices known to the weaver."
+;  [?advice]
+;  (fresh [?aspect]
+;         (aspect-advice ?aspect ?advice)))
+
+
 
 ;;following does not work: handles are all null
 ;(defn
