@@ -27,14 +27,6 @@
     (fails (aspect-dominates-aspect ?second ?first))))
 
 ;; Assumption: incomplete precedence for a certain shadow
-;; DOES NOT WORK. not all shadows are found. finds shadows of 6th aspect, which does not have any!
-; Also affects   overriden-implicit-precedence-shadow 
-; Here are the shadows on the relevant method (baseMethod1)
-;            FifthAspect.before(): <anonymous pointcut>
-;            SecondAspect.before(): <anonymous pointcut>
-;            ThirdAspect.before(): pc..
-;            FourthAspect.before(): pc..
-;            FirstAspect.before(): <anonymous pointcut>
 (defn
   incomplete-precedence-shadow
   [?first ?second ?shadow]
@@ -54,8 +46,6 @@
     (aspect-dominates-aspect-implicitly+ ?first ?second)))
 
 ;;Assumption: implicit precedence is overridden for a certain shadow
-; DOES NOT WORK. shadows are not found. Why?
-; see  incomplete-precedence-shadow
 (defn
   overriden-implicit-precedence-shadow
   [?first ?second ?shadow]

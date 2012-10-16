@@ -129,8 +129,13 @@
            (world/aspect-dominates-aspect-implicitly+ ?dom ?sub))
  "#{(\"cl.pleiad.ajlmp.testPrecedence.FourthAspect\" \"cl.pleiad.ajlmp.testPrecedence.ThirdAspect\") (\"cl.pleiad.ajlmp.testPrecedence.SixthAspect\" \"cl.pleiad.ajlmp.testPrecedence.FourthAspect\") (\"cl.pleiad.ajlmp.testPrecedence.SixthAspect\" \"cl.pleiad.ajlmp.testPrecedence.ThirdAspect\") (\"cl.pleiad.ajlmp.testPrecedence.EightAspect\" \"cl.pleiad.ajlmp.testPrecedence.SeventhAspect\")}"))
 
-;This test is so-so:
-;JF not check if there are missing results or duplicates, just that the results make sense
+;OK 16 oct
+;Below bug is not present
+;BUG: in final precedence calculation if there is an implicit precedence A->B
+;and explicit precedence B->A then A->B should not be present
+; This returns:
+;([#<ReferenceType cl.pleiad.ajlmp.testPrecedence.ThirdAspect> #<ReferenceType cl.pleiad.ajlmp.testPrecedence.FirstAspect> #<ProgramElement baseMethod1()>] [#<ReferenceType cl.pleiad.ajlmp.testPrecedence.FirstAspect> #<ReferenceType cl.pleiad.ajlmp.testPrecedence.ThirdAspect> #<ProgramElement baseMethod1()>] [#<ReferenceType cl.pleiad.ajlmp.testPrecedence.FirstAspect> #<ReferenceType cl.pleiad.ajlmp.testPrecedence.FourthAspect> #<ProgramElement baseMethod1()>] [#<ReferenceType cl.pleiad.ajlmp.testPrecedence.FourthAspect> #<ReferenceType cl.pleiad.ajlmp.testPrecedence.FirstAspect> #<ProgramElement baseMethod1()>])
+; but should also be between 4 and 5 
 (deftest
   aspect-dominates-aspect-test 
   (tuples-are 
@@ -145,12 +150,28 @@
            (assumptions/overriden-implicit-precedence ?first ?second))
     "#{(\"cl.pleiad.ajlmp.testPrecedence.FourthAspect\" \"cl.pleiad.ajlmp.testPrecedence.ThirdAspect\")}"))
 
+(deftest 
+  overriden-implicit-precedence-shadow-test
+  (tuples-are
+    (ekeko [?first ?second ?shadow]
+           (assumptions/overriden-implicit-precedence-shadow ?first ?second ?shadow))
+    "#{(\"cl.pleiad.ajlmp.testPrecedence.FourthAspect\" \"cl.pleiad.ajlmp.testPrecedence.ThirdAspect\" \"baseMethod1()\")}"))
+
+; OK 16 oct
 (deftest
   incomplete-precedence-test
   (tuples-are
     (ekeko [?first ?second]
            (assumptions/incomplete-precedence ?first ?second))
     "#{(\"cl.pleiad.ajlmp.testPrecedence.FirstAspect\" \"cl.pleiad.ajlmp.testPrecedence.EightAspect\") (\"cl.pleiad.ajlmp.testPrecedence.EightAspect\" \"cl.pleiad.ajlmp.testPrecedence.FirstAspect\") (\"cl.pleiad.ajlmp.testPrecedence.SecondAspect\" \"cl.pleiad.ajlmp.testPrecedence.SeventhAspect\") (\"cl.pleiad.ajlmp.testPrecedence.SecondAspect\" \"cl.pleiad.ajlmp.testPrecedence.FourthAspect\") (\"cl.pleiad.ajlmp.testPrecedence.SixthAspect\" \"cl.pleiad.ajlmp.testPrecedence.SecondAspect\") (\"cl.pleiad.ajlmp.testPrecedence.FirstAspect\" \"cl.pleiad.ajlmp.testPrecedence.SixthAspect\") (\"cl.pleiad.ajlmp.testPrecedence.ThirdAspect\" \"cl.pleiad.ajlmp.testPrecedence.FirstAspect\") (\"cl.pleiad.ajlmp.testPrecedence.SecondAspect\" \"cl.pleiad.ajlmp.testPrecedence.ThirdAspect\") (\"cl.pleiad.ajlmp.testPrecedence.EightAspect\" \"cl.pleiad.ajlmp.testPrecedence.SecondAspect\") (\"cl.pleiad.ajlmp.testPrecedence.FourthAspect\" \"cl.pleiad.ajlmp.testPrecedence.FirstAspect\") (\"cl.pleiad.ajlmp.testPrecedence.SeventhAspect\" \"cl.pleiad.ajlmp.testPrecedence.FirstAspect\") (\"cl.pleiad.ajlmp.testPrecedence.FirstAspect\" \"cl.pleiad.ajlmp.testPrecedence.SeventhAspect\") (\"cl.pleiad.ajlmp.testPrecedence.FirstAspect\" \"cl.pleiad.ajlmp.testPrecedence.FourthAspect\") (\"cl.pleiad.ajlmp.testPrecedence.SecondAspect\" \"cl.pleiad.ajlmp.testPrecedence.EightAspect\") (\"cl.pleiad.ajlmp.testPrecedence.ThirdAspect\" \"cl.pleiad.ajlmp.testPrecedence.SecondAspect\") (\"cl.pleiad.ajlmp.testPrecedence.FirstAspect\" \"cl.pleiad.ajlmp.testPrecedence.ThirdAspect\") (\"cl.pleiad.ajlmp.testPrecedence.SixthAspect\" \"cl.pleiad.ajlmp.testPrecedence.FirstAspect\") (\"cl.pleiad.ajlmp.testPrecedence.FourthAspect\" \"cl.pleiad.ajlmp.testPrecedence.SecondAspect\") (\"cl.pleiad.ajlmp.testPrecedence.SecondAspect\" \"cl.pleiad.ajlmp.testPrecedence.SixthAspect\") (\"cl.pleiad.ajlmp.testPrecedence.SeventhAspect\" \"cl.pleiad.ajlmp.testPrecedence.SecondAspect\")}"))
+
+(deftest
+  incomplete-precedence-shadow-test
+  (tuples-are
+    (ekeko [?first ?second ?shadow]
+           (assumptions/incomplete-precedence-shadow ?first ?second ?shadow))
+"#{(\"cl.pleiad.ajlmp.testPrecedence.FirstAspect\" \"cl.pleiad.ajlmp.testPrecedence.ThirdAspect\" \"baseMethod1()\") (\"cl.pleiad.ajlmp.testPrecedence.FirstAspect\" \"cl.pleiad.ajlmp.testPrecedence.FourthAspect\" \"baseMethod1()\") (\"cl.pleiad.ajlmp.testPrecedence.FourthAspect\" \"cl.pleiad.ajlmp.testPrecedence.FirstAspect\" \"baseMethod1()\") (\"cl.pleiad.ajlmp.testPrecedence.ThirdAspect\" \"cl.pleiad.ajlmp.testPrecedence.FirstAspect\" \"baseMethod1()\")}"))
+
 
 (deftest
   concretization-test
@@ -176,15 +197,19 @@
 
 (deftest
   test-suite 
-  ; testing precedence logic -- commented out for speed
-  ;(against-project-named "AJ-LMP-Precedence" false aspect-test )
-  ;(against-project-named "AJ-LMP-Precedence" false explicit-decprec+-test)
-  ;(against-project-named "AJ-LMP-Precedence" false implicit-precedence+-test)
-  ;(against-project-named "AJ-LMP-Precedence" false aspect-dominates-aspect-test)
+  ;sanity check
+  (against-project-named "AJ-LMP-Precedence" false aspect-test )
+
+  ;precedence logic -- commented out for speed
+  (against-project-named "AJ-LMP-Precedence" false explicit-decprec+-test)
+  (against-project-named "AJ-LMP-Precedence" false implicit-precedence+-test)
+  (against-project-named "AJ-LMP-Precedence" false aspect-dominates-aspect-test)
   
-  ;testing assumptions
+  ;assumptions
   (against-project-named "AJ-LMP-Precedence" false overriden-implicit-precedence-test)
+  (against-project-named "AJ-LMP-Precedence" false overriden-implicit-precedence-shadow-test)
   (against-project-named "AJ-LMP-Precedence" false incomplete-precedence-test)
+  (against-project-named "AJ-LMP-Precedence" false incomplete-precedence-shadow-test)
   (against-project-named "AJ-LMP-Pointcuts" false concretization-test)
   (against-project-named "AJ-LMP-ITD" true intertypemethod-unused-test)
   )

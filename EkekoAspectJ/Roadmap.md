@@ -12,10 +12,7 @@ A roadmap for damp.ekeko.aspectj
 * (CDR) Tool support: highlight in editor, inspect AST nodes.
 * (CDR) Simplify UI WRT Soot et al, using the configure menu item on a project.
 * (JF) Go over the whiteboard rules and check.
-* * Complete precedence for a shadow
-* * Overriden implicit precedence for a shadow
 * * Wormhole: read-write, read-write-percflow + combine with soot analysis
-* * refinement of abstract PC semantics
 * * Recheck the inclusion semantics 
 * (JF) Implement rules in mail of 20 sept.
 * (JF) Execution levels rules.
