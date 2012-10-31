@@ -87,5 +87,36 @@
     (pointcut-concretizedby ?concpointcut1 ?concpointcut2)))
     
     
+;;Assumption this aspect implements a wormhole
+;; -- the naive version
+;; MOCK IMPLEMENTATION - DOES NOT WORK
+(defn
+  naivewormhole-aspect-entry-exit
+  [?aspect ?entryadvice ?exitadvice]
+  (all 
+    (aspect-advice ?aspect ?entryadvice)
+    (aspect-field ?aspect ?instvar)
+    (advice-writesto ?entryadvice ?instvar) ;NOT IMPLEMENTED YET
+    (aspect-advice ?aspect ?exitadvice)
+    (advice-readsfrom ?exitadvice ?instvar)));NOT IMPLEMENTED YET
 
+;;Assumption this aspect implements a wormhole
+;; -- percflow of naive
+;; MOCK IMPLEMENTATION - DOES NOT WORK
+(defn
+  wormhole-aspect-entry-exit
+  [?aspect ?entryadvice ?exitadvice]
+  (all
+    (naivewormhole-aspect-entry-exit ?aspect ?entryadvice ?exitadvice)
+    (percflowaspect ?aspect)));NOT IMPLEMENTED YET
+
+;;Assumption this aspect implements a wormhole
+;; -- naive + execution path from entry to exit without interruptions of other advice of the same aspect
+;; MOCK IMPLEMENTATION - DOES NOT WORK
+(defn
+  confidentwormhole-aspect-entry-exit
+  [?aspect ?entryadvice ?exitadvice]
+  (all
+    (naivewormhole-aspect-entry-exit ?aspect ?entryadvice ?exitadvice)
+    (consecutiveexec-aspect-advice1-advice2 ?aspect ?entryadvice ?exitadvice)));NOT IMPLEMENTED YET
   
