@@ -86,6 +86,11 @@
     (pointcut-concretizedby ?abpointcut ?concpointcut1)
     (pointcut-concretizedby ?concpointcut1 ?concpointcut2)))
     
+
+(clojure.core/declare advice-writesto)
+(clojure.core/declare advice-readsfrom)
+(clojure.core/declare percflowaspect)
+(clojure.core/declare consecutiveexec-aspect-advice1-advice2)
     
 ;;Assumption this aspect implements a wormhole
 ;; -- the naive version
@@ -93,7 +98,7 @@
 (defn
   naivewormhole-aspect-entry-exit
   [?aspect ?entryadvice ?exitadvice]
-  (all 
+  (fresh [?instvar] 
     (aspect-advice ?aspect ?entryadvice)
     (aspect-field ?aspect ?instvar)
     (advice-writesto ?entryadvice ?instvar) ;NOT IMPLEMENTED YET
