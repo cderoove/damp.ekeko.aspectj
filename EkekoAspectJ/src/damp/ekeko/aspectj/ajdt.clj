@@ -46,7 +46,7 @@
                             [(v- ?keyword) (fresh [?keywords]
                                                   (equals ?keywords (map (fn [^Class c]
                                                                        (astnode/ekeko-keyword-for-class c))
-                                                                     (astnode/ajdt-node-classes)))
+                                                                     astnode/ajdt-node-classes))
                                                   (contains ?keywords ?keyword)
                                                   (ast ?keyword ?node))])]))
 
