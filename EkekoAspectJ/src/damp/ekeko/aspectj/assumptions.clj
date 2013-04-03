@@ -3,7 +3,7 @@
     :author "Coen De Roover, Johan Fabry" }
    damp.ekeko.aspectj.assumptions
   (:refer-clojure :exclude [== type declare])
-  (:use [clojure.core.logic])
+  (:require [clojure.core.logic :as l] )
   (:use [damp.ekeko logic])
   (:use [damp.ekeko])
   (:use [damp.ekeko.aspectj weaverworld])
@@ -19,10 +19,10 @@
 (defn
   incomplete-precedence
   [?first ?second]
-  (all
+  (l/all
     (aspect ?first)
     (aspect ?second)
-    (!= ?first ?second)
+    (l/!= ?first ?second)
     (fails (aspect-dominates-aspect ?first ?second))
     (fails (aspect-dominates-aspect ?second ?first))))
 
@@ -30,7 +30,7 @@
 (defn
   incomplete-precedence-shadow
   [?first ?second ?shadow]
-  (fresh [?ad1 ?ad2]
+  (l/fresh [?ad1 ?ad2]
          (incomplete-precedence ?first ?second)
          (aspect-advice ?first ?ad1)
          (advice-shadow ?ad1 ?shadow)
@@ -41,7 +41,7 @@
 (defn
   overriden-implicit-precedence
   [?first ?second]
-  (all
+  (l/all
     (aspect-dominates-aspect ?second ?first)
     (aspect-dominates-aspect-implicitly+ ?first ?second)))
 
@@ -49,7 +49,7 @@
 (defn
   overriden-implicit-precedence-shadow
   [?first ?second ?shadow]
-  (fresh [?ad1 ?ad2]
+  (l/fresh [?ad1 ?ad2]
          (overriden-implicit-precedence ?first ?second)
          (aspect-advice ?first ?ad1)
          (advice-shadow ?ad1 ?shadow)
@@ -60,7 +60,7 @@
 (defn 
   modifies-aspect
   [?modifier ?modified]
-  (fresh [?advice ?shadow]
+  (l/fresh [?advice ?shadow]
          (aspect-advice ?modifier ?advice)
          (advice-shadow ?advice ?shadow)
          (shadow-enclosingtypedeclaration ?shadow ?modified)
@@ -70,10 +70,10 @@
 (defn 
   intertypemethod-unused
   [?itmethod]
-  (fresh [?sootmethod ?caller]
+  (l/fresh [?sootmethod ?caller]
          (intertypemethod ?itmethod)
          (fails 
-           (all
+           (l/all
              (ajsoot/intertypemethod-sootmethod ?itmethod ?sootmethod)
              (ssoot/soot-method-called-by-method ?sootmethod ?caller)))))
 
@@ -82,7 +82,7 @@
 (defn 
   abstractpointcut-concretized-reconcretized
   [?abpointcut ?concpointcut1 ?concpointcut2]
-  (all
+  (l/all
     (pointcut-concretizedby ?abpointcut ?concpointcut1)
     (pointcut-concretizedby ?concpointcut1 ?concpointcut2)))
     
@@ -98,12 +98,17 @@
 (defn
   naivewormhole-aspect-entry-exit
   [?aspect ?entryadvice ?exitadvice]
-  (fresh [?instvar] 
+  (l/fresh [?instvar] 
     (aspect-advice ?aspect ?entryadvice)
     (aspect-field ?aspect ?instvar)
     (advice-writesto ?entryadvice ?instvar) ;NOT IMPLEMENTED YET
     (aspect-advice ?aspect ?exitadvice)
     (advice-readsfrom ?exitadvice ?instvar)));NOT IMPLEMENTED YET
+
+
+
+
+
 
 ;;Assumption this aspect implements a wormhole
 ;; -- percflow of naive
@@ -111,7 +116,7 @@
 (defn
   wormhole-aspect-entry-exit
   [?aspect ?entryadvice ?exitadvice]
-  (all
+  (l/all
     (naivewormhole-aspect-entry-exit ?aspect ?entryadvice ?exitadvice)
     (percflowaspect ?aspect)));NOT IMPLEMENTED YET
 
@@ -121,7 +126,39 @@
 (defn
   confidentwormhole-aspect-entry-exit
   [?aspect ?entryadvice ?exitadvice]
-  (all
+  (l/all
     (naivewormhole-aspect-entry-exit ?aspect ?entryadvice ?exitadvice)
     (consecutiveexec-aspect-advice1-advice2 ?aspect ?entryadvice ?exitadvice)));NOT IMPLEMENTED YET
+
+
+(defn
+  assigns-field
+  [?unit ?field]
+  (l/fresh [?lhs]
+    (ssoot/soot-unit-assign-leftop ?unit ?lhs)
+    (ssoot/soot-value :JInstanceFieldRef ?lhs)
+    (equals ?field (.getField  ?lhs))))
+ 
+(defn
+  brokenwormhole-entry-exit-field	
+  [?aspect ?entryadvice ?exitadvice ?field]
+  (aspect-field ?aspect ?field)
+  (aspect-advice ?aspect ?entryadvice)
+  (aspect-advice ?aspect ?exitadvice)
+  (l/fresh [?icfg]
+              (ssoot/soot-method-icfg ?entryadvice ?icfg)
+              (damp.qwal/qwal ?icfg ?entryadvice ?exitadvice 
+                    []
+                    (damp.qwal/q=>*)
+                    (damp.qwal/qcurrent [[?entryadvice ?unit]]
+                              (assigns-field ?unit ?field))
+                    (damp.qwal/q=>+)
+                    (damp.qwal/qcurrent [[?method ?unit]]
+                              (l/!= ?entryadvice ?method)
+                              (assigns-field ?unit ?field))
+                    (damp.qwal/q=>+)   
+                    (damp.qwal/qcurrent [[?exitadvice ?unit]]
+                              ; (reads-field ?unit ?field)
+                               ))))
+
   

@@ -23,4 +23,5 @@ Export-Package: damp.ekeko.aspectj
 Eclipse-RegisterBuddy: damp.ekeko.plugin
 Bundle-ClassPath: lib/dorothy-0.0.3.jar,
  lib/guava-11.0.2.jar,
- .
+ .,
+ lib/core.logic-0.8.0-rc2.jar

@@ -328,6 +328,8 @@
     (aspect ?aspect)
     (contains (.getDeclaredJavaFields ?aspect) ?field)))
 
+
+
 (defn
   aspect-method
   [?aspect ?method]
@@ -1040,5 +1042,6 @@
     (element-type ?element ?type)))
 
   
+
 
     

@@ -43,8 +43,16 @@
                    (cond 
                      (= kind (org.aspectj.weaver.ResolvedTypeMunger/Method))
                      (sootsignature-as-method (.getSignature this))
-                     :else "")))  ;todo: field
-  )
+                     :else ""))) ;todo: field
+  org.aspectj.weaver.bcel.BcelField
+  (sootsignature [this]
+    (str "<" 
+         (sootsignature (.getDeclaringType this)) 
+         ": " 
+         (sootsignature (.getType this))
+         " "
+         (.getName this)
+         ">")))
 
 (extend-type
   org.aspectj.weaver.Member 
@@ -79,6 +87,25 @@
          (equals ?signature (sootsignature ?itmethod))
          (soot/soot-model-scene ?model ?scene)
          (soot/soot-method-signature ?soot ?signature)))
+
+
+
+(defn
+  field-sootfield
+  [?ajfield ?soot]
+  (fresh [?model ?scene ?aspect ?signature]
+         (world/aspect-field ?aspect ?ajfield)
+         (equals ?signature (sootsignature ?ajfield))
+         (soot/soot-model-scene ?model ?scene)
+         (soot/soot-field-signature ?soot ?signature)))
+
+
+         
+                  
+
+
+
+  
 
 
 (comment
