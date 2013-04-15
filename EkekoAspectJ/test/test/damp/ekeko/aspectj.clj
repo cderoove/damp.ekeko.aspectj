@@ -109,7 +109,11 @@
            (assumptions/intertypemethod-unused ?itmethod))
     "#{(\"(BcelTypeMunger ResolvedTypeMunger(Method, void cl.pleiad.ajlmp.testITD.BaseClass.itdB()))\")}"))
 
-
+(deftest same-pointcutname-test
+  (test/tuples-correspond
+    (ekeko [?name ?aspect1 ?aspect2]
+           (assumptions/same-pointcutname-aspect1-aspect2 ?name ?aspect1 ?aspect2))
+    "#{(\"pc2\" \"cl.pleiad.ajlmp.testMutExHeuristics.SecondAspect\" \"cl.pleiad.ajlmp.testMutExHeuristics.ThirdAspect\") (\"pc2\" \"cl.pleiad.ajlmp.testMutExHeuristics.ThirdAspect\" \"cl.pleiad.ajlmp.testMutExHeuristics.SecondAspect\")}"))
 
 ;; Test Suite
 ;; ----------
@@ -122,18 +126,25 @@
   ;sanity check
   (test/against-project-named "AJ-LMP-Precedence" false aspect-test )
 
-  ;precedence logic -- commented out for speed
+  ;precedence logic
   (test/against-project-named "AJ-LMP-Precedence" false explicit-decprec+-test)
   (test/against-project-named "AJ-LMP-Precedence" false implicit-precedence+-test)
   (test/against-project-named "AJ-LMP-Precedence" false aspect-dominates-aspect-test)
   
   ;assumptions
-  (test/against-project-named "AJ-LMP-Precedence" false overriden-implicit-precedence-test)
   (test/against-project-named "AJ-LMP-Precedence" false overriden-implicit-precedence-shadow-test)
   (test/against-project-named "AJ-LMP-Precedence" false incomplete-precedence-test)
   (test/against-project-named "AJ-LMP-Precedence" false incomplete-precedence-shadow-test)
-  (test/against-project-named "AJ-LMP-Pointcuts" false concretization-test)
+ 
+  ;assumptions from paper
+   ;3.1.1 assumption 2, case 1  
+  (test/against-project-named "AJ-LMP-MutExHeuristics" false same-pointcutname-test)
+  ; 3.1.1 assumption 5
   (test/against-project-named "AJ-LMP-ITD" true intertypemethod-unused-test)
+  ; 3.1.1 assumption 7 
+  (test/against-project-named "AJ-LMP-Pointcuts" false concretization-test)
+  ;3.1.1: assumption 9 case 2
+  (test/against-project-named "AJ-LMP-Precedence" false overriden-implicit-precedence-test)
   )
 
 (defn 
@@ -146,8 +157,8 @@
 
 ; note: uncommenting would run the tests upon loading
 
-(comment  
+;(comment  
   
   (run-tests)
   
-  )
+ ; )

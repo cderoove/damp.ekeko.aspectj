@@ -204,7 +204,6 @@
     (aspect-declareparents-interface ?aspect ?target ?subinterface)))
 )
 
-;;Works in the REPL but don't know the procedure to turn it into a formal test ...
 ;;paper 3.1.1 assumption 2, case 1
 (defn
   same-pointcutname-aspect1-aspect2
@@ -212,11 +211,19 @@
   (l/fresh [?pc1 ?pc2]
      (aspect-pointcutdefinition ?aspect1 ?pc1)
      (aspect-pointcutdefinition ?aspect2 ?pc2)
-     (!= ?aspect1 ?aspect2)
+     (l/!= ?aspect1 ?aspect2)
      (pointcut-name ?pc1 ?name)
      (pointcut-name ?pc2 ?name)))
 
-(comment
+ 
+(comment  
+;; work in progress   
+  (defn
+  aspect-alldefdpointcuts
+  [?aspect ?pointcuts]
+  (findall ?pointcut (aspect-pointcutdefinition ?aspect ?pointcut) ?pointcuts))
+
+  
 ;;to test
 ;;How to check that all pointcuts defined in the super are used in both subs?
 ;;paper 3.1.1 assumption 2, case 2
