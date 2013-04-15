@@ -2,15 +2,17 @@
   ^{:doc "Relations for implementing parts of the 'aspect assumptions' paper."
     :author "Coen De Roover, Johan Fabry" }
    damp.ekeko.aspectj.assumptions
-  (:refer-clojure :exclude [== type declare])
+  (:refer-clojure :exclude [== type declare class])
   (:require [clojure.core.logic :as l] )
   (:use [damp.ekeko logic])
   (:use [damp.ekeko])
   (:use [damp.ekeko.aspectj weaverworld])
   (:require [damp.ekeko.aspectj
              [soot :as ajsoot]
-             [ajdt :as ajdt]
-             [xcut :as xcut]]
+             ;only use these when absolutely necessary, not as developed as relations from weaverworld
+            ;[ajdt :as ajdt] 
+             ;[xcut :as xcut]
+             ]
             [damp.ekeko.soot
              [soot :as ssoot]]
             ))
