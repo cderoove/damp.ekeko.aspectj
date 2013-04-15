@@ -233,7 +233,7 @@
   (l/fresh [?pointcut ?advice1 ?advice2]
     (aspect-declaredsuperaspect+ ?aspect1 ?superaspect)
     (aspect-declaredsuperaspect+ ?aspect2 ?superaspect)
-    (!= ?aspect1 ?aspect2)
+    (l/!= ?aspect1 ?aspect2)
     (aspect-pointcutdefinition ?superaspect ?pointcut)
     (aspect-advice ?aspect1 ?advice1)
     (aspect-advice ?aspect2 ?advice2)
