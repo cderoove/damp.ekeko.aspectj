@@ -94,7 +94,8 @@
   field-sootfield
   [?ajfield ?soot]
   (fresh [?model ?scene ?aspect ?signature]
-         (world/aspect-field ?aspect ?ajfield)
+         (world/aspect ?aspect)
+         (world/type-field ?aspect ?ajfield)
          (equals ?signature (sootsignature ?ajfield))
          (soot/soot-model-scene ?model ?scene)
          (soot/soot-field-signature ?soot ?signature)))
