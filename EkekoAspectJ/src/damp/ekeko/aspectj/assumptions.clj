@@ -107,7 +107,7 @@
   [?aspect ?entryadvice ?exitadvice]
   (l/fresh [?instvar] 
     (aspect-advice ?aspect ?entryadvice)
-    (aspect-field ?aspect ?instvar)
+    (type-field ?aspect ?instvar)
     (advice-writesto ?entryadvice ?instvar) ;NOT IMPLEMENTED YET
     (aspect-advice ?aspect ?exitadvice)
     (advice-readsfrom ?exitadvice ?instvar)));NOT IMPLEMENTED YET
@@ -144,7 +144,8 @@
 (defn
   brokenwormhole-entry-exit-field	
   [?aspect ?entryadvice ?exitadvice ?field]
-  (aspect-field ?aspect ?field)
+  (aspect ?aspect)
+  (type-field ?aspect ?field)
   (aspect-advice ?aspect ?entryadvice)
   (aspect-advice ?aspect ?exitadvice)
   (l/fresh [?icfg]
