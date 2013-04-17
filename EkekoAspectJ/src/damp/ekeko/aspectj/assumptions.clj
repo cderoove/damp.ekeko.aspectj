@@ -177,6 +177,9 @@
 )
 
 (comment
+
+;;===========================================================================================
+  
 ;;MOCK -- waiting for Coen 
 (defn
   markerinterface
@@ -204,6 +207,8 @@
     (aspect-declareparents-interface ?aspect ?target ?subinterface)))
 )
 
+;;===========================================================================================
+
 ;;paper 3.1.1 assumption 2, case 1
 (defn
   same-pointcutname-aspect1-aspect2
@@ -215,28 +220,62 @@
      (pointcut-name ?pc1 ?name)
      (pointcut-name ?pc2 ?name)))
 
- 
-(comment  
-;; work in progress   
-  (defn
+;;===========================================================================================
+(comment
+;; no longer needed. example of findall
+(defn
   aspect-alldefdpointcuts
   [?aspect ?pointcuts]
-  (findall ?pointcut (aspect-pointcutdefinition ?aspect ?pointcut) ?pointcuts))
+  (l/all
+    (aspect ?aspect)
+    (findall ?pointcut (aspect-pointcutdefinition ?aspect ?pointcut) ?pointcuts))) 
 
-  
-;;to test
-;;How to check that all pointcuts defined in the super are used in both subs?
+(defn 
+  aspect-usedpointcut
+  [?aspect ?pointcut]
+  (l/fresh [?advice]
+           (aspect-advice ?aspect ?advice)
+           (advice-pointcut ?advice ?pointcut)))
+
+(defn aspect-allusedpointcuts
+  [?aspect ?usedpointcuts]
+  (l/all
+    (aspect ?aspect)
+    (findall ?usedpointcut (aspect-usedpointcut ?aspect ?usedpointcut) ?usedpointcuts)))
+
+;;Does not work due to issue #7
 ;;paper 3.1.1 assumption 2, case 2
 (defn
   samepointcuts-reuse-super-sub1-sub2
-  [?superaspect ?aspect1 ?aspect2]
-  (l/fresh [?pointcut ?advice1 ?advice2]
-    (aspect-declaredsuperaspect+ ?aspect1 ?superaspect)
-    (aspect-declaredsuperaspect+ ?aspect2 ?superaspect)
-    (!= ?aspect1 ?aspect2)
-    (aspect-pointcutdefinition ?superaspect ?pointcut)
-    (aspect-advice ?aspect1 ?advice1)
-    (aspect-advice ?aspect2 ?advice2)
-    (advice-pointcut ?advice1 ?pointcut)
-    (advice-pointcut ?advice2 ?pointcut)))
-  )  
+  [?aspect1 ?aspect2 ?usedpc1 ?usedpc2]
+  (l/fresh [?superaspect]
+           (aspect-declaredsuperaspect+ ?aspect1 ?superaspect)
+           (aspect-declaredsuperaspect+ ?aspect2 ?superaspect)
+           (l/!= ?aspect1 ?aspect2)
+           (aspect-allusedpointcuts ?aspect1 ?usedpc1)
+           (aspect-allusedpointcuts ?aspect2 ?usedpc2)
+           (succeeds (empty? (clojure.set/difference (set ?usedpc1) (set ?usedpc2)))) )) 
+)
+;;===========================================================================================
+
+(comment 
+(defn
+  aspect-shadow
+  [?aspect ?shadow]
+  (l/fresh [?advice]
+           (aspect-advice ?aspect ?advice)
+           (advice-shadow ?advice ?shadow)))
+
+;;to test -- BUG: last line always succeeds. See mail to Coen on Apr 16
+;;paper 3.1.1 assumption 2, case 3
+(defn
+  sameshadows-aspect1-aspect2
+  [?aspect1 ?aspect2]
+  (l/fresh [?shadows1 ?shadows2]
+           (aspect ?aspect1)
+           (aspect ?aspect2)
+           (l/!= ?aspect1 ?aspect2) ;also exclude that one is the super of the other
+           (findall ?shadow1 (aspect-shadow ?aspect1 ?shadow1) ?shadows1)
+           (findall ?shadow2 (aspect-shadow ?aspect2 ?shadow2) ?shadows2)
+           (succeeds (empty? (clojure.set/difference (set ?shadows1) (set ?shadows2))))))
+)
