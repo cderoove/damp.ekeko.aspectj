@@ -311,8 +311,16 @@
     (succeeds (.isNested ?resolvedtype))))
 
 (defn
+  topleveltype
+  "Relation of non-nested types known to the AspectJ weaver."
+  [?type]
+  (all
+    (type ?type)
+    (equals false (.isNested ?type))))
+
+(defn
   nestedtype-outertype
-  "Relation between a nested and its outer type.
+  "Relation between a nested and its immediate outer type.
 
    e.g., (ekeko* [?i ?o]  (interface ?i) (nestedtype-outertype ?i ?o))
 
@@ -321,6 +329,16 @@
   (all 
     (nestedtype ?nested)
     (equals ?outer (.getOuterClass ?nested)))) ;also returns other outer types
+
+(defn
+  nestedtype-outertype+
+  "Relation between a nested and one of its encompassing outer types."
+  [?nested ?outer]
+  (conde
+    [(nestedtype-outertype ?nested ?outer)]
+    [(fresh [?o]
+            (nestedtype-outertype ?nested ?o)
+            (nestedtype-outertype ?o ?outer))]))
 
 
 (defn
@@ -334,7 +352,6 @@
            [(== ?outermost ?outer)])))
     
 
- 
 (defn
   aspect
   "Relation of aspects known to the weaver."
@@ -487,31 +504,56 @@
      (fresh [?type]
             (type-member ?type ?member))]))
 
-;(defn
-;  type-member
-;  "Relation between a type and one of its declared members as known to the weaver."
+(defn- 
+  type|ajsynthetic?
+  [?type ?boolean]
+  (all
+    (equals ?boolean (.isSynthetic ?type))))
+
+
+(defn
+  type|nonsynthetic
+  "Relation of types that are not AspectJ synthetic."
+  [?type]
+  (all
+    (type ?type)
+    (type|ajsynthetic? ?type false)))
+   
+(defn
+  type|synthetic
+  "Relation of types that are AspectJ synthetic."
+  [?type]
+  (all
+    (type ?type)
+    (type|ajsynthetic? ?type true)))
+
 
 (defn- 
-  resolvedmember-synthetic?
-  [?resolvedmember ?syntheticbool]
+  member|ajsynthetic?
+  [?member ?boolean]
   (all
-    (member ?resolvedmember)
-    (equals ?syntheticbool (.isSynthetic ?resolvedmember))))
+    ;;note: do not use .isSynthetic on ResolvedMember, 
+    ;;those are java-based synthetics (rather than ajc-based synthetics)
+    (equals ?boolean (.isAjSynthetic ?member))))
+
+
 
 (defn
-  syntheticmember
-  "Relation of synthetic members."
-  [?resolvedmember]
+  member|synthetic
+  "Relation of members that are AspectJ synthetic (e.g., hasAspect())."
+  [?member]
   (all
-    (resolvedmember-synthetic? ?resolvedmember true)))
+    (member ?member)
+    (member|ajsynthetic? ?member true)))
   
+;;TODO: perhaps filter out using signature?
 (defn
-  nonsyntheticmember
-  "Relation of nonsynethic members."
-  [?resolvedmember]
+  member|nonsynthetic
+  "Relation of members that are not AspectJ synthetic. Still includes members implementing ITD."
+  [?member]
   (all
-     (resolvedmember-synthetic? ?resolvedmember false)))
-
+    (member ?member)
+    (member|ajsynthetic? ?member false)))
 
 (defn
   aspect-declaredinterface
