@@ -398,21 +398,15 @@
     (equals ?methods (vec (.getDeclaredMethods ?resolvedtype)))))
 
 
-;TODO: configured not to erase generic types (first boolean),
-;      and not to consider declare parent itds 
-;      -> current reasoning: no equivalent for fields+
-;     
-;      might want to reconsider  
-;      (note that there is also an unrelated ITD getter)
 (defn
   type-methods+
   "Relation between a type and all of its declared and inherited methods (as known to the weaver).
-   Does not include methods added through an ITD."
+   Includes methods added through an ITD."
   ;;see org.apectj.weaver.ResolvedType.getMethods(boolean wantGenerics, boolean wantDeclaredParents)
   [?resolvedtype ?methods]
   (all
     (type ?resolvedtype)
-    (equals ?methods (vec (iterator-seq (.getMethods ?resolvedtype true false))))))
+    (equals ?methods (vec (iterator-seq (.getMethods ?resolvedtype true true))))))
 
 (defn
   type-method
@@ -471,8 +465,6 @@
 ;(defn
 ;  type-member
 ;  "Relation between a type and one of its declared members as known to the weaver."
-
-
 
 (defn- 
   resolvedmember-synthetic?
@@ -559,7 +551,7 @@
     (succeeds (.isClass  ?ancestor))))
 
 
-;todo: wantgenerics is false, check whether this is compatible with the types returned by the other predicates
+;todo: wantgenerics is true, check whether this is compatible with the types returned by the other predicates
 ;(i.e., test with a parameterized aspec)
 (defn
   aspect-super+
@@ -570,7 +562,7 @@
   (all
     (!= ?type ?aspect)
     (aspect ?aspect)
-    (contains (iterator-seq (.getHierarchy ?aspect false true)) ?type)))
+    (contains (iterator-seq (.getHierarchy ?aspect true true)) ?type)))
 
 (defn
   aspect-superaspect+
