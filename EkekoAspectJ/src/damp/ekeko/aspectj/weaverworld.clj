@@ -70,10 +70,12 @@
 
 
 ;; ProgramElement hierarchy
-;; (but prefer not to use these) 
-;; -----------------------------
-    
-(defn
+;; ------------------------
+
+;; Prefer not to expose these relations, as the hierarchy is still managed by the facade created by AsmRelationshipProvider
+
+
+(defn-
   root
   "Relation of ProgramElement hierarchy roots."
   [?element]
@@ -83,7 +85,7 @@
 
 (clojure.core/declare element) 
 
-(defn 
+(defn- 
   element-child
   "Relation of roots of the weaver world ProgramElement hierarchy."
   [?element ?child-element]
@@ -91,7 +93,7 @@
     (element ?element) 
     (contains (.getChildren ?element) ?child-element)))
 
-(defn
+(defn-
   element-child+
   "Relation between a ProgramElement ?element and one of its descendants ?child."
   [?element ?child]
@@ -100,7 +102,7 @@
          (conde [(== ?ch ?child)]	
                 [(element-child+ ?ch ?child)])))
 
-(defn
+(defn-
   element
   "Relation of elements of the ProgramElement hierarchy."
   [?element]
@@ -113,7 +115,7 @@
             (conde [(== ?element ?root)]
                    [(element-child+ ?root ?element)]))]))       
 
-(defn
+(defn-
   element-parent
   "Relation between a ProgramElement and its parent ProgramElement."
   [?element ?parent]
@@ -122,7 +124,7 @@
     (equals ?parent (.getParent ?element))))
 
 
-(defn
+(defn-
   element-kind
   "Relation between a ProgramElement ?element and its kind ?kind."
   [?element ?kind]
@@ -131,7 +133,7 @@
     (equals ?kind (.getKind ?element))))
 
 ;note that these are not JVM signature strings, as produced for ResolvedType hierarchy
-(defn
+(defn-
   element-signature
   "Relation between a ProgramElement and its signature string."
   [?element ?signature]
@@ -139,7 +141,7 @@
     (element ?element)
     (equals ?signature (.toSignatureString ?element))))
 
-(defn
+(defn-
   element-handle
   "Relation between a ProgramElement and its handle."
   [?element ?handle]
@@ -147,7 +149,7 @@
     (element ?element)
     (equals ?handle (.getHandleIdentifier ?element))))
 
-(defn
+(defn-
   element-sourcelocation
   "Relation between a ProgramElement and its SourceLocation."
   [?element ?handle]
@@ -190,7 +192,7 @@
                 (recur (.getParent parent)))))]
          (ancestortypedeclaration (.getParent element))))
     
-(defn
+(defn-
   element-enclosingtypedeclaration-element
   "Relation between a ProgramElement and its enclosing aspect (if any)."
   [?element ?typedeclaration]
@@ -199,21 +201,21 @@
     (equals ?typedeclaration (enclosingtypedeclaration-of-element ?element))
     (!= nil ?typedeclaration)))
 
-(defn
+(defn-
   elementaspect
   [?element]
   (all
     (element ?element)
     (equals (IProgramElement$Kind/ASPECT) (.getKind ?element))))
 
-(defn
+(defn-
   elementclass
   [?element]
   (all
     (element ?element)
     (equals (IProgramElement$Kind/CLASS) (.getKind ?element))))
 
-(defn
+(defn-
   elementinterface
   [?element]
   (all 
@@ -221,14 +223,14 @@
     (equals (IProgramElement$Kind/INTERFACE) (.getKind ?element))))
 
 
-(defn
+(defn-
   elementenum
   [?element]
   (all
     (element ?element)
     (equals (IProgramElement$Kind/ENUM) (.getKind ?element))))
 
-(defn
+(defn-
   elementtypedeclaration
   [?element]
   (conde
@@ -237,18 +239,16 @@
     [(elementaspect ?element)]
     [(elementinterface ?element)]))
 
-    
-
-;above is about programelement hierarchy, which is still managed by facade
-;created by AsmRelationshipProvider
 
 ;; Actual Reification of WeaverWorld
 ;; ---------------------------------
+
 
 (defn-
   weaverworld-typemap
   "Relation between an AspectJ weaverworld and its non-expandable TypeMap."
   [?world ?typemap]
+  ;see org.aspectj.weaver.World$TypeMap, consider configuring TypeMap.DONT_USE_REFS to avoid the weaver from discarding expandable types.
   (all 
     (weaverworld ?world)
     (equals ?typemap (-> ?world .getTypeMap .getMainMap))))
@@ -256,12 +256,16 @@
 
 (defn
   type
-  "Relation of non-expandable (i.e., project-defined) types known to the AspectJ weaver."
+  "Relation of non-expandable types known to the AspectJ weaver.
+   Instances of org.aspectj.weaver.ResolvedType."
   [?resolvedtype]
-  (fresh [?world ?map ?entry]
-       (weaverworld-typemap ?world ?map)
-       (contains ?map ?entry)
-       (equals ?resolvedtype (.getValue ?entry))))
+  (conda [(v+ ?resolvedtype)
+          (succeeds (instance? org.aspectj.weaver.ResolvedType ?resolvedtype))]
+         [(v- ?resolvedtype)
+          (fresh [?world ?map ?entry]
+                 (weaverworld-typemap ?world ?map)
+                 (contains ?map ?entry)
+                 (equals ?resolvedtype (.getValue ?entry)))]))
 
 
 (defn
@@ -298,51 +302,20 @@
     (succeeds (.isEnum ?resolvedtype))))
 
 (defn
-  nested
+  nestedtype
   "Relation of nested types known to the AspectJ weaver. 
    This includes: member classes, local classes, anonymous classes."
   [?resolvedtype]
   (all 
     (type ?resolvedtype)
     (succeeds (.isNested ?resolvedtype))))
-
-
-  
  
-;can be used to go from xcut to weaverworld types
-;NO: because need JVM signature rather than what is returned by the xcut elements
-;(defn
-;  weaverworld-signature-resolvedtype
-;  "Non-relational. Unifies ?resolved-type with the type known to the AspectJ weaver
-;   ?world with the given ?signature string. 
-;
-;   Can be used to go from XCut types to weaver world types." 
-;  [?world ?signature ?resolved-type]
-;  (equals ?resolved-type (.resolve ?world ?signature)))
-
-(defn
-  element-type
-  "Relation between a ProgramElement of kind Aspect/Enum/Class/Interface
-   and the ResolvedType instance from the weaver world it corresponds to."
-  [?element ?type]
-  (fresh [?element-name] ;todo: take correct world into account
-         (elementtypedeclaration ?element)
-         (equals ?element-name (str (.getPackageName ?element) "." (.getName ?element))) ;todo: check what this returns for parameterized types
-         (type ?type) 
-         (equals ?element-name (.getName ?type)))) ;or .getBaseName if above includes type parameters
-
 (defn
   aspect
   "Relation of aspects known to the weaver."
   [?aspect]
   (all
-    ;;would normally use a conda here, but gives an exception in type
-    ;;even though ?aspect is untouched in the first condition of each clause
-    (conde 
-      [(v+ ?aspect) 
-       (succeeds (instance? ReferenceType ?aspect))]
-      [(v- ?aspect)
-       (type ?aspect)])
+    (type ?aspect)
     (succeeds (.isAspect ?aspect))))
 
 (defn
@@ -371,61 +344,156 @@
 
 (defn
   type-fields
-  "Relation between a type and its fields as known to the weaver."
+  "Relation between a type and its declared fields as known to the weaver.
+   For fields that do not declare a field, ?fields==[]."
   [?resolvedtype ?fields]
   (all
     (type ?resolvedtype)
-    (equals ?fields (.getDeclaredFields ?resolvedtype))))
+    (equals ?fields (vec (.getDeclaredFields ?resolvedtype))))) 
+
+(defn
+  type-fields+
+  "Relation between a type and all of its declared and inherited fields (as known to the weaver)."
+  ;;see org.apectj.weaver.ResolvedType.getFields()
+  [?resolvedtype ?fields]
+  (all
+    (type ?resolvedtype)
+    (equals ?fields (vec (iterator-seq (.getFields ?resolvedtype))))))
 
 (defn
   type-field
-  "Relation between a type and one of its fields as known to the weaver."
+  "Relation between a type and one of its declared fields as known to the weaver."
   [?resolvedtype ?field]
   (fresh [?fields]
     (type-fields ?resolvedtype ?fields)
     (contains ?fields ?field)))
 
+(defn
+  type-field+
+  "Relation between a type and one of its declared or inherited fields (as known to the weaver).
+
+  e.g., inherited fields:
+  (damp.ekeko/ekeko* [?t ?f] 
+                  (type-field+ ?t ?f)
+                  (fails 
+                    (type-field ?t ?f)))"
+  [?resolvedtype ?field]
+  (fresh [?fields]
+    (type-fields+ ?resolvedtype ?fields)
+    (contains ?fields ?field)))
+  
+(defn
+  field
+  "Relation of field members known to the weaver."
+  [?field]
+  (fresh [?type]
+         (type-field ?type ?field)))
 
 (defn
   type-methods
-  "Relation between a type and its methods as known to the weaver."
+  "Relation between a type and its declared methods as known to the weaver."
   [?resolvedtype ?methods]
   (all
     (type ?resolvedtype)
-    (equals ?methods (.getDeclaredMethods ?resolvedtype))))
+    (equals ?methods (vec (.getDeclaredMethods ?resolvedtype)))))
+
+
+;TODO: configured not to erase generic types (first boolean),
+;      and not to consider declare parent itds 
+;      -> current reasoning: no equivalent for fields+
+;     
+;      might want to reconsider  
+;      (note that there is also an unrelated ITD getter)
+(defn
+  type-methods+
+  "Relation between a type and all of its declared and inherited methods (as known to the weaver).
+   Does not include methods added through an ITD."
+  ;;see org.apectj.weaver.ResolvedType.getMethods(boolean wantGenerics, boolean wantDeclaredParents)
+  [?resolvedtype ?methods]
+  (all
+    (type ?resolvedtype)
+    (equals ?methods (vec (iterator-seq (.getMethods ?resolvedtype true false))))))
 
 (defn
   type-method
-  "Relation between a type and one of its methods as known to the weaver."
+  "Relation between a type and one of its declared methods as known to the weaver."
   [?resolvedtype ?method]
   (fresh [?methods]
     (type-methods ?resolvedtype ?methods)
     (contains ?methods ?method)))
 
 
+(defn
+  type-method+
+  "Relation between a type and one of its declared or inherited methods (as known to the weaver)."
+  [?resolvedtype ?method]
+  (fresh [?methods]
+    (type-methods+ ?resolvedtype ?methods)
+    (contains ?methods ?method)))
+
+
+(defn
+  method
+  "Relation of method members known to the weaver."
+  [?method]
+  (fresh [?type]
+         (type-method ?type ?method)))
+
+
+
+(clojure.core/declare type-pointcutdefinition)
+
+
+(defn 
+  type-member
+  "Relation between a type and one of its declared members (i.e., a field / method / pointcutdefinition)."
+  [?type ?member]
+  (all
+    (type ?type)
+    (conde [(type-method ?type ?member)]
+           [(type-field ?type ?member)]
+           [(type-pointcutdefinition ?type ?member)]
+           ;[(type-intertype ?type ?member)] not a subtype of ResolvedMember          
+           )))
+
+
+(defn
+  member
+  "Relation of declared members known to the weaver."
+  [?member]
+  (conda
+    [(v+ ?member)
+     (succeeds (instance? org.aspectj.weaver.ResolvedMember ?member))]
+    [(v- ?member)
+     (fresh [?type]
+            (type-member ?type ?member))]))
+
+;(defn
+;  type-member
+;  "Relation between a type and one of its declared members as known to the weaver."
+
+
+
 (defn- 
   resolvedmember-synthetic?
   [?resolvedmember ?syntheticbool]
   (all
+    (member ?resolvedmember)
     (equals ?syntheticbool (.isSynthetic ?resolvedmember))))
 
 (defn
   syntheticmember
-  "Non-relational. 
-   Succeeds for ResolvedMember instances (e.g., fields / methods of a type) that are synthetic."
+  "Relation of synthetic members."
   [?resolvedmember]
   (all
-     (resolvedmember-synthetic? ?resolvedmember true)))
-
+    (resolvedmember-synthetic? ?resolvedmember true)))
+  
 (defn
   nonsyntheticmember
-  "Non-relational. 
-   Succeeds for ResolvedMember instances (e.g., fields / methods of a type) that are non-synthetic."
+  "Relation of nonsynethic members."
   [?resolvedmember]
   (all
      (resolvedmember-synthetic? ?resolvedmember false)))
-
-    
 
 
 (defn
@@ -700,6 +768,13 @@
     (intertype ?intertype)
     (equals ?aspect (.getAspectType ?intertype))))
 
+
+(def
+  ^{:doc "Alias for aspect-intertype."}
+  type-intertype
+  aspect-intertype)
+
+
 ;changed in order to be analogous to aspect-advice
 ;(defn
 ;  aspect-intertype 
@@ -723,6 +798,7 @@
             (equals ?set (.getCrosscuttingMembersSet ?world))
             (conde [(contains (.getTypeMungers ?set) ?intertype)]
                    [(contains (.getLateTypeMungers ?set) ?intertype)]))]))
+
 
 ;(defn
 ;  intertype
@@ -868,15 +944,37 @@
 ;; --------------------
 
 (defn
+  aspect-pointcutdefinitions
+  "Relation between an aspect and its declared pointcutdefinitions.
+   Note that these are instances of ResolvedPointcutDefinition,
+   rather than the Pointcut instances within ShadowMungers (advice)."
+  [?aspect ?pointcutdefinitions]
+  (all 
+    (aspect ?aspect)
+    (equals ?pointcutdefinitions (.getDeclaredPointcuts ?aspect))))
+
+(def
+  ^{:doc "Alias for aspect-pointcutdefinitions."}
+  type-pointcutdefinitions
+  aspect-pointcutdefinitions)
+
+
+
+(defn
   aspect-pointcutdefinition
   "Relation between an aspect and one of the pointcuts it declares.
    Note that these are instances of ResolvedPointcutDefinition,
    rather than the Pointcut instances within ShadowMungers (advice)."
   [?aspect ?pointcutdefinition]
-  (all 
-    (aspect ?aspect)
-    (contains (.getDeclaredPointcuts ?aspect) ?pointcutdefinition)
-    ))
+  (fresh [?pointcutdefinitions] 
+         (aspect-pointcutdefinitions ?aspect ?pointcutdefinitions)
+         (contains ?pointcutdefinitions ?pointcutdefinition)))
+    
+
+(def
+  ^{:doc "Alias for aspect-pointcutdefinition."}
+  type-pointcutdefinition
+  aspect-pointcutdefinition)
 
 (defn
   pointcutdefinition
@@ -1060,7 +1158,37 @@
            (fails (aspect-dominates-aspect-explicitly+ ?subordinate ?dominator)))))
            
 
+
+
+;; Link between ProgramElement (weaverworld/element) and ResolvedType (weaverworld/type)
+;; -------------------------------------------------------------------------------------
+
+;can be used to go from xcut to weaverworld types
+;NO: because need JVM signature rather than what is returned by the xcut elements
+;(defn
+;  weaverworld-signature-resolvedtype
+;  "Non-relational. Unifies ?resolved-type with the type known to the AspectJ weaver
+;   ?world with the given ?signature string. 
+;
+;   Can be used to go from XCut types to weaver world types." 
+;  [?world ?signature ?resolved-type]
+;  (equals ?resolved-type (.resolve ?world ?signature)))
+
+(defn
+  element-type
+  "Relation between a ProgramElement of kind Aspect/Enum/Class/Interface
+   and the ResolvedType instance from the weaver world it corresponds to."
+  [?element ?type]
+  (fresh [?element-name] ;todo: take correct world into account
+         (elementtypedeclaration ?element)
+         (equals ?element-name (str (.getPackageName ?element) "." (.getName ?element))) ;todo: check what this returns for parameterized types
+         (type ?type) 
+         (equals ?element-name (.getName ?type)))) ;or .getBaseName if above includes type parameters
+
+
+
 ;; Link between World (aka weaverworld) and AJProjectModelFacade (aka xcut)
+;; ------------------------------------------------------------------------
 
 (defn
   weaverworld-xcut
