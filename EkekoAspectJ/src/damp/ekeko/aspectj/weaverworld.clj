@@ -554,6 +554,26 @@
   (all
     (member ?member)
     (member|ajsynthetic? ?member false)))
+  
+(defn
+  type-declaredinterface
+  "Relation between a type and one of the interfaces it 
+   declares to be implementing (for a class and aspect)
+   or extending (for an interface)."
+  [?type ?interface]
+  (all
+    (type ?type)
+    (contains (.getDeclaredInterfaces ?type) ?interface)))  
+
+(defn
+  type-declaredinterface+
+  "Relation between a type and one of the ancestors in its declared interface hierarchy."
+  [?type ?ancestor]
+  (conde
+    [(type-declaredinterface ?type ?ancestor) ]
+    [(fresh [?inbetween]
+              (type-declaredinterface ?type ?inbetween)
+              (type-declaredinterface+ ?inbetween ?ancestor))]))
 
 (defn
   aspect-declaredinterface
@@ -561,7 +581,8 @@
   [?aspect ?interface]
   (all
     (aspect ?aspect)
-    (contains (.getDeclaredInterfaces ?aspect) ?interface)))
+    (type-declaredinterface ?aspect ?interface)))
+
 
 (defn
   aspect-declaredsuper
@@ -571,6 +592,15 @@
   (all
     (aspect ?aspect)
     (equals ?super (.getSuperclass ?aspect))))
+
+(defn
+  type-declaredsuper
+  "Relation between an aspect and its super class (including java.lang.Object for aspects
+   that do not declare a super aspect)."
+  [?type ?super]
+  (all
+    (type ?type)
+    (equals ?super (.getSuperclass ?type))))
 
 (defn
   aspect-declaredsuperaspect
