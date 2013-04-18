@@ -304,11 +304,36 @@
 (defn
   nestedtype
   "Relation of nested types known to the AspectJ weaver. 
-   This includes: member classes, local classes, anonymous classes."
+   This includes: member, local and anonymous types."
   [?resolvedtype]
   (all 
     (type ?resolvedtype)
     (succeeds (.isNested ?resolvedtype))))
+
+(defn
+  nestedtype-outertype
+  "Relation between a nested and its outer type.
+
+   e.g., (ekeko* [?i ?o]  (interface ?i) (nestedtype-outertype ?i ?o))
+
+   See also nestedtype-outermostype/2"
+  [?nested ?outer]
+  (all 
+    (nestedtype ?nested)
+    (equals ?outer (.getOuterClass ?nested)))) ;also returns other outer types
+
+
+(defn
+  nestedtype-outermosttype
+  "Relation between a nested and its outermost type."
+  [?nested ?outermost]
+  (fresh [?outer] 
+    (nestedtype-outertype ?nested ?outer)
+    (conda [(nestedtype ?outer)
+            (nestedtype-outermosttype ?outer ?outermost)]
+           [(== ?outermost ?outer)])))
+    
+
  
 (defn
   aspect
