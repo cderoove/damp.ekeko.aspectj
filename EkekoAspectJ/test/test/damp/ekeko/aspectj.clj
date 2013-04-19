@@ -51,13 +51,6 @@
            (world/aspect-dominates-aspect-implicitly+ ?dom ?sub))
  "#{(\"cl.pleiad.ajlmp.testPrecedence.FourthAspect\" \"cl.pleiad.ajlmp.testPrecedence.ThirdAspect\") (\"cl.pleiad.ajlmp.testPrecedence.SixthAspect\" \"cl.pleiad.ajlmp.testPrecedence.FourthAspect\") (\"cl.pleiad.ajlmp.testPrecedence.SixthAspect\" \"cl.pleiad.ajlmp.testPrecedence.ThirdAspect\") (\"cl.pleiad.ajlmp.testPrecedence.EightAspect\" \"cl.pleiad.ajlmp.testPrecedence.SeventhAspect\")}"))
 
-;OK 16 oct
-;Below bug is not present
-;BUG: in final precedence calculation if there is an implicit precedence A->B
-;and explicit precedence B->A then A->B should not be present
-; This returns:
-;([#<ReferenceType cl.pleiad.ajlmp.testPrecedence.ThirdAspect> #<ReferenceType cl.pleiad.ajlmp.testPrecedence.FirstAspect> #<ProgramElement baseMethod1()>] [#<ReferenceType cl.pleiad.ajlmp.testPrecedence.FirstAspect> #<ReferenceType cl.pleiad.ajlmp.testPrecedence.ThirdAspect> #<ProgramElement baseMethod1()>] [#<ReferenceType cl.pleiad.ajlmp.testPrecedence.FirstAspect> #<ReferenceType cl.pleiad.ajlmp.testPrecedence.FourthAspect> #<ProgramElement baseMethod1()>] [#<ReferenceType cl.pleiad.ajlmp.testPrecedence.FourthAspect> #<ReferenceType cl.pleiad.ajlmp.testPrecedence.FirstAspect> #<ProgramElement baseMethod1()>])
-; but should also be between 4 and 5 
 (deftest
   aspect-dominates-aspect-test 
   (test/tuples-correspond 
@@ -79,7 +72,6 @@
            (assumptions/overriden-implicit-precedence-shadow ?first ?second ?shadow))
     "#{(\"cl.pleiad.ajlmp.testPrecedence.FourthAspect\" \"cl.pleiad.ajlmp.testPrecedence.ThirdAspect\" \"baseMethod1()\")}"))
 
-; OK 16 oct
 (deftest
   incomplete-precedence-test
   (test/tuples-correspond
@@ -115,6 +107,12 @@
            (assumptions/same-pointcutname-aspect1-aspect2 ?name ?aspect1 ?aspect2))
     "#{(\"pc2\" \"cl.pleiad.ajlmp.testMutExHeuristics.SecondAspect\" \"cl.pleiad.ajlmp.testMutExHeuristics.ThirdAspect\") (\"pc2\" \"cl.pleiad.ajlmp.testMutExHeuristics.ThirdAspect\" \"cl.pleiad.ajlmp.testMutExHeuristics.SecondAspect\")}"))
 
+(deftest same-shadows-test
+  (test/tuples-correspond
+    (ekeko [?aspect1 ?aspect2]
+           (assumptions/sameshadows-aspect1-aspect2 ?aspect1 ?aspect2))
+    "#{(\"cl.pleiad.ajlmp.testMutExHeuristics.FifthAspect\" \"cl.pleiad.ajlmp.testMutExHeuristics.FourthAspect\") (\"cl.pleiad.ajlmp.testMutExHeuristics.FourthAspect\" \"cl.pleiad.ajlmp.testMutExHeuristics.FifthAspect\")}"))
+
 ;; Test Suite
 ;; ----------
 
@@ -139,6 +137,8 @@
   ;assumptions from paper
    ;3.1.1 assumption 2, case 1  
   (test/against-project-named "AJ-LMP-MutExHeuristics" false same-pointcutname-test)
+  ;3.1.1 assumption 2, case 3
+  (test/against-project-named "AJ-LMP-MutExHeuristics" false same-shadows-test)
   ; 3.1.1 assumption 5
   (test/against-project-named "AJ-LMP-ITD" true intertypemethod-unused-test)
   ; 3.1.1 assumption 7 
@@ -157,8 +157,8 @@
 
 ; note: uncommenting would run the tests upon loading
 
-;(comment  
+(comment  
   
   (run-tests)
   
- ; )
+ )

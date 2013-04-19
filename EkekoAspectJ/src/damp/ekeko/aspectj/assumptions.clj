@@ -261,7 +261,6 @@
 )
 ;;===========================================================================================
 
-(comment 
 (defn
   aspect-shadow
   [?aspect ?shadow]
@@ -280,5 +279,17 @@
            (l/!= ?aspect1 ?aspect2) ;also exclude that one is the super of the other
            (findall ?shadow1 (aspect-shadow ?aspect1 ?shadow1) ?shadows1)
            (findall ?shadow2 (aspect-shadow ?aspect2 ?shadow2) ?shadows2)
-           (succeeds (empty? (clojure.set/difference (set ?shadows1) (set ?shadows2))))))
+           (same-elements ?shadows1 ?shadows2)))
+
+;;===========================================================================================
+
+(comment
+; for the simple AJ reentrancy idiom
+(defn
+  reentrant-aspect-advice
+  [?aspect ?advice]
+  (l/fresh [?shadow]
+           (aspect-advice ?aspect ?advice)
+           (advice-shadow ?advice ?shadow)
+           (shadow-enclosingmethoddeclaration ?shadow ?advice)))
 )
