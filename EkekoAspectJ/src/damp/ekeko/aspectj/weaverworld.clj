@@ -12,7 +12,7 @@
      (:import 
        [org.eclipse.ajdt.core.model AJProjectModelFacade AJRelationshipType AJRelationshipManager]
        [org.aspectj.weaver.model AsmRelationshipProvider]
-       [org.aspectj.weaver.patterns Declare DeclarePrecedence]
+       [org.aspectj.weaver.patterns Declare DeclarePrecedence DeclareAnnotation DeclareErrorOrWarning DeclareParents DeclarePrecedence DeclareSoft DeclareTypeErrorOrWarning]
        [damp.ekeko EkekoModel]
        [damp.ekeko.aspectj AspectJProjectModel]
        [org.aspectj.weaver AdviceKind World ResolvedTypeMunger ConcreteTypeMunger ReferenceType UnresolvedType ResolvedType  Member]
@@ -1125,7 +1125,7 @@
 
 (defn
   aspect-declare
-  "Relation between an aspect and one of its aspect-specific declarations."
+  "Relation between an aspect and one of its declare declarations."
   [?aspect ?declare]
   (all
     (aspect ?aspect)
@@ -1134,7 +1134,7 @@
 
 (defn
   declare
-  "Relation of all aspect-specific declarations known to the weaver."
+  "Relation of all declare declarations known to the weaver."
   [?declare]
   (conda [(v+ ?declare)
           (succeeds (instance? Declare ?declare))]
@@ -1142,7 +1142,24 @@
           (fresh [?aspect]
                  (aspect-declare ?aspect ?declare))]))
   
+(defn
+  declare|parents
+  "Relation of all parents declare declarations."
+  [?declare]
+  (all
+    (declare ?declare)
+    (succeeds (instance? DeclareParents ?declare))))
 
+(defn
+  declare|annotation
+  "Relation of all annotation declare declarations."
+  [?declare]
+  (all
+    (declare ?declare)
+    (succeeds (instance? DeclareAnnotation ?declare))))
+
+
+;;TODO: should be renamed (but also its uses in the test cases) for consistency
 (defn
   declareprecedence
   "Relation of all precedence declarations."
@@ -1150,6 +1167,83 @@
   (all
     (declare ?declare)
     (succeeds (instance? DeclarePrecedence ?declare))))
+
+(def
+  declare|precedence
+  declareprecedence)
+
+
+(defn
+  declare|warning 
+  "Relation of all warning declare declarations (pc expression)."
+  [?declare]
+  (all
+    (declare ?declare)
+    (succeeds (instance? DeclareErrorOrWarning ?declare))
+    (equals false (.isError ?declare))))
+
+
+(defn
+  declare|twarning 
+  "Relation of all warning declare declarations (type pattern)."
+  [?declare]
+  (all
+    (declare ?declare)
+    (succeeds (instance? DeclareTypeErrorOrWarning ?declare))
+    (succeeds (.isError ?declare))))
+
+
+(defn
+  declare|error 
+  "Relation of all error declare declarations (pc expression)"
+  [?declare]
+  (all
+    (declare ?declare)
+    (succeeds (instance? DeclareErrorOrWarning ?declare))
+    (succeeds (.isError ?declare))))
+
+(defn 
+  declare|terror
+  "Relation of all warning declare declarations (type pattern)."
+  [?declare]
+  (declare ?declare)
+    (succeeds (instance? DeclareTypeErrorOrWarning ?declare))
+    (equals true (.isError ?declare)))
+
+
+
+(defn
+  declare|soft
+  "Relation of all soft declare declarations."
+  [?declare]
+  (all
+    (declare ?declare)
+    (succeeds (instance? DeclareSoft ?declare))))
+
+
+
+
+(defn
+  declare|parents-patterns 
+  "Relation between a declare parents ?declare and its TypePatternList of declared ?parents."
+  [?declare ?parents]
+  (all
+    (declare|parents ?declare)
+    (equals ?parents (.getParents ?declare))))
+
+(comment
+(defn
+  declare|parents-pattern
+  "Relation between a declare parents ?declare and of its type patterns."
+  [?declare ?parent]
+  (fresh [?parents]
+         (declare|parents-patterns ?declare ?parents)
+         (contains ?parents ?parent)))
+)
+    
+
+
+
 
 
 (defn
