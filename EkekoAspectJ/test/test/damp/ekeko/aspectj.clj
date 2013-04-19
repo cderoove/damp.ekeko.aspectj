@@ -113,8 +113,17 @@
            (assumptions/sameshadows-aspect1-aspect2 ?aspect1 ?aspect2))
     "#{(\"cl.pleiad.ajlmp.testMutExHeuristics.FifthAspect\" \"cl.pleiad.ajlmp.testMutExHeuristics.FourthAspect\") (\"cl.pleiad.ajlmp.testMutExHeuristics.FourthAspect\" \"cl.pleiad.ajlmp.testMutExHeuristics.FifthAspect\")}"))
 
+(deftest inclusion-test
+  (test/tuples-correspond
+    (ekeko [?modifier ?modified]
+           (assumptions/modifies-aspect1-aspect2 ?modifier ?modified))
+    "#{(\"cl.pleiad.ajlmp.testInclusion.ThirdAspect\" \"cl.pleiad.ajlmp.testInclusion.FirstAspect\") (\"cl.pleiad.ajlmp.testInclusion.SecondAspect\" \"cl.pleiad.ajlmp.testInclusion.FirstAspect\")}"))
+
 ;; Test Suite
 ;; ----------
+
+; an example to generate the tuple string for the tests:
+; (test/tuples-to-stringsetstring (ekeko [?a1 ?a2] (assumptions/sameshadows-aspect1-aspect2 ?a1 ?a2)))
 
 ;note: (runtests) will report that one more test has been run (successfully)
 ;than those that are listed here .. seems "normal"
@@ -135,6 +144,8 @@
   (test/against-project-named "AJ-LMP-Precedence" false incomplete-precedence-shadow-test)
  
   ;assumptions from paper
+  ; paper 3.1.1 assumption 1 case 1 and case 2. Also paper 3.2.3 assumption 2
+  (test/against-project-named "AJ-LMP-Inclusion" false inclusion-test)
    ;3.1.1 assumption 2, case 1  
   (test/against-project-named "AJ-LMP-MutExHeuristics" false same-pointcutname-test)
   ;3.1.1 assumption 2, case 3

@@ -63,7 +63,7 @@
 ;; paper 3.1.1 assumption 1 case 1 and case 2
 ;; also paper 3.2.3 assumption 2
 (defn 
-  modifies-aspect
+  modifies-aspect1-aspect2
   [?modifier ?modified] ;;A2 and A1
   (l/fresh [?advice ?shadow]
          (aspect-advice ?modifier ?advice)
@@ -224,14 +224,6 @@
      (pointcut-name ?pc2 ?name)))
 
 ;;===========================================================================================
-(comment
-;; no longer needed. example of findall
-(defn
-  aspect-alldefdpointcuts
-  [?aspect ?pointcuts]
-  (l/all
-    (aspect ?aspect)
-    (findall ?pointcut (aspect-pointcutdefinition ?aspect ?pointcut) ?pointcuts))) 
 
 (defn 
   aspect-usedpointcut
@@ -240,13 +232,24 @@
            (aspect-advice ?aspect ?advice)
            (advice-pointcut ?advice ?pointcut)))
 
+;; Using same pointcuts does not work due to issue #7
+;; so we check on pointcut name
+;; does not work due to issue #6: these guys here do not have a name
+(defn
+  aspect-usedpointcutname
+  [?aspect ?pointcutname]
+  (l/fresh [?pointcut]
+    (aspect-usedpointcut ?aspect ?pointcut)
+    (pointcut-name ?pointcut ?pointcutname)))
+
+;; Using same pointcuts does not work due to issue #7
+;; so we check on pointcut name
 (defn aspect-allusedpointcuts
   [?aspect ?usedpointcuts]
   (l/all
     (aspect ?aspect)
-    (findall ?usedpointcut (aspect-usedpointcut ?aspect ?usedpointcut) ?usedpointcuts)))
+    (findall ?usedpointcut (aspect-usedpointcutname ?aspect ?usedpointcut) ?usedpointcuts)))
 
-;;Does not work due to issue #7
 ;;paper 3.1.1 assumption 2, case 2
 (defn
   samepointcuts-reuse-super-sub1-sub2
@@ -257,8 +260,9 @@
            (l/!= ?aspect1 ?aspect2)
            (aspect-allusedpointcuts ?aspect1 ?usedpc1)
            (aspect-allusedpointcuts ?aspect2 ?usedpc2)
-           (succeeds (empty? (clojure.set/difference (set ?usedpc1) (set ?usedpc2)))) )) 
-)
+           (same-elements ?usedpc1 ?usedpc2)
+           )) 
+
 ;;===========================================================================================
 
 (defn
@@ -268,7 +272,6 @@
            (aspect-advice ?aspect ?advice)
            (advice-shadow ?advice ?shadow)))
 
-;;to test -- BUG: last line always succeeds. See mail to Coen on Apr 16
 ;;paper 3.1.1 assumption 2, case 3
 (defn
   sameshadows-aspect1-aspect2
@@ -276,7 +279,7 @@
   (l/fresh [?shadows1 ?shadows2]
            (aspect ?aspect1)
            (aspect ?aspect2)
-           (l/!= ?aspect1 ?aspect2) ;also exclude that one is the super of the other
+           (l/!= ?aspect1 ?aspect2)
            (findall ?shadow1 (aspect-shadow ?aspect1 ?shadow1) ?shadows1)
            (findall ?shadow2 (aspect-shadow ?aspect2 ?shadow2) ?shadows2)
            (same-elements ?shadows1 ?shadows2)))
