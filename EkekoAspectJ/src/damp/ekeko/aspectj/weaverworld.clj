@@ -1222,13 +1222,48 @@
 
 
 (defn
-  declare|parents-patterns 
-  "Relation between a declare parents ?declare and its TypePatternList of declared ?parents."
+  declare|parents-parents|patterns 
+  "Relation between a declare parents ?declare and its TypePatternList of ?parents."
   [?declare ?parents]
   (all
     (declare|parents ?declare)
     (equals ?parents (.getParents ?declare))))
 
+
+(defn-
+  typepatterns2types
+  [typepatternlist world]
+  (let [patterns (.getTypePatterns typepatternlist)]
+    (for [pattern patterns]
+      (.resolve (.getExactType pattern) world))))
+
+(defn
+  declare|parents-parents|types
+  "Relation between a declare parents ?declare and its collection of parent ?types."
+  [?declare ?types]
+  (fresh [?world ?patterns]
+         (weaverworld ?world)
+         (declare|parents-parents|patterns ?declare ?patterns)
+         (equals ?types (typepatterns2types ?patterns ?world))))
+         
+
+(defn
+  declare|parents-parent|type
+  "Relation between a declare parents ?declare and one of its parent types ?type."
+  [?declare ?type]
+  (fresh [?types]
+         (declare|parents-parents|types ?declare ?types)
+         (contains ?types ?type)))
+
+
+
+(defn
+  declare|parents-target-parent
+  "Relation between a declare parents ?declare, one of its target type ?target, and one of its parent types ?parent."
+  [?declare ?target ?parent]
+  (all
+    (declare|parents-target|type ?declare ?target)
+    (declare|parents-parent|type ?declare ?parent)))
 
 (comment
 
@@ -1276,7 +1311,6 @@
     (declare|parents ?declare)
     (type ?target)
     (succeeds (.match ?declare ?target))))
-
 
 (defn
   declareprecedence-patterns 
@@ -1475,7 +1509,4 @@
     (element-enclosingtypedeclaration-element  ?shadow ?element)
     (element-type ?element ?type)))
 
-  
-
-
-    
+     
