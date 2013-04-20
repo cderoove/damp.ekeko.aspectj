@@ -1221,8 +1221,6 @@
     (succeeds (instance? DeclareSoft ?declare))))
 
 
-
-
 (defn
   declare|parents-patterns 
   "Relation between a declare parents ?declare and its TypePatternList of declared ?parents."
@@ -1231,19 +1229,53 @@
     (declare|parents ?declare)
     (equals ?parents (.getParents ?declare))))
 
+
 (comment
-(defn
-  declare|parents-pattern
-  "Relation between a declare parents ?declare and of its type patterns."
-  [?declare ?parent]
-  (fresh [?parents]
-         (declare|parents-patterns ?declare ?parents)
-         (contains ?parents ?parent)))
+
+; Commented out because isExtends is always true
+; TODO:if necessary to distinguish extends/implements declare parents, find other way
+
+; // note - will always return true after deserialization, this doesn't affect weaver
+;	public boolean isExtends() {
+;		return this.isExtends;
+;	}
+
+  
+  (defn
+    declare|parents|extends
+    "Relation of declare parents extends declarations."
+    [?declare]
+    (all
+      (declare|parents ?declare)
+      (succeeds (.isExtends ?declare))))
+
 )
-    
 
 
 
+(defn
+  declare|parents-target|pattern
+  "Relation between a declare parents declaration and its target type pattern."
+  [?declare ?targetpattern]
+  (all
+    (declare|parents ?declare)
+    (equals ?targetpattern (.getChild ?declare))))
+
+;;TODO: iterating over all types is slow, and might miss types that match dynamically:
+;; 	public boolean match(ResolvedType typeX) {
+;;		if (!child.matchesStatically(typeX)) {
+;;			return false;
+;;		}
+;; ....
+
+(defn
+  declare|parents-target|type
+  "Relation between a declare parents declaration and its target type."
+  [?declare ?target]
+  (all
+    (declare|parents ?declare)
+    (type ?target)
+    (succeeds (.match ?declare ?target))))
 
 
 (defn
