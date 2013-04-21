@@ -585,15 +585,6 @@
 
 
 (defn
-  aspect-declaredsuper
-  "Relation between an aspect and its super class (including java.lang.Object for aspects
-   that do not declare a super aspect)."
-  [?aspect ?super]
-  (all
-    (aspect ?aspect)
-    (equals ?super (.getSuperclass ?aspect))))
-
-(defn
   type-declaredsuper
   "Relation between an aspect and its super class (including java.lang.Object for aspects
    that do not declare a super aspect)."
@@ -601,6 +592,16 @@
   (all
     (type ?type)
     (equals ?super (.getSuperclass ?type))))
+
+(defn
+  aspect-declaredsuper
+  "Relation between an aspect and its super class (including java.lang.Object for aspects
+   that do not declare a super aspect)."
+  [?aspect ?super]
+  (all
+    (aspect ?aspect)
+    (type-declaredsuper ?aspect ?super)))
+
 
 (defn
   aspect-declaredsuperaspect
@@ -618,19 +619,28 @@
   [?aspect ?super]
   (all
     (aspect-declaredsuper ?aspect ?super)
-    (succeeds (.isClass  ?super))))
+    (class ?super)))
+
+
+(defn
+  type-declaredsuper+
+  "Relation between a type and one of the ancestors in its declared super hierarchy."
+  [?type ?ancestor]
+  (conde
+    [(type-declaredsuper ?type ?ancestor) ]
+    [(fresh [?inbetween]
+              (type-declaredsuper ?type ?inbetween)
+              (type-declaredsuper+ ?inbetween ?ancestor))]))
 
 
 (defn
   aspect-declaredsuper+
   "Relation between an aspect and one of the ancestors in its declared super hierarchy."
   [?aspect ?ancestor]
-  (conde
-    [(aspect-declaredsuper ?aspect ?ancestor) ]
-    [(fresh [?inbetween]
-              (aspect-declaredsuper ?aspect ?inbetween)
-              (aspect-declaredsuper+ ?inbetween ?ancestor))]))
-
+  (all
+    (aspect ?aspect)
+    (type-declaredsuper+ ?aspect ?ancestor)))
+  
 (defn
   aspect-declaredsuperaspect+
   "Relation between an aspect and one of the ancestor aspects in its declared super hierarchy."
@@ -645,11 +655,25 @@
   [?aspect ?ancestor]
   (all
     (aspect-declaredsuper+ ?aspect ?ancestor)
-    (succeeds (.isClass  ?ancestor))))
+    (class  ?ancestor)))
 
 
 ;todo: wantgenerics is true, check whether this is compatible with the types returned by the other predicates
 ;(i.e., test with a parameterized aspec)
+
+
+(defn
+  type-super+
+  "Relation between a type and one of its direct or indirect
+   super types (classes, aspects as well as interfaces),
+   including those that stem from an intertype declaration."
+  [?type ?super]
+  (all
+    (!= ?super ?type)
+    (type ?type)
+    (contains (iterator-seq (.getHierarchy ?type true true)) ?super)))
+
+
 (defn
   aspect-super+
   "Relation between an aspect and one of its direct or indirect
@@ -657,9 +681,9 @@
    including those that stem from an intertype declaration."
   [?aspect ?type]
   (all
-    (!= ?type ?aspect)
     (aspect ?aspect)
-    (contains (iterator-seq (.getHierarchy ?aspect true true)) ?type)))
+    (type-super+ ?aspect ?type)))
+
 
 (defn
   aspect-superaspect+
@@ -678,7 +702,7 @@
   [?aspect ?type]
   (all
     (aspect-super+ ?aspect ?type)
-    (succeeds (.isInterface ?type))))
+    (interface ?type)))
 
 (defn
   aspect-superclass+
@@ -687,7 +711,7 @@
   [?aspect ?type]
   (all
     (aspect-super+ ?aspect ?type)
-    (succeeds (.isClass ?type))))
+    (class ?type)))
   
 
 ;; Advice
@@ -1254,8 +1278,6 @@
   (fresh [?types]
          (declare|parents-parents|types ?declare ?types)
          (contains ?types ?type)))
-
-
 
 (defn
   declare|parents-target-parent
