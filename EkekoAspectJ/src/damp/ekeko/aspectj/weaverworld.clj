@@ -12,7 +12,7 @@
      (:import 
        [org.eclipse.ajdt.core.model AJProjectModelFacade AJRelationshipType AJRelationshipManager]
        [org.aspectj.weaver.model AsmRelationshipProvider]
-       [org.aspectj.weaver.patterns Declare DeclarePrecedence DeclareAnnotation DeclareErrorOrWarning DeclareParents DeclarePrecedence DeclareSoft DeclareTypeErrorOrWarning]
+       [org.aspectj.weaver.patterns AndPointcut Declare DeclarePrecedence DeclareAnnotation DeclareErrorOrWarning DeclareParents DeclarePrecedence DeclareSoft DeclareTypeErrorOrWarning]
        [damp.ekeko EkekoModel]
        [damp.ekeko.aspectj AspectJProjectModel]
        [org.aspectj.weaver AdviceKind World ResolvedTypeMunger ConcreteTypeMunger ReferenceType UnresolvedType ResolvedType  Member]
@@ -1029,6 +1029,95 @@
 ;; Pointcuts
 ;; ---------
 
+
+(defn-
+  advice-poincut|raw
+  "Relation between an Advice ?advice and its raw, implementation-level Pointcut ?pointcut.
+   These are conjunctions of the user-defined Pointcut and one synthetic Pointcut corresponding 
+   to its aspect's PerClause (cflow, super, object, singleton, typewithin)."
+  [?advice ?pointcut]
+  (all
+         (advice ?advice)
+         (equals ?pointcut (.getPointcut ?advice))))
+  
+(clojure.core/declare pointcutdefinition-pointcut)
+
+(defn
+  pointcut
+  "Relation of all pointcuts known to the AspectJ weaver.
+   Note that these are not pointcut definitions."
+  [?pointcut]
+  (fresh [?pointcutdefinition]
+         (pointcutdefinition-pointcut ?pointcutdefinition ?pointcut)))
+
+
+(defn
+  advice-pointcut
+  "Relation between an Advice ?advice and its Pointcut ?pointcut.
+   Note that these are different from the ResolvedPointcutDefinition instances returned
+   by aspect-pointcutdefinition."
+  [?advice ?pointcut]
+  (fresh [?raw]
+         (advice-poincut|raw ?advice ?raw)
+         (succeeds (instance? AndPointcut ?raw)) ;;TODO: check whether others are possible?
+         (equals ?pointcut (.getLeft ?raw))))
+
+(defn
+  advice-pointcutdefinition
+  [?advice ?pointcutdefinition]
+  (fresh [?pc]
+         (advice-pointcut ?advice ?pc)
+         (pointcutdefinition-pointcut ?pointcutdefinition ?pc)))
+    
+  
+                   
+
+;;TODO: decide whether to define relations on Pointcut hierarcy or on PointcutDefinitionHierarchy? 
+;; (latter is probably better, given concrete/abstract)
+
+
+;; Pointcut definitions
+;; --------------------
+
+(defn
+  aspect-pointcutdefinitions
+  "Relation between an aspect and its declared pointcutdefinitions.
+   Note that these are instances of ResolvedPointcutDefinition,
+   rather than the Pointcut instances within ShadowMungers (advice)."
+  [?aspect ?pointcutdefinitions]
+  (all 
+    (aspect ?aspect)
+    (equals ?pointcutdefinitions (.getDeclaredPointcuts ?aspect))))
+
+(def
+  ^{:doc "Alias for aspect-pointcutdefinitions."}
+  type-pointcutdefinitions
+  aspect-pointcutdefinitions)
+
+(defn
+  aspect-pointcutdefinition
+  "Relation between an aspect and one of the pointcuts it declares.
+   Note that these are instances of ResolvedPointcutDefinition,
+   rather than the Pointcut instances within ShadowMungers (advice)."
+  [?aspect ?pointcutdefinition]
+  (fresh [?pointcutdefinitions] 
+         (aspect-pointcutdefinitions ?aspect ?pointcutdefinitions)
+         (contains ?pointcutdefinitions ?pointcutdefinition)))
+    
+(def
+  ^{:doc "Alias for aspect-pointcutdefinition."}
+  type-pointcutdefinition
+  aspect-pointcutdefinition)
+
+(defn
+  pointcutdefinition
+  "Relation of pointcuts known to the weaver.
+   Note: these are instances of ResolvedPointcutDefinition."
+  [?pointcut]
+  (fresh [?aspect]
+         (aspect-pointcutdefinition ?aspect ?pointcut)))
+
+
 ;; some info: 
 ;; KindedPointcut or MatchesNothingPointcut returned by
 ;; getPointCut() on a PointCutDefinition retrieved through aspect-pointcutdefinition
@@ -1053,75 +1142,18 @@
 ;;                     (equals ?left (.getPointcut ?pd)
 ;;                     ))
 
-;;but to check: pc's of advice always an andpc?
-
 
 (defn
-  advice-pointcut
-  "Relation between an Advice ?advice and its Pointcut ?pointcut.
-   Note that these are different from the ResolvedPointcutDefinition instances returned
-   by aspect-pointcutdefinition."
-  [?advice ?pointcut]
+  pointcutdefinition-pointcut
+  "Relation between a PointcutDefinition and its Pointcut."
+  [?pointcutdefinition ?pointcut]
   (all
-         (advice ?advice)
-         (equals ?pointcut (.getPointcut ?advice))))
+    (pointcutdefinition ?pointcutdefinition)
+    (equals ?pointcut (.getPointcut ?pointcutdefinition))))
 
 
-(defn
-  pointcut
-  "Relation of all pointcuts known to the AspectJ weaver.
-   Note that these are not pointcut definitions."
-  [?advice]
-  (fresh [?advice]
-         (advice-pointcut)))
+;; TOOD: rename pointcut in following to pointcutdefinition
 
-;;todo: 
-;;check Pointcut hierarcy, (AndPointcut, HandlerPointcut, ...)
-
-
-;; Pointcut definitions
-;; --------------------
-
-(defn
-  aspect-pointcutdefinitions
-  "Relation between an aspect and its declared pointcutdefinitions.
-   Note that these are instances of ResolvedPointcutDefinition,
-   rather than the Pointcut instances within ShadowMungers (advice)."
-  [?aspect ?pointcutdefinitions]
-  (all 
-    (aspect ?aspect)
-    (equals ?pointcutdefinitions (.getDeclaredPointcuts ?aspect))))
-
-(def
-  ^{:doc "Alias for aspect-pointcutdefinitions."}
-  type-pointcutdefinitions
-  aspect-pointcutdefinitions)
-
-
-
-(defn
-  aspect-pointcutdefinition
-  "Relation between an aspect and one of the pointcuts it declares.
-   Note that these are instances of ResolvedPointcutDefinition,
-   rather than the Pointcut instances within ShadowMungers (advice)."
-  [?aspect ?pointcutdefinition]
-  (fresh [?pointcutdefinitions] 
-         (aspect-pointcutdefinitions ?aspect ?pointcutdefinitions)
-         (contains ?pointcutdefinitions ?pointcutdefinition)))
-    
-
-(def
-  ^{:doc "Alias for aspect-pointcutdefinition."}
-  type-pointcutdefinition
-  aspect-pointcutdefinition)
-
-(defn
-  pointcutdefinition
-  "Relation of pointcuts known to the weaver.
-   Note: these are instances of ResolvedPointcutDefinition."
-  [?pointcut]
-  (fresh [?aspect]
-         (aspect-pointcutdefinition ?aspect ?pointcut)))
 
 (defn
   pointcut-name
