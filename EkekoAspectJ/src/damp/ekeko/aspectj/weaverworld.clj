@@ -1279,13 +1279,6 @@
          (declare|parents-parents|types ?declare ?types)
          (contains ?types ?type)))
 
-(defn
-  declare|parents-target-parent
-  "Relation between a declare parents ?declare, one of its target type ?target, and one of its parent types ?parent."
-  [?declare ?target ?parent]
-  (all
-    (declare|parents-target|type ?declare ?target)
-    (declare|parents-parent|type ?declare ?parent)))
 
 (comment
 
@@ -1333,6 +1326,17 @@
     (declare|parents ?declare)
     (type ?target)
     (succeeds (.match ?declare ?target))))
+
+
+(defn
+  declare|parents-target-parent
+  "Relation between a declare parents ?declare, one of its target type ?target, and one of its parent types ?parent."
+  [?declare ?target ?parent]
+  (all
+    (declare|parents-target|type ?declare ?target)
+    (declare|parents-parent|type ?declare ?parent)))
+
+
 
 (defn
   declareprecedence-patterns 
