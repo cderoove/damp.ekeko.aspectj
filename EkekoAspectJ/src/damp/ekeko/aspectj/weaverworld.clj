@@ -1029,6 +1029,32 @@
 ;; Pointcuts
 ;; ---------
 
+;; some info: 
+;; KindedPointcut or MatchesNothingPointcut returned by
+;; getPointCut() on a PointCutDefinition retrieved through aspect-pointcutdefinition
+;; differ from Pointcut returned by advice-pointcut
+
+;; (damp.ekeko/ekeko [?pd ?p]
+;;                (fresh [?a] (aspect-pointcutdefinition ?a ?pd))
+;;                  (fresh [?a] (advice-pointcut ?a ?p))
+;;                  (equals ?p (.getPointcut ?pd)))
+;; 
+
+;; reason being the persingleton etc that are added
+
+;;following query correctly links a pc to its pcdefinition
+;;(damp.ekeko/ekeko* [?pd ?p ?left]
+;;                     ;<AndPointcut (execution(* cl.pleiad.ajlmp.testPointcuts.BaseClass.*2(..)) && persingleton(cl.pleiad.ajlmp.testPointcuts.SecondAspect))>
+;;                     (fresh [?advice] (advice-pointcut ?advice ?p))
+;;                     ;;rhs of and is always a  persingleton(cl.pleiad.ajlmp.testPointcuts.SecondAspect) etc
+;;                     (equals ?left (.getLeft ?p)) 
+;;                     ;lhs is <KindedPointcut execution(* cl.pleiad.ajlmp.testPointcuts.BaseClass.*2(..))>
+;;                     (fresh [?aspect]  (aspect-pointcutdefinition ?aspect ?pd))
+;;                     (equals ?left (.getPointcut ?pd)
+;;                     ))
+
+;;but to check: pc's of advice always an andpc?
+
 
 (defn
   advice-pointcut
