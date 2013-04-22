@@ -220,8 +220,8 @@
      (aspect-pointcutdefinition ?aspect1 ?pc1)
      (aspect-pointcutdefinition ?aspect2 ?pc2)
      (l/!= ?aspect1 ?aspect2)
-     (pointcut-name ?pc1 ?name)
-     (pointcut-name ?pc2 ?name)))
+     (pointcutdefinition-name ?pc1 ?name)
+     (pointcutdefinition-name ?pc2 ?name)))
 
 ;;===========================================================================================
 
@@ -240,7 +240,7 @@
   [?aspect ?pointcutname]
   (l/fresh [?pointcut]
     (aspect-usedpointcut ?aspect ?pointcut)
-    (pointcut-name ?pointcut ?pointcutname)))
+    (pointcutdefinition-name ?pointcut ?pointcutname)))
 
 ;; Using same pointcuts does not work due to issue #7
 ;; so we check on pointcut name

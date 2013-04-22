@@ -12,7 +12,7 @@
      (:import 
        [org.eclipse.ajdt.core.model AJProjectModelFacade AJRelationshipType AJRelationshipManager]
        [org.aspectj.weaver.model AsmRelationshipProvider]
-       [org.aspectj.weaver.patterns AndPointcut Declare DeclarePrecedence DeclareAnnotation DeclareErrorOrWarning DeclareParents DeclarePrecedence DeclareSoft DeclareTypeErrorOrWarning]
+       [org.aspectj.weaver.patterns Pointcut AndPointcut Declare DeclarePrecedence DeclareAnnotation DeclareErrorOrWarning DeclareParents DeclarePrecedence DeclareSoft DeclareTypeErrorOrWarning]
        [damp.ekeko EkekoModel]
        [damp.ekeko.aspectj AspectJProjectModel]
        [org.aspectj.weaver AdviceKind World ResolvedTypeMunger ConcreteTypeMunger ReferenceType UnresolvedType ResolvedType  Member]
@@ -1078,17 +1078,37 @@
          (equals ?pointcut (.getLeft ?raw))))
 
 
+(clojure.core/declare pointcutdefinition-pointcut)
+
+(defn-
+  pointcut|maybeduplicate
+  [?pointcut]
+  (conde [(fresh [?advice]
+                 ;pointcuts inline in an advice
+                 ;or the same pointcut as the one in the pointcutdefinition the advice refers to
+                 (advice-pointcut ?advice ?pointcut))]
+         [(fresh [?pointcutdefinition]
+                 ;pointcuts within a pointcutdefinition (including those in a definition never referred to by an advice)
+                 (pointcutdefinition-pointcut ?pointcutdefinition ?pointcut))]))
+
+(defn-
+  pointcuts|noduplicates
+  []
+  (let [results (run* [?pc] (pointcut|maybeduplicate ?pc))]
+    (vec (set results))))
+  
+
 (defn
   pointcut
-  "Relation of all Pointcuts referred to be Advices.
-   Note that these are not PointcutDefinitions, of which there might be fewer."
-  [?pointcut]
-  (fresh [?advice]
-         (advice-pointcut ?advice ?pointcut)))
+  "Relation of all Pointcut in Advice or PointcutDefinition."
+  [?pc]
+  (conda
+    [(v+ ?pc)
+     (succeeds (instance? Pointcut ?pc))]
+    [(v- ?pc)
+     (contains (pointcuts|noduplicates) ?pc)]))
 
 
-
-(clojure.core/declare pointcut-pointcutdefinition)
 
 (defn
   advice-pointcutdefinition
@@ -1097,7 +1117,7 @@
   [?advice ?pointcutdefinition]
   (fresh [?pc]
          (advice-pointcut ?advice ?pc)
-         (pointcut-pointcutdefinition ?pc ?pointcutdefinition)))
+         (pointcutdefinition-pointcut ?pointcutdefinition ?pc)))
     
 
   
@@ -1290,33 +1310,9 @@
          (type-pointcutdefinition ?type ?pointcutdefinition)))
 
 
-(clojure.core/declare pointcut)
 
 (defn
-  pointcut-pointcutdefinition
-  "Relation between a Pointcut and the PointcutDefinition it refers to, 
-   if any."
-  [?pointcut ?pointcutdefinition]
-  (all
-    (pointcut ?pointcut)
-    (pointcutdefinition ?pointcutdefinition)
-    (equals ?pointcut (.getPointcut ?pointcutdefinition))))
-
-
-;; TOOD: rename pointcut in following to pointcutdefinition
-
-
-(defn
-  pointcut-name
-  "Relation of pointcuts and their name.
-   Note that pointcuts cannot be overloaded!"
-  [?pointcut ?name]
-  (all
-    (pointcutdefinition ?pointcut)
-    (equals ?name (.getName ?pointcut))))
-
-(defn
-  abstractpointcut
+  pointcutdefinition|abstract
   "Relation of abstract pointcut definitions."
   [?pointcut]
   (all
@@ -1324,13 +1320,25 @@
     (succeeds (.isAbstract ?pointcut))))
 
 (defn
-  concretepointcut
+  pointcutdefinition|concrete
   "Relation of concrete pointcut definitions."
   [?pointcut]
   (all
     (pointcutdefinition ?pointcut)
     (equals false (.isAbstract ?pointcut))))
 
+(clojure.core/declare pointcut)
+
+(defn
+  pointcutdefinition-pointcut
+  "Relation between a concrete pointcut definition and its pointcut."
+  [?pointcutdefinition ?pointcut]
+  (all
+    (pointcutdefinition|concrete ?pointcutdefinition)
+    (equals ?pointcut (.getPointcut ?pointcutdefinition))))
+
+
+(clojure.core/declare pointcutdefinition-name)
 (defn
   pointcut-concretizedby
   "Relation of (possibly abstract) pointcuts and their concretizing pointcuts.
@@ -1341,8 +1349,8 @@
          (aspect-super+ ?concaspect ?abaspect)
          (aspect-pointcutdefinition ?abaspect ?abstractpc)
          (aspect-pointcutdefinition ?concaspect ?concretepc)
-         (pointcut-name ?abstractpc ?name)
-         (pointcut-name ?concretepc ?name)))
+         (pointcutdefinition-name ?abstractpc ?name)
+         (pointcutdefinition-name ?concretepc ?name)))
          
 
 ;(defn
@@ -1757,4 +1765,13 @@
   (all 
     (type ?type)
     (equals ?namestring (.getName ?type))))
+
+(defn
+  pointcutdefinition-name
+  "Relation between a pointcut definitions and its name as a string."
+  [?pointcut ?name]
+  (all
+    (pointcutdefinition ?pointcut)
+    (equals ?name (.getName ?pointcut))))
+
      
