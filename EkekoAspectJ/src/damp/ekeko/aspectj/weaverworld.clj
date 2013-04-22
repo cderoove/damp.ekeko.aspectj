@@ -15,7 +15,7 @@
        [org.aspectj.weaver.patterns Pointcut AndPointcut Declare DeclarePrecedence DeclareAnnotation DeclareErrorOrWarning DeclareParents DeclarePrecedence DeclareSoft DeclareTypeErrorOrWarning]
        [damp.ekeko EkekoModel]
        [damp.ekeko.aspectj AspectJProjectModel]
-       [org.aspectj.weaver AdviceKind World ResolvedTypeMunger ConcreteTypeMunger ReferenceType UnresolvedType ResolvedType  Member]
+       [org.aspectj.weaver AdviceKind World ResolvedTypeMunger ConcreteTypeMunger ReferenceType UnresolvedType ResolvedType  Member ResolvedMemberImpl]
        [org.aspectj.asm AsmManager IProgramElement IProgramElement$Kind IHierarchy ]
        [org.aspectj.weaver.bcel BcelTypeMunger]))
               
@@ -87,7 +87,7 @@
 
 (defn- 
   element-child
-  "Relation of roots of the weaver world ProgramElement hierarchy."
+  "Relation between a ProgramElement ?element and one of its children ?child."
   [?element ?child-element]
   (all
     (element ?element) 
@@ -132,10 +132,10 @@
     (element ?element)
     (equals ?kind (.getKind ?element))))
 
-;note that these are not JVM signature strings, as produced for ResolvedType hierarchy
 (defn-
   element-signature
-  "Relation between a ProgramElement and its signature string."
+  "Relation between a ProgramElement and its signature string.
+   Unfortunately, these are not JVM signature strings, as produced for ResolvedType hierarchy."
   [?element ?signature]
   (all
     (element ?element)
@@ -170,53 +170,80 @@
       sofar)))
 
 (defn-
-  enclosingtypedeclaration-of-element
-  "Returns the most enclosing class, aspect, enum or interface declaration
-   in which the given ProgramElement resides."
-  [element] 
-  (letfn [(typedeclaration? 
-            [element]
-            (let [kind (.getKind element)]
-              (or
-                (= kind (IProgramElement$Kind/INTERFACE))
-                (= kind (IProgramElement$Kind/CLASS))
-                (= kind (IProgramElement$Kind/ENUM))
-                (= kind (IProgramElement$Kind/ASPECT)))))
-          (ancestortypedeclaration 
-            [parent]
-            (if-not
-              (nil? parent)
-              (if 
-                (typedeclaration? parent)
-                parent
-                (recur (.getParent parent)))))]
-         (ancestortypedeclaration (.getParent element))))
-    
-(defn-
-  element-enclosingtypedeclaration-element
-  "Relation between a ProgramElement and its enclosing type (if any)."
-  [?element ?typedeclaration]
-  (all
-    (element ?element)
-    (equals ?typedeclaration (enclosingtypedeclaration-of-element ?element))
-    (!= nil ?typedeclaration)))
+  enclosing-element-satisfying
+  "Returns the first ancestor of the given IProgramElement 
+   that satisfies the given function."
+  [element testf] 
+  (loop 
+    [parent (.getParent element)]
+    (if-not
+      (nil? parent)
+      (if 
+        (testf parent)
+        parent
+        (recur (.getParent parent))))))
+
 
 (defn-
-  elementaspect
+  element-enclosingelement|type
+  "Relation between a ProgramElement and its enclosing ProgramElement 
+   that is of kind CLASS, INTERFACE, ASPECT, ANNOTATION or ENUM (if any)."
+  [?element ?etype]
+  (all
+    (element ?element)
+    (equals ?etype (enclosing-element-satisfying 
+                     ?element
+                     (fn [ancestor] 
+                       (.isType (.getKind ancestor)))))
+    (!= nil ?etype)))
+
+
+(defn-
+  element-enclosingelement|member
+  "Relation between a ProgramElement and its enclosing ProgramElement 
+   that is of kind FIELD, METHOD, CONSTRUCTOR, POINTCUT, ADVICE, ENUM_VALUE (if any).
+   Does not consider intertype members INTER_TYPE_CONSTRUCTOR, INTER_TYPE_FIELD, INTER_TYPE_METHOD."
+  [?element ?emember]
+  (all
+    (element ?element)
+    (equals ?emember (enclosing-element-satisfying 
+                     ?element
+                     (fn [ancestor] 
+                       (.isMember (.getKind ancestor)))))
+    (!= nil ?emember)))
+
+(defn-
+  element-enclosingelement-kind
+  "Relation between a ProgramElement and its enclosing ProgramElement of kind IProgramElement$Kind.
+   Last argument has to be ground."
+  [?element ?enclosing ?kind]
+  (all
+    (element ?element)
+    (equals ?enclosing 
+            (enclosing-element-satisfying 
+              ?element
+              (fn [ancestor] 
+                (= ?kind (.getKind ancestor)))))
+    (!= nil ?enclosing)))
+
+
+
+(defn-
+  element|aspect
   [?element]
   (all
     (element ?element)
     (equals (IProgramElement$Kind/ASPECT) (.getKind ?element))))
 
 (defn-
-  elementclass
+  element|class
   [?element]
   (all
     (element ?element)
     (equals (IProgramElement$Kind/CLASS) (.getKind ?element))))
 
 (defn-
-  elementinterface
+  element|interface
   [?element]
   (all 
     (element ?element)
@@ -224,20 +251,51 @@
 
 
 (defn-
-  elementenum
+  element|enum
   [?element]
   (all
     (element ?element)
     (equals (IProgramElement$Kind/ENUM) (.getKind ?element))))
 
 (defn-
-  elementtypedeclaration
+  element|type
   [?element]
   (conde
-    [(elementenum ?element)]
-    [(elementclass ?element)]
-    [(elementaspect ?element)]
-    [(elementinterface ?element)]))
+    [(element|enum ?element)]
+    [(element|class ?element)]
+    [(element|aspect ?element)]
+    [(element|interface ?element)]))
+
+
+(defn
+  element|member
+  [?element]
+  (all
+    (element ?element)
+    (succeeds (.isMember (.getKind ?element)))))
+
+
+(defn-
+  element|method
+  [?element]
+  (fresh [?kind]
+    (element-kind ?element ?kind)
+    (equals (IProgramElement$Kind/METHOD) ?kind)))
+
+(defn-
+  element|constructor
+  [?element]
+  (fresh [?kind]
+    (element-kind ?element ?kind)
+    (equals (IProgramElement$Kind/CONSTRUCTOR) ?kind)))
+
+(defn-
+  element|advice
+  [?element]
+  (fresh [?kind]
+    (element-kind ?element ?kind)
+    (equals (IProgramElement$Kind/ADVICE) ?kind)))
+
 
 
 ;; Actual Reification of WeaverWorld
@@ -1003,6 +1061,7 @@
              (-> ?intertype .getWorld .getModel)
              (-> ?intertype .getAspectType)
              ?intertype))
+         (!= nil ?equivalentmember)
          (equals ?signaturestring (.toSignatureString ?equivalentmember))
          (element-signature ?member ?signaturestring))) 
   
@@ -1308,8 +1367,6 @@
   [?pointcutdefinition]
   (fresh [?type]
          (type-pointcutdefinition ?type ?pointcutdefinition)))
-
-
 
 (defn
   pointcutdefinition|abstract
@@ -1676,30 +1733,7 @@
 
 
 
-;; Link between ProgramElement (weaverworld/element) and ResolvedType (weaverworld/type)
-;; -------------------------------------------------------------------------------------
-
-;can be used to go from xcut to weaverworld types
-;NO: because need JVM signature rather than what is returned by the xcut elements
-;(defn
-;  weaverworld-signature-resolvedtype
-;  "Non-relational. Unifies ?resolved-type with the type known to the AspectJ weaver
-;   ?world with the given ?signature string. 
-;
-;   Can be used to go from XCut types to weaver world types." 
-;  [?world ?signature ?resolved-type]
-;  (equals ?resolved-type (.resolve ?world ?signature)))
-
-(defn
-  element-type
-  "Relation between a ProgramElement of kind Aspect/Enum/Class/Interface
-   and the ResolvedType instance from the weaver world it corresponds to."
-  [?element ?type]
-  (fresh [?element-name] ;todo: take correct world into account
-         (elementtypedeclaration ?element)
-         (equals ?element-name (str (.getPackageName ?element) "." (.getName ?element))) ;todo: check what this returns for parameterized types
-         (type ?type) 
-         (equals ?element-name (.getName ?type)))) ;or .getBaseName if above includes type parameters
+  
 
 
 
@@ -1722,8 +1756,75 @@
               (projectmodel/aspectj-project-models)))
     (succeeds (.hasModel ?xcut))))
     
-;; Shadows
 
+;; Link between ProgramElement (weaverworld/element) and ResolvedType (weaverworld/type)
+;; -------------------------------------------------------------------------------------
+
+
+(defn-
+  element-type
+  "Relation between a ProgramElement of kind Aspect/Enum/Class/Interface
+   and the ResolvedType instance from the weaver world it corresponds to."
+  [?element ?type]
+  (fresh [?element-name] ;todo: take correct world into account
+         (element|type ?element)
+         (equals ?element-name (str (.getPackageName ?element) "." (.getName ?element))) ;todo: check what this returns for parameterized types
+         (type ?type) 
+         (equals ?element-name (.getName ?type)))) ;or .getBaseName if above includes type parameters
+
+
+;(damp.ekeko/ekeko [?e ?en] (element|method ?e) (equals ?en (.toSignatureString ?e true)))
+;#<ProgramElement main(java.lang.String[])> "main(java.lang.String[])
+(defn-
+  methodparameters-elementsignature
+  [^ResolvedMemberImpl method]
+  (str
+    "("
+    (apply str (interpose "," (map (fn [pt] (.getName pt)) (.getParameterTypes method))))
+    ")"))
+
+(defn-
+  method-elementsignature
+  [^ResolvedMemberImpl method]
+  (str
+    (.getName method)
+    (methodparameters-elementsignature method)))
+
+(defn-
+  constructor-elementsignature
+  [^ResolvedMemberImpl method ^ResolvedType declaringt]
+  (str
+    (.getClassName declaringt)
+    (methodparameters-elementsignature method)))
+
+
+(defn-
+  element-member
+  "Relation between a ProgramElement and the IResolvedMember it corresponds to.
+   "
+  [?element ?member]
+  (fresh [?type ?etype ?kind]
+         (element-enclosingelement|type ?element ?etype)
+         (element-type ?etype ?type)
+         (type-member ?type ?member)
+         (element-kind ?element ?kind)
+         (conda
+           [(== ?kind (IProgramElement$Kind/METHOD))
+            (fresh [?sig]
+                   (equals ?sig (.toSignatureString ?element true))
+                   (equals ?sig (method-elementsignature ?member)))]
+           [(== ?kind (IProgramElement$Kind/CONSTRUCTOR))
+            (equals "<init>" (.getName ?member))
+            (fresh [?sig]
+                   (equals ?sig (.toSignatureString ?element true))
+                   (equals ?sig (constructor-elementsignature ?member ?type)))]
+           )))
+                   
+
+
+
+;; Shadows
+;; -------
 
 ;(defn
 ;  advice-shadow
@@ -1777,12 +1878,69 @@
 
 
 (defn
-  shadow-enclosingtypedeclaration
+  shadow-enclosing|member
+  [?shadow ?member]
+  (fresh [?element]
+    (shadow ?shadow)
+    (element-enclosingelement|member ?shadow ?element)
+    (element-member ?element ?member)))
+
+(defn
+  shadow-enclosing|method
+  "Relation between a shadow and its enclosing method (if any)."
+  [?shadow ?member]
+  (fresh [?element]
+    (shadow ?shadow)
+    (element-enclosingelement-kind ?shadow ?element (IProgramElement$Kind/METHOD))
+    (element-member ?element ?member)))
+
+(defn
+  shadow-enclosing|constructor
+  "Relation between a shadow and its enclosing constructor (if any)."
+  [?shadow ?member]
+  (fresh [?element]
+    (shadow ?shadow)
+    (element-enclosingelement-kind ?shadow ?element (IProgramElement$Kind/CONSTRUCTOR))
+    (element-member ?element ?member)))
+
+(defn
+  shadow-enclosing|intertypemethod
+  "Relation between a shadow and its enclosing intertype method (if any)."
+  [?shadow ?member]
+  (fresh [?element ?intertype ?targettype] 
+    (shadow ?shadow)
+    (element-enclosingelement-kind ?shadow ?element (IProgramElement$Kind/INTER_TYPE_METHOD))
+    (intertype-element ?intertype ?element)
+    (intertype-member-type ?intertype ?member ?targettype)))
+  
+
+(defn
+  shadow-enclosing|type
+  "Relation between a shadow and its enclosing type (aspect/class/interface/enum) (if any)."
   [?shadow ?type]
   (fresh [?element]
     (shadow ?shadow)
-    (element-enclosingtypedeclaration-element  ?shadow ?element)
+    (element-enclosingelement|type ?shadow ?element)
     (element-type ?element ?type)))
+
+(defn
+  shadow-enclosing|class
+  "Relation between a shadow and its enclosing class (if any)."
+  [?shadow ?type]
+  (fresh [?element]
+    (shadow ?shadow)
+    (element-enclosingelement-kind ?shadow ?element (IProgramElement$Kind/CLASS))
+    (element-type ?element ?type)))
+
+(defn
+  shadow-enclosing|aspect
+  "Relation between a shadow and its enclosing aspect (if any)."
+  [?shadow ?type]
+  (fresh [?element]
+    (shadow ?shadow)
+    (element-enclosingelement-kind ?shadow ?element (IProgramElement$Kind/ASPECT))
+    (element-type ?element ?type)))
+
 
 
 

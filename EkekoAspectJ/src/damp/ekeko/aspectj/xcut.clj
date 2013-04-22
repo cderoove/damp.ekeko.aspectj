@@ -36,7 +36,7 @@
       (fn [model] (.getAJProjectFacade ^AspectJProjectModel model)) 
       (projectmodel/aspectj-project-models))))
 
-(defn- 
+(defn 
   xcut
   "Relation of all AJProjectModel facades."
   [?xcut]

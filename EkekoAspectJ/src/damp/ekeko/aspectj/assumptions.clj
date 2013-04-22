@@ -68,7 +68,7 @@
   (l/fresh [?advice ?shadow]
          (aspect-advice ?modifier ?advice)
          (advice-shadow ?advice ?shadow)
-         (shadow-enclosingtypedeclaration ?shadow ?modified)
+         (shadow-enclosing|type ?shadow ?modified)
          (aspect ?modified)
          (l/!= ?modifier ?modified)))
 
