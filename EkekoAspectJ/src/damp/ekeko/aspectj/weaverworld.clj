@@ -458,7 +458,6 @@
     (type-methods ?resolvedtype ?methods)
     (contains ?methods ?method)))
 
-
 (defn
   type-method+
   "Relation between a type and one of its declared or inherited methods (as known to the weaver)."
@@ -1040,83 +1039,6 @@
          (advice ?advice)
          (equals ?pointcut (.getPointcut ?advice))))
   
-(clojure.core/declare pointcutdefinition-pointcut)
-
-(defn
-  pointcut
-  "Relation of all pointcuts known to the AspectJ weaver.
-   Note that these are not pointcut definitions."
-  [?pointcut]
-  (fresh [?pointcutdefinition]
-         (pointcutdefinition-pointcut ?pointcutdefinition ?pointcut)))
-
-
-(defn
-  advice-pointcut
-  "Relation between an Advice ?advice and its Pointcut ?pointcut.
-   Note that these are different from the ResolvedPointcutDefinition instances returned
-   by aspect-pointcutdefinition."
-  [?advice ?pointcut]
-  (fresh [?raw]
-         (advice-poincut|raw ?advice ?raw)
-         (succeeds (instance? AndPointcut ?raw)) ;;TODO: check whether others are possible?
-         (equals ?pointcut (.getLeft ?raw))))
-
-(defn
-  advice-pointcutdefinition
-  [?advice ?pointcutdefinition]
-  (fresh [?pc]
-         (advice-pointcut ?advice ?pc)
-         (pointcutdefinition-pointcut ?pointcutdefinition ?pc)))
-    
-  
-                   
-
-;;TODO: decide whether to define relations on Pointcut hierarcy or on PointcutDefinitionHierarchy? 
-;; (latter is probably better, given concrete/abstract)
-
-
-;; Pointcut definitions
-;; --------------------
-
-(defn
-  aspect-pointcutdefinitions
-  "Relation between an aspect and its declared pointcutdefinitions.
-   Note that these are instances of ResolvedPointcutDefinition,
-   rather than the Pointcut instances within ShadowMungers (advice)."
-  [?aspect ?pointcutdefinitions]
-  (all 
-    (aspect ?aspect)
-    (equals ?pointcutdefinitions (.getDeclaredPointcuts ?aspect))))
-
-(def
-  ^{:doc "Alias for aspect-pointcutdefinitions."}
-  type-pointcutdefinitions
-  aspect-pointcutdefinitions)
-
-(defn
-  aspect-pointcutdefinition
-  "Relation between an aspect and one of the pointcuts it declares.
-   Note that these are instances of ResolvedPointcutDefinition,
-   rather than the Pointcut instances within ShadowMungers (advice)."
-  [?aspect ?pointcutdefinition]
-  (fresh [?pointcutdefinitions] 
-         (aspect-pointcutdefinitions ?aspect ?pointcutdefinitions)
-         (contains ?pointcutdefinitions ?pointcutdefinition)))
-    
-(def
-  ^{:doc "Alias for aspect-pointcutdefinition."}
-  type-pointcutdefinition
-  aspect-pointcutdefinition)
-
-(defn
-  pointcutdefinition
-  "Relation of pointcuts known to the weaver.
-   Note: these are instances of ResolvedPointcutDefinition."
-  [?pointcut]
-  (fresh [?aspect]
-         (aspect-pointcutdefinition ?aspect ?pointcut)))
-
 
 ;; some info: 
 ;; KindedPointcut or MatchesNothingPointcut returned by
@@ -1143,11 +1065,240 @@
 ;;                     ))
 
 
+
 (defn
-  pointcutdefinition-pointcut
-  "Relation between a PointcutDefinition and its Pointcut."
-  [?pointcutdefinition ?pointcut]
+  advice-pointcut
+  "Relation between an Advice ?advice and its Pointcut ?pointcut.
+   Note that these are different from the ResolvedPointcutDefinition instances returned
+   by aspect-pointcutdefinition."
+  [?advice ?pointcut]
+  (fresh [?raw]
+         (advice-poincut|raw ?advice ?raw)
+         (succeeds (instance? AndPointcut ?raw)) ;;TODO: check whether others are possible?
+         (equals ?pointcut (.getLeft ?raw))))
+
+
+(defn
+  pointcut
+  "Relation of all Pointcuts referred to be Advices.
+   Note that these are not PointcutDefinitions, of which there might be fewer."
+  [?pointcut]
+  (fresh [?advice]
+         (advice-pointcut ?advice ?pointcut)))
+
+
+
+(clojure.core/declare pointcut-pointcutdefinition)
+
+(defn
+  advice-pointcutdefinition
+  "Relation between an Advice and the PointcutDefinition of its Pointcut, 
+   if it exist."
+  [?advice ?pointcutdefinition]
+  (fresh [?pc]
+         (advice-pointcut ?advice ?pc)
+         (pointcut-pointcutdefinition ?pc ?pointcutdefinition)))
+    
+
+  
+;;TODO: decide whether to define relations on Pointcut hierarcy or on PointcutDefinitionHierarchy? 
+;; (former is probably better, as there are advices with inline pointcuts)
+
+
+;; Pointcut definitions
+;; --------------------
+
+(defn
+  type-pointcutdefinitions
+  "Relation between a type and its declared pointcutdefinitions.
+   Note that these are instances of ResolvedPointcutDefinition,
+   rather than the Pointcut instances within ShadowMungers (advice)."
+  [?type ?pointcutdefinitions]
+  (all 
+    (type ?type)
+    (equals ?pointcutdefinitions (.getDeclaredPointcuts ?type))))
+
+(defn
+  aspect-pointcutdefinitions
+  "Relation between an aspect and its declared pointcutdefinitions."
+  [?aspect ?pointcutdefinitions]
   (all
+    (aspect ?aspect)
+    (type-pointcutdefinitions ?aspect ?pointcutdefinitions)))
+
+(defn
+  class-pointcutdefinitions
+  "Relation between a class and its declared pointcutdefinitions."
+  [?class ?pointcutdefinitions]
+  (all
+    (class ?class)
+    (type-pointcutdefinitions ?class ?pointcutdefinitions)))
+
+(defn
+  type-pointcutdefinitions+
+  "Relation between a type and all of its own and inherited pointcutdefinitions.
+   Includes overriddens and overriders. 
+
+   See also: type-pointcutdefinitions+|exposed where overrides are resolved."
+  [?type ?pointcutdefinitions]
+  (all 
+    (type ?type)
+    (equals ?pointcutdefinitions (vec (iterator-seq (.getPointcuts ?type))))))
+
+(defn
+  aspect-pointcutdefinitions+
+  "Relation between an aspect and all of its own and inherited pointcutdefinitions.
+   Includes overriddens and overriders. 
+
+   See also: aspect-pointcutdefinitions+|exposed where overrides are resolved."
+  [?aspect ?pointcutdefinitions]
+  (all
+    (aspect ?aspect)
+    (type-pointcutdefinitions+ ?aspect ?pointcutdefinitions)))
+
+(defn
+  class-pointcutdefinitions+
+  "Relation between a class and all of its own and inherited pointcutdefinitions.
+   Includes overriddens and overriders. 
+
+   See also: class-pointcutdefinitions+|exposed where overrides are resolved."
+  [?class ?pointcutdefinitions]
+  (all
+    (class ?class)
+    (type-pointcutdefinitions+ ?class ?pointcutdefinitions)))
+
+(defn
+  type-pointcutdefinition
+  "Relation between a type (aspect or class) and one of the pointcuts it declares.
+   Note that these are instances of ResolvedPointcutDefinition,
+   rather than the Pointcut instances within ShadowMungers (advice)."
+  [?type ?pointcutdefinition]
+  (fresh [?pointcutdefinitions] 
+         (type-pointcutdefinitions ?type ?pointcutdefinitions)
+         (contains ?pointcutdefinitions ?pointcutdefinition)))
+
+(defn
+  aspect-pointcutdefinition
+  "Relation between an aspect and one of the pointcuts it declares."
+  [?aspect ?pointcutdefinition]
+  (fresh [?pointcutdefinitions] 
+         (aspect-pointcutdefinitions ?aspect ?pointcutdefinitions)
+         (contains ?pointcutdefinitions ?pointcutdefinition)))
+
+(defn
+  class-pointcutdefinition
+  "Relation between an aspect and one of the pointcuts it declares."
+  [?class ?pointcutdefinition]
+  (fresh [?pointcutdefinitions] 
+         (class-pointcutdefinitions ?class ?pointcutdefinitions)
+         (contains ?pointcutdefinitions ?pointcutdefinition)))
+
+(defn
+  type-pointcutdefinition+
+  "Relation between a type and one of its own or inherited pointcutdefinitions.
+   Includes overriddens and overriders. 
+
+   See also: type-pointcutdefinition+|exposed where overrides are resolved."
+  [?type ?pointcutdefinition]
+  (fresh [?pointcutdefinitions] 
+         (type-pointcutdefinitions+ ?type ?pointcutdefinitions)
+         (contains ?pointcutdefinitions ?pointcutdefinition)))
+
+(defn
+  aspect-pointcutdefinition+
+  "Relation between an aspect and one of its own or inherited pointcutdefinitions.
+   Includes overriddens and overriders. 
+
+   See also: aspect-pointcutdefinition+|exposed where overrides are resolved."
+  [?aspect ?pointcutdefinition]
+  (fresh [?pointcutdefinitions] 
+         (aspect-pointcutdefinitions+ ?aspect ?pointcutdefinitions)
+         (contains ?pointcutdefinitions ?pointcutdefinition)))
+
+(defn
+  class-pointcutdefinition+
+  "Relation between a class and one of its own or inherited pointcutdefinitions.
+   Includes overriddens and overriders. 
+
+   See also: aspect-pointcutdefinition+|exposed where overrides are resolved."
+  [?class ?pointcutdefinition]
+  (fresh [?pointcutdefinitions] 
+         (class-pointcutdefinitions+ ?class ?pointcutdefinitions)
+         (contains ?pointcutdefinitions ?pointcutdefinition)))
+
+(defn
+  type-pointcutdefinitions+|exposed
+  "Relation between a type and all of its exposed pointcutdefinitions.
+   In contrast to type-pointcutdefinitions+, overrides are resolved."
+  [?type ?pointcutdefinitions]
+  (all 
+    (type ?type)
+    (equals ?pointcutdefinitions (vec (.getExposedPointcuts ?type)))))
+
+(defn
+  aspect-pointcutdefinitions+|exposed
+  "Relation between an aspect and all of its exposed pointcutdefinitions.
+   In contrast to aspect-pointcutdefinitions+, overrides are resolved."
+  [?aspect ?pointcutdefinitions]
+  (all 
+    (aspect ?aspect)
+    (type-pointcutdefinitions+|exposed ?aspect ?pointcutdefinitions)))
+    
+(defn
+  class-pointcutdefinitions+|exposed
+  "Relation between a class and all of its exposed pointcutdefinitions.
+   In contrast to class-pointcutdefinitions+, overrides are resolved."
+  [?class ?pointcutdefinitions]
+  (all 
+    (aspect ?class)
+    (type-pointcutdefinitions+|exposed ?class ?pointcutdefinitions)))
+
+(defn
+  type-pointcutdefinition+|exposed
+  "Relation between a type and one of its exposed pointcutdefinitions.
+   In contrast to type-pointcutdefinition+, overrides are resolved."
+  [?type ?pointcutdefinition]
+  (fresh [?pointcutdefinitions]
+    (type-pointcutdefinitions+|exposed ?type ?pointcutdefinitions)
+    (contains ?pointcutdefinitions ?pointcutdefinition)))
+
+(defn
+  class-pointcutdefinition+|exposed
+  "Relation between a class and one of its exposed pointcutdefinitions.
+   In contrast to class-pointcutdefinition+, overrides are resolved."
+  [?type ?pointcutdefinition]
+  (fresh [?pointcutdefinitions]
+    (class-pointcutdefinitions+|exposed ?type ?pointcutdefinitions)
+    (contains ?pointcutdefinitions ?pointcutdefinition)))
+
+(defn
+  aspect-pointcutdefinition+|exposed
+  "Relation between a aspect and one of its exposed pointcutdefinitions.
+   In contrast to aspect-pointcutdefinition+, overrides are resolved."
+  [?type ?pointcutdefinition]
+  (fresh [?pointcutdefinitions]
+    (aspect-pointcutdefinitions+|exposed ?type ?pointcutdefinitions)
+    (contains ?pointcutdefinitions ?pointcutdefinition)))
+
+
+(defn
+  pointcutdefinition
+  "Relation of pointcut definitions known to the weaver.
+   Note: these are instances of ResolvedPointcutDefinition."
+  [?pointcutdefinition]
+  (fresh [?type]
+         (type-pointcutdefinition ?type ?pointcutdefinition)))
+
+
+(clojure.core/declare pointcut)
+
+(defn
+  pointcut-pointcutdefinition
+  "Relation between a Pointcut and the PointcutDefinition it refers to, 
+   if any."
+  [?pointcut ?pointcutdefinition]
+  (all
+    (pointcut ?pointcut)
     (pointcutdefinition ?pointcutdefinition)
     (equals ?pointcut (.getPointcut ?pointcutdefinition))))
 
@@ -1593,4 +1744,17 @@
     (element-enclosingtypedeclaration-element  ?shadow ?element)
     (element-type ?element ?type)))
 
+
+
+;; Names
+;; -----
+
+
+(defn
+  type-name
+  "Relation between a type and its name as a user-friendly string."
+  [?type ?namestring]
+  (all 
+    (type ?type)
+    (equals ?namestring (.getName ?type))))
      
