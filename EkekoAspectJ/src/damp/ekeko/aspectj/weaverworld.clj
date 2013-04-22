@@ -1650,6 +1650,35 @@
            (fails (aspect-dominates-aspect-explicitly+ ?subordinate ?dominator)))))
            
 
+;; Aspect instantiation policies
+;; -----------------------------
+
+(comment
+
+;; This one returns PerClause instances of which the inAspect field is still null .. 
+  
+;; TODO: retrieve correctly instantiated ones through the right-hand-side of advice-raw .... and then link those
+;; back to their defining aspect (will have to eliminate duplicates)
+;; (damp.ekeko/ekeko [?policy]
+;;                      (fresh [?a ?p] 
+;;                      (advice ?a)
+;;                      (equals ?p (.getPointcut ?a)) 
+;;                      (succeeds (instance? AndPointcut ?p))
+;;                      (equals ?policy (.getRight ?p))))
+
+
+(defn
+  aspect-policy 
+  "Relation between an aspect and its instantiation policy (instance of PerClause).
+   Includes implicit policies (e.g., perSingleton and perFromSuper)."
+  [?aspect ?policy]
+  (all
+    (aspect ?aspect)
+    (equals ?policy (.getPerClause ?aspect))))
+
+)
+  
+
 
 
 ;; Link between ProgramElement (weaverworld/element) and ResolvedType (weaverworld/type)
