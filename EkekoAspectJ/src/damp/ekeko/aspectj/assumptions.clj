@@ -69,7 +69,8 @@
          (aspect-advice ?modifier ?advice)
          (advice-shadow ?advice ?shadow)
          (shadow-enclosingtypedeclaration ?shadow ?modified)
-         (aspect ?modified)))
+         (aspect ?modified)
+         (l/!= ?modifier ?modified)))
 
 ;;Assumption itd use: intertype method is introduced, but never called
 ;;paper 3.1.1 assumption 5

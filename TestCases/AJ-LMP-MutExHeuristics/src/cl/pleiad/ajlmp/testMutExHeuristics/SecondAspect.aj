@@ -14,7 +14,9 @@ public aspect SecondAspect extends FirstAspect {
 		System.out.println("SecondAspect-Before-2");
 	}
 	
+	/* not needed for now
 	before() : pc3() {
 		System.out.println("SecondAspect-Before-3");
 	}
+	*/
 }

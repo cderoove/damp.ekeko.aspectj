@@ -13,8 +13,10 @@ public aspect ThirdAspect extends FirstAspect {
 	before() : pc2() {
 		System.out.println("ThirdAspect-Before-2");
 	}
-	
+
+	/* Not needed for now.
 	before() : pcthree() {
 		System.out.println("ThirdAspect-Before-three");
 	}
+	*/
 }
