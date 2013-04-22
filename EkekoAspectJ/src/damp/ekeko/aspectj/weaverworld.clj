@@ -194,7 +194,7 @@
     
 (defn-
   element-enclosingtypedeclaration-element
-  "Relation between a ProgramElement and its enclosing aspect (if any)."
+  "Relation between a ProgramElement and its enclosing type (if any)."
   [?element ?typedeclaration]
   (all
     (element ?element)
@@ -361,7 +361,7 @@
     (succeeds (.isAspect ?aspect))))
 
 (defn
-  abstractaspect
+  aspect|abstract
   "Relation of abstract aspects known to the weaver."
   [?aspect]
   (all
@@ -1339,26 +1339,21 @@
 
 
 (clojure.core/declare pointcutdefinition-name)
+
 (defn
-  pointcut-concretizedby
-  "Relation of (possibly abstract) pointcuts and their concretizing pointcuts.
-   Note that pointcuts cannot be overloaded!"
+  pointcutdefinition-concretizedby
+  "Relation of (possibly abstract) pointcut definitions and their concretizing (definitely concrete) pointcuts."
   [?abstractpc ?concretepc]
   (fresh [?abaspect ?concaspect ?name]
-         (abstractaspect ?abaspect) ;actually this clause is just an optimisation
+         (aspect|abstract ?abaspect)
          (aspect-super+ ?concaspect ?abaspect)
          (aspect-pointcutdefinition ?abaspect ?abstractpc)
          (aspect-pointcutdefinition ?concaspect ?concretepc)
+         (pointcutdefinition|concrete ?concretepc)
          (pointcutdefinition-name ?abstractpc ?name)
          (pointcutdefinition-name ?concretepc ?name)))
-         
 
-;(defn
-;  aspect-pointcut+
-;  [?aspect ?pointcut]
-;  (all
-;    (aspect ?aspect)
-;    (contains (iterator-seq (.getPointcuts ?aspect)) ?pointcut)))
+
 
 ;; Declare declarations
 ;; --------------------
@@ -1766,12 +1761,20 @@
                        (xcut/xcut-advicehandle-shadowhandle ?xcut ?adviceh ?shadowh)
                        (xcut/xcut-handle-pe ?xcut ?shadowh ?shadow)))))
 
-
 (defn
   shadow
   [?shadow]
   (fresh [?advice]
          (advice-shadow ?advice ?shadow)))
+
+(defn
+  aspect-shadow
+  "Relation between an aspect and one of the shadows of its advices."
+  [?aspect ?shadow]
+  (fresh [?advice]
+           (aspect-advice ?aspect ?advice)
+           (advice-shadow ?advice ?shadow)))
+
 
 (defn
   shadow-enclosingtypedeclaration

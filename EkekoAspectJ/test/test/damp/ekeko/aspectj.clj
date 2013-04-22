@@ -91,7 +91,7 @@
   concretization-test
   (test/tuples-correspond 
     (ekeko [?abpointcut ?concpointcut1 ?concpointcut2]
-           (assumptions/abstractpointcut-concretized-reconcretized ?abpointcut ?concpointcut1 ?concpointcut2))
+           (assumptions/abstractpointcutdefinition-concretized-reconcretized ?abpointcut ?concpointcut1 ?concpointcut2))
     "#{(\"pointcut cl.pleiad.ajlmp.testPointcuts.AbstractAspect.abstractpc1()\" \"pointcut cl.pleiad.ajlmp.testPointcuts.FirstAspect.abstractpc1()\" \"pointcut cl.pleiad.ajlmp.testPointcuts.SecondAspect.abstractpc1()\")}"))
 
 (deftest

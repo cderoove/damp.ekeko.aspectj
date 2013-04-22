@@ -88,11 +88,11 @@
 ;;Assumption no double concretization of abstract pointcuts
 ;;paper 3.1.1 assumption 7 
 (defn 
-  abstractpointcut-concretized-reconcretized
+  abstractpointcutdefinition-concretized-reconcretized
   [?abpointcut ?concpointcut1 ?concpointcut2]
   (l/all
-    (pointcut-concretizedby ?abpointcut ?concpointcut1)
-    (pointcut-concretizedby ?concpointcut1 ?concpointcut2)))
+    (pointcutdefinition-concretizedby ?abpointcut ?concpointcut1)
+    (pointcutdefinition-concretizedby ?concpointcut1 ?concpointcut2)))
     
 
 (clojure.core/declare advice-writesto)
@@ -173,7 +173,7 @@
   refine-used-pointcut-sub-super-pointcut
   [?subaspect ?superaspect ?pointcut]
   (l/fresh [?newpointcut ?advice]
-    (pointcut-concretizedby ?pointcut ?newpointcut)
+    (pointcutdefinition-concretizedby ?pointcut ?newpointcut)
     (advice-pointcut ?advice ?pointcut)
     (aspect-advice ?advice ?superaspect)
     (aspect-declaredsuperaspect+ ?subaspect ?superaspect) ;;better than !=
@@ -266,12 +266,6 @@
 
 ;;===========================================================================================
 
-(defn
-  aspect-shadow
-  [?aspect ?shadow]
-  (l/fresh [?advice]
-           (aspect-advice ?aspect ?advice)
-           (advice-shadow ?advice ?shadow)))
 
 ;;paper 3.1.1 assumption 2, case 3
 (defn
