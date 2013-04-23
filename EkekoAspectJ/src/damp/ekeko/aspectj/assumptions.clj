@@ -75,13 +75,13 @@
 ;;Assumption itd use: intertype method is introduced, but never called
 ;;paper 3.1.1 assumption 5
 (defn 
-  intertypemethod-unused
+  intertype|method|unused
   [?itmethod]
   (l/fresh [?sootmethod ?caller]
-         (intertypemethod ?itmethod)
+         (intertype|method ?itmethod)
          (fails 
            (l/all
-             (ajsoot/intertypemethod-sootmethod ?itmethod ?sootmethod)
+             (ajsoot/intertype|method-sootmethod ?itmethod ?sootmethod)
              (ssoot/soot-method-called-by-method ?sootmethod ?caller)))))
 
 

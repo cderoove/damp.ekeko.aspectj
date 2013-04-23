@@ -80,10 +80,10 @@
          (soot/soot-method-signature ?soot ?signature)))
 
 (defn
-  intertypemethod-sootmethod
+  intertype|method-sootmethod
   [?itmethod ?soot]
   (fresh [?model ?scene ?signature]
-         (world/intertypemethod ?itmethod)
+         (world/intertype|method ?itmethod)
          (equals ?signature (sootsignature ?itmethod))
          (soot/soot-model-scene ?model ?scene)
          (soot/soot-method-signature ?soot ?signature)))
@@ -112,6 +112,6 @@
 (comment
   (damp.ekeko/ekeko* [?advice ?method] (advice-sootmethod ?advice ?method))
   
-  (damp.ekeko/ekeko* [?itmethod ?sootmethod] (intertypemethod-sootmethod ?itmethod ?sootmethod))
+  (damp.ekeko/ekeko* [?itmethod ?sootmethod] (intertype|method-sootmethod ?itmethod ?sootmethod))
   
   (damp.ekeko/ekeko* [?method ?signature] (soot/soot-method-signature ?method ?signature)))

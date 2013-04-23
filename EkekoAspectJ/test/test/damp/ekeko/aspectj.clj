@@ -26,7 +26,7 @@
 ;; ------------
 
 (deftest
-  aspect-test
+  test-aspect
   (let [grounding
         (ekeko [?aspect] 
                     (world/aspect ?aspect))
@@ -38,49 +38,49 @@
         (is (empty? (clojure.set/difference (set grounding) (set grounding-and-checking))))))
 
 (deftest
-  explicit-decprec+-test 
+  test-explicit-decprec+
   (test/tuples-correspond 
     (ekeko [?dom ?sub]
            (world/aspect-dominates-aspect-explicitly+ ?dom ?sub))
 "#{(\"cl.pleiad.ajlmp.testPrecedence.FirstAspect\" \"cl.pleiad.ajlmp.testPrecedence.FifthAspect\") (\"cl.pleiad.ajlmp.testPrecedence.ThirdAspect\" \"cl.pleiad.ajlmp.testPrecedence.EightAspect\") (\"cl.pleiad.ajlmp.testPrecedence.FirstAspect\" \"cl.pleiad.ajlmp.testPrecedence.SecondAspect\") (\"cl.pleiad.ajlmp.testPrecedence.SeventhAspect\" \"cl.pleiad.ajlmp.testPrecedence.FifthAspect\") (\"cl.pleiad.ajlmp.testPrecedence.ThirdAspect\" \"cl.pleiad.ajlmp.testPrecedence.FourthAspect\") (\"cl.pleiad.ajlmp.testPrecedence.SecondAspect\" \"cl.pleiad.ajlmp.testPrecedence.FifthAspect\")}"))
 
 (deftest
-  implicit-precedence+-test 
+  test-implicit-precedence+
   (test/tuples-correspond 
     (ekeko [?dom ?sub]
            (world/aspect-dominates-aspect-implicitly+ ?dom ?sub))
  "#{(\"cl.pleiad.ajlmp.testPrecedence.FourthAspect\" \"cl.pleiad.ajlmp.testPrecedence.ThirdAspect\") (\"cl.pleiad.ajlmp.testPrecedence.SixthAspect\" \"cl.pleiad.ajlmp.testPrecedence.FourthAspect\") (\"cl.pleiad.ajlmp.testPrecedence.SixthAspect\" \"cl.pleiad.ajlmp.testPrecedence.ThirdAspect\") (\"cl.pleiad.ajlmp.testPrecedence.EightAspect\" \"cl.pleiad.ajlmp.testPrecedence.SeventhAspect\")}"))
 
 (deftest
-  aspect-dominates-aspect-test 
+  test-aspect-dominates-aspect
   (test/tuples-correspond 
     (ekeko [?dom ?sub]
            (world/aspect-dominates-aspect ?dom ?sub))
 "#{(\"cl.pleiad.ajlmp.testPrecedence.FourthAspect\" \"cl.pleiad.ajlmp.testPrecedence.SeventhAspect\") (\"cl.pleiad.ajlmp.testPrecedence.SixthAspect\" \"cl.pleiad.ajlmp.testPrecedence.FifthAspect\") (\"cl.pleiad.ajlmp.testPrecedence.FirstAspect\" \"cl.pleiad.ajlmp.testPrecedence.FifthAspect\") (\"cl.pleiad.ajlmp.testPrecedence.ThirdAspect\" \"cl.pleiad.ajlmp.testPrecedence.EightAspect\") (\"cl.pleiad.ajlmp.testPrecedence.EightAspect\" \"cl.pleiad.ajlmp.testPrecedence.FifthAspect\") (\"cl.pleiad.ajlmp.testPrecedence.SixthAspect\" \"cl.pleiad.ajlmp.testPrecedence.SeventhAspect\") (\"cl.pleiad.ajlmp.testPrecedence.SixthAspect\" \"cl.pleiad.ajlmp.testPrecedence.FourthAspect\") (\"cl.pleiad.ajlmp.testPrecedence.FirstAspect\" \"cl.pleiad.ajlmp.testPrecedence.SecondAspect\") (\"cl.pleiad.ajlmp.testPrecedence.FourthAspect\" \"cl.pleiad.ajlmp.testPrecedence.EightAspect\") (\"cl.pleiad.ajlmp.testPrecedence.ThirdAspect\" \"cl.pleiad.ajlmp.testPrecedence.FifthAspect\") (\"cl.pleiad.ajlmp.testPrecedence.SixthAspect\" \"cl.pleiad.ajlmp.testPrecedence.ThirdAspect\") (\"cl.pleiad.ajlmp.testPrecedence.EightAspect\" \"cl.pleiad.ajlmp.testPrecedence.SeventhAspect\") (\"cl.pleiad.ajlmp.testPrecedence.FourthAspect\" \"cl.pleiad.ajlmp.testPrecedence.FifthAspect\") (\"cl.pleiad.ajlmp.testPrecedence.SeventhAspect\" \"cl.pleiad.ajlmp.testPrecedence.FifthAspect\") (\"cl.pleiad.ajlmp.testPrecedence.SixthAspect\" \"cl.pleiad.ajlmp.testPrecedence.EightAspect\") (\"cl.pleiad.ajlmp.testPrecedence.ThirdAspect\" \"cl.pleiad.ajlmp.testPrecedence.SeventhAspect\") (\"cl.pleiad.ajlmp.testPrecedence.ThirdAspect\" \"cl.pleiad.ajlmp.testPrecedence.FourthAspect\") (\"cl.pleiad.ajlmp.testPrecedence.SecondAspect\" \"cl.pleiad.ajlmp.testPrecedence.FifthAspect\")}"))
 
 (deftest 
-  overriden-implicit-precedence-test
+  test-overriden-implicit-precedence
   (test/tuples-correspond
     (ekeko [?first ?second]
            (assumptions/overriden-implicit-precedence ?first ?second))
     "#{(\"cl.pleiad.ajlmp.testPrecedence.FourthAspect\" \"cl.pleiad.ajlmp.testPrecedence.ThirdAspect\")}"))
 
 (deftest 
-  overriden-implicit-precedence-shadow-test
+  test-overriden-implicit-precedence-shadow
   (test/tuples-correspond
     (ekeko [?first ?second ?shadow]
            (assumptions/overriden-implicit-precedence-shadow ?first ?second ?shadow))
     "#{(\"cl.pleiad.ajlmp.testPrecedence.FourthAspect\" \"cl.pleiad.ajlmp.testPrecedence.ThirdAspect\" \"baseMethod1()\")}"))
 
 (deftest
-  incomplete-precedence-test
+  test-incomplete-precedence
   (test/tuples-correspond
     (ekeko [?first ?second]
            (assumptions/incomplete-precedence ?first ?second))
     "#{(\"cl.pleiad.ajlmp.testPrecedence.FirstAspect\" \"cl.pleiad.ajlmp.testPrecedence.EightAspect\") (\"cl.pleiad.ajlmp.testPrecedence.EightAspect\" \"cl.pleiad.ajlmp.testPrecedence.FirstAspect\") (\"cl.pleiad.ajlmp.testPrecedence.SecondAspect\" \"cl.pleiad.ajlmp.testPrecedence.SeventhAspect\") (\"cl.pleiad.ajlmp.testPrecedence.SecondAspect\" \"cl.pleiad.ajlmp.testPrecedence.FourthAspect\") (\"cl.pleiad.ajlmp.testPrecedence.SixthAspect\" \"cl.pleiad.ajlmp.testPrecedence.SecondAspect\") (\"cl.pleiad.ajlmp.testPrecedence.FirstAspect\" \"cl.pleiad.ajlmp.testPrecedence.SixthAspect\") (\"cl.pleiad.ajlmp.testPrecedence.ThirdAspect\" \"cl.pleiad.ajlmp.testPrecedence.FirstAspect\") (\"cl.pleiad.ajlmp.testPrecedence.SecondAspect\" \"cl.pleiad.ajlmp.testPrecedence.ThirdAspect\") (\"cl.pleiad.ajlmp.testPrecedence.EightAspect\" \"cl.pleiad.ajlmp.testPrecedence.SecondAspect\") (\"cl.pleiad.ajlmp.testPrecedence.FourthAspect\" \"cl.pleiad.ajlmp.testPrecedence.FirstAspect\") (\"cl.pleiad.ajlmp.testPrecedence.SeventhAspect\" \"cl.pleiad.ajlmp.testPrecedence.FirstAspect\") (\"cl.pleiad.ajlmp.testPrecedence.FirstAspect\" \"cl.pleiad.ajlmp.testPrecedence.SeventhAspect\") (\"cl.pleiad.ajlmp.testPrecedence.FirstAspect\" \"cl.pleiad.ajlmp.testPrecedence.FourthAspect\") (\"cl.pleiad.ajlmp.testPrecedence.SecondAspect\" \"cl.pleiad.ajlmp.testPrecedence.EightAspect\") (\"cl.pleiad.ajlmp.testPrecedence.ThirdAspect\" \"cl.pleiad.ajlmp.testPrecedence.SecondAspect\") (\"cl.pleiad.ajlmp.testPrecedence.FirstAspect\" \"cl.pleiad.ajlmp.testPrecedence.ThirdAspect\") (\"cl.pleiad.ajlmp.testPrecedence.SixthAspect\" \"cl.pleiad.ajlmp.testPrecedence.FirstAspect\") (\"cl.pleiad.ajlmp.testPrecedence.FourthAspect\" \"cl.pleiad.ajlmp.testPrecedence.SecondAspect\") (\"cl.pleiad.ajlmp.testPrecedence.SecondAspect\" \"cl.pleiad.ajlmp.testPrecedence.SixthAspect\") (\"cl.pleiad.ajlmp.testPrecedence.SeventhAspect\" \"cl.pleiad.ajlmp.testPrecedence.SecondAspect\")}"))
 
 (deftest
-  incomplete-precedence-shadow-test
+  test-incomplete-precedence-shadow
   (test/tuples-correspond
     (ekeko [?first ?second ?shadow]
            (assumptions/incomplete-precedence-shadow ?first ?second ?shadow))
@@ -88,32 +88,32 @@
 
 
 (deftest
-  concretization-test
+  test-concretization
   (test/tuples-correspond 
     (ekeko [?abpointcut ?concpointcut1 ?concpointcut2]
            (assumptions/abstractpointcutdefinition-concretized-reconcretized ?abpointcut ?concpointcut1 ?concpointcut2))
     "#{(\"pointcut cl.pleiad.ajlmp.testPointcuts.AbstractAspect.abstractpc1()\" \"pointcut cl.pleiad.ajlmp.testPointcuts.FirstAspect.abstractpc1()\" \"pointcut cl.pleiad.ajlmp.testPointcuts.SecondAspect.abstractpc1()\")}"))
 
 (deftest
-  intertypemethod-unused-test
+  test-intertype|method|unused
   (test/tuples-correspond
     (ekeko [?itmethod]
-           (assumptions/intertypemethod-unused ?itmethod))
+           (assumptions/intertype|method|unused ?itmethod))
     "#{(\"(BcelTypeMunger ResolvedTypeMunger(Method, void cl.pleiad.ajlmp.testITD.BaseClass.itdB()))\")}"))
 
-(deftest same-pointcutname-test
+(deftest test-same-pointcutname
   (test/tuples-correspond
     (ekeko [?name ?aspect1 ?aspect2]
            (assumptions/same-pointcutname-aspect1-aspect2 ?name ?aspect1 ?aspect2))
     "#{(\"pc2\" \"cl.pleiad.ajlmp.testMutExHeuristics.SecondAspect\" \"cl.pleiad.ajlmp.testMutExHeuristics.ThirdAspect\") (\"pc2\" \"cl.pleiad.ajlmp.testMutExHeuristics.ThirdAspect\" \"cl.pleiad.ajlmp.testMutExHeuristics.SecondAspect\")}"))
 
-(deftest same-shadows-test
+(deftest test-same-shadows
   (test/tuples-correspond
     (ekeko [?aspect1 ?aspect2]
            (assumptions/sameshadows-aspect1-aspect2 ?aspect1 ?aspect2))
     "#{(\"cl.pleiad.ajlmp.testMutExHeuristics.FifthAspect\" \"cl.pleiad.ajlmp.testMutExHeuristics.FourthAspect\") (\"cl.pleiad.ajlmp.testMutExHeuristics.FourthAspect\" \"cl.pleiad.ajlmp.testMutExHeuristics.FifthAspect\")}"))
 
-(deftest inclusion-test
+(deftest test-inclusion
   (test/tuples-correspond
     (ekeko [?modifier ?modified]
            (assumptions/modifies-aspect1-aspect2 ?modifier ?modified))
@@ -131,31 +131,31 @@
 (deftest
   test-suite 
   ;sanity check
-  (test/against-project-named "AJ-LMP-Precedence" false aspect-test )
+  (test/against-project-named "AJ-LMP-Precedence" false test-aspect)
 
   ;precedence logic
-  (test/against-project-named "AJ-LMP-Precedence" false explicit-decprec+-test)
-  (test/against-project-named "AJ-LMP-Precedence" false implicit-precedence+-test)
-  (test/against-project-named "AJ-LMP-Precedence" false aspect-dominates-aspect-test)
+  (test/against-project-named "AJ-LMP-Precedence" false test-explicit-decprec+)
+  (test/against-project-named "AJ-LMP-Precedence" false test-implicit-precedence+)
+  (test/against-project-named "AJ-LMP-Precedence" false test-aspect-dominates-aspect)
   
   ;assumptions
-  (test/against-project-named "AJ-LMP-Precedence" false overriden-implicit-precedence-shadow-test)
-  (test/against-project-named "AJ-LMP-Precedence" false incomplete-precedence-test)
-  (test/against-project-named "AJ-LMP-Precedence" false incomplete-precedence-shadow-test)
+  (test/against-project-named "AJ-LMP-Precedence" false test-overriden-implicit-precedence-shadow)
+  (test/against-project-named "AJ-LMP-Precedence" false test-incomplete-precedence)
+  (test/against-project-named "AJ-LMP-Precedence" false test-incomplete-precedence-shadow)
  
   ;assumptions from paper
   ; paper 3.1.1 assumption 1 case 1 and case 2. Also paper 3.2.3 assumption 2
-  (test/against-project-named "AJ-LMP-Inclusion" false inclusion-test)
+  (test/against-project-named "AJ-LMP-Inclusion" false test-inclusion)
    ;3.1.1 assumption 2, case 1  
-  (test/against-project-named "AJ-LMP-MutExHeuristics" false same-pointcutname-test)
+  (test/against-project-named "AJ-LMP-MutExHeuristics" false test-same-pointcutname)
   ;3.1.1 assumption 2, case 3
-  (test/against-project-named "AJ-LMP-MutExHeuristics" false same-shadows-test)
+  (test/against-project-named "AJ-LMP-MutExHeuristics" false test-same-shadows)
   ; 3.1.1 assumption 5
-  (test/against-project-named "AJ-LMP-ITD" true intertypemethod-unused-test)
+  (test/against-project-named "AJ-LMP-ITD" true test-intertype|method|unused)
   ; 3.1.1 assumption 7 
-  (test/against-project-named "AJ-LMP-Pointcuts" false concretization-test)
+  (test/against-project-named "AJ-LMP-Pointcuts" false test-concretization)
   ;3.1.1: assumption 9 case 2
-  (test/against-project-named "AJ-LMP-Precedence" false overriden-implicit-precedence-test)
+  (test/against-project-named "AJ-LMP-Precedence" false test-overriden-implicit-precedence)
   )
 
 (defn 

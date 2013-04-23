@@ -994,7 +994,7 @@
     (equals ?kind (-> ?intertype .getMunger .getKind))))
 
 (defn
-  intertypefield
+  intertype|field
   "Relation of field intertype declarations."
   [?intertype]
   (fresh [?kind]
@@ -1002,22 +1002,16 @@
          (equals ?kind (ResolvedTypeMunger/Field))))
 
 (defn
-  intertypemethod
+  intertype|method
   "Relation of method intertype declarations."
   [?intertype]
   (fresh [?kind]
          (intertype-kind ?intertype ?kind)
          (equals ?kind (ResolvedTypeMunger/Method))))
  
-(defn
-  intertypemethod-name
-  "Relation of method intertype declarations and their name."
-  [?intertype ?name]
-  (all (intertypemethod ?intertype)
-       (equals ?name (.toString (.getSignature (.getMunger ?intertype))))))
 
 (defn
-  intertypeconstructor
+  intertype|constructor
   "Relation of constructor intertype declarations."
   [?intertype]
   (fresh [?kind]
@@ -1026,7 +1020,7 @@
 
 
 (defn
-  intertype-member-type
+  intertype-member-target
   "Relation between an intertype declaration, the field/method/constructor member it declares
   (a ResolvedMemberImpl), and the type to which this member is added (a ResolvedType). "
   [?intertype ?member ?type]
@@ -1047,7 +1041,7 @@
    These are of the same type as the shadows we return for an advice, thus allowing checking
    whether a shadow stems from an intertype declaration.
 
-   Prefer to use the above intertype-member-type instead, as it does not escape the weaver world."
+   Prefer to use the above intertype-member-target instead, as it does not escape the weaver world."
   [?intertype ?member]
   (fresh [?equivalentmember ?signaturestring]
          (intertype ?intertype)
@@ -1903,6 +1897,7 @@
     (element-enclosingelement-kind ?shadow ?element (IProgramElement$Kind/CONSTRUCTOR))
     (element-member ?element ?member)))
 
+
 (defn
   shadow-enclosing|intertypemethod
   "Relation between a shadow and its enclosing intertype method (if any)."
@@ -1911,7 +1906,17 @@
     (shadow ?shadow)
     (element-enclosingelement-kind ?shadow ?element (IProgramElement$Kind/INTER_TYPE_METHOD))
     (intertype-element ?intertype ?element)
-    (intertype-member-type ?intertype ?member ?targettype)))
+    (intertype-member-target ?intertype ?member ?targettype)))
+
+(defn
+  shadow-enclosing|intertypeconstructor
+  "Relation between a shadow and its enclosing intertype constructor (if any)."
+  [?shadow ?member]
+  (fresh [?element ?intertype ?targettype] 
+    (shadow ?shadow)
+    (element-enclosingelement-kind ?shadow ?element (IProgramElement$Kind/INTER_TYPE_CONSTRUCTOR))
+    (intertype-element ?intertype ?element)
+    (intertype-member-target ?intertype ?member ?targettype)))
   
 
 (defn
@@ -1944,9 +1949,8 @@
 
 
 
-;; Names
-;; -----
-
+;; Names (In Progress)
+;; -------------------
 
 (defn
   type-name
@@ -1963,5 +1967,13 @@
   (all
     (pointcutdefinition ?pointcut)
     (equals ?name (.getName ?pointcut))))
+
+;;TODO: align with other name relations
+(defn
+  intertype|method-name
+  "Relation of method intertype declarations and their name."
+  [?intertype ?name]
+  (all (intertype|method ?intertype)
+       (equals ?name (.toString (.getSignature (.getMunger ?intertype))))))
 
      
