@@ -1089,7 +1089,7 @@
 
 
 (defn-
-  advice-poincut|raw
+  advice-pointcut|raw
   "Relation between an Advice ?advice and its raw, implementation-level Pointcut ?pointcut.
    These are conjunctions of the user-defined Pointcut and one synthetic Pointcut corresponding 
    to its aspect's PerClause (cflow, super, object, singleton, typewithin)."
