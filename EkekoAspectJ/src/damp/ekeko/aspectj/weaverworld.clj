@@ -1399,7 +1399,7 @@
 
 (defn
   pointcutdefinition-concretizedby
-  "Relation of (possibly abstract) pointcut definitions and their concretizing (definitely concrete) pointcuts."
+  "Relation of (possibly abstract) pointcut definitions and their concretizing (definitely concrete) pointcut definitions."
   [?abstractpc ?concretepc]
   (fresh [?abaspect ?concaspect ?name]
          (aspect|abstract ?abaspect)
