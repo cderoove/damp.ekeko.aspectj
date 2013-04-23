@@ -958,29 +958,22 @@
 (defn
   intertype
   [?intertype]
-  "Relation of intertype declarations."
-  (conda
-    [(v+ ?intertype) 
-     (succeeds (instance? ConcreteTypeMunger ?intertype))]
-    [(v- ?intertype) 
-     (fresh [?world ?set]
-            (weaverworld ?world)
-            (equals ?set (.getCrosscuttingMembersSet ?world))
-            (conde [(contains (.getTypeMungers ?set) ?intertype)]
-                   [(contains (.getLateTypeMungers ?set) ?intertype)]))]))
-
-
-;(defn
-;  intertype
-;  [?intertype]
-;  "Relation of intertype declarations."
-;  (conda
-;    [(v+ ?intertype) 
-;     (succeeds (instance? ConcreteTypeMunger ?intertype))]
-;    [(v- ?intertype) 
-;     (fresh [?aspect]
-;         (aspect-intertype ?aspect ?intertype))]))         
-
+  "Relation of intertype declarations. 
+   Does not include intertypes used internally by the weaver."
+  (all
+    (conda
+      [(v+ ?intertype) 
+       (succeeds (instance? ConcreteTypeMunger ?intertype))]
+      [(v- ?intertype) 
+       (fresh [?world ?set]
+              (weaverworld ?world)
+              (equals ?set (.getCrosscuttingMembersSet ?world))
+              (conde [(contains (.getTypeMungers ?set) ?intertype)]
+                     [(contains (.getLateTypeMungers ?set) ?intertype)]))])
+    (fresh [?munger]
+           ;;from the doc: returns null for mungers that are used internally, but were not part of a declared thing in source code.
+           (equals ?munger (.getMunger ?intertype))
+           (!= nil ?munger))))
 
   
 ;note: ConcreteTypeMunger.getMunger returns a ResolvedTypeMunger (from a previous weaving stage)
