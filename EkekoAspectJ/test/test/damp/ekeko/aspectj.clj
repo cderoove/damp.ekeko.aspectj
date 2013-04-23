@@ -113,6 +113,12 @@
            (assumptions/sameshadows-aspect1-aspect2 ?aspect1 ?aspect2))
     "#{(\"cl.pleiad.ajlmp.testMutExHeuristics.FifthAspect\" \"cl.pleiad.ajlmp.testMutExHeuristics.FourthAspect\") (\"cl.pleiad.ajlmp.testMutExHeuristics.FourthAspect\" \"cl.pleiad.ajlmp.testMutExHeuristics.FifthAspect\")}"))
 
+(deftest test-same-superpointcuts-reuse
+  (test/tuples-correspond
+    (ekeko [?aspect1 ?aspect2 ?usedpc1]
+           (assumptions/samepointcuts-reuse-fromsuper-sub1-sub2-usedpc ?aspect1 ?aspect2 ?usedpc1))
+"#{(\"cl.pleiad.ajlmp.testMutExHeuristics.FourthAspect\" \"cl.pleiad.ajlmp.testMutExHeuristics.FifthAspect\" \"[#<ResolvedPointcutDefinition pointcut cl.pleiad.ajlmp.testMutExHeuristics.FirstAspect.pc1()>]\") (\"cl.pleiad.ajlmp.testMutExHeuristics.FifthAspect\" \"cl.pleiad.ajlmp.testMutExHeuristics.FourthAspect\" \"[#<ResolvedPointcutDefinition pointcut cl.pleiad.ajlmp.testMutExHeuristics.FirstAspect.pc1()>]\")}"))
+
 (deftest test-inclusion
   (test/tuples-correspond
     (ekeko [?modifier ?modified]
@@ -155,8 +161,10 @@
   ;assumptions from paper
   ; paper 3.1.1 assumption 1 case 1 and case 2. Also paper 3.2.3 assumption 2
   (test/against-project-named "AJ-LMP-Inclusion" false test-inclusion)
-   ;3.1.1 assumption 2, case 1  
+  ;3.1.1 assumption 2, case 1  
   (test/against-project-named "AJ-LMP-MutExHeuristics" false test-same-pointcutname)
+  ;3.1.1 assumption 2, case 2
+  (test/against-project-named "AJ-LMP-MutExHeuristics" false test-same-superpointcuts-reuse)
   ;3.1.1 assumption 2, case 3
   (test/against-project-named "AJ-LMP-MutExHeuristics" false test-same-shadows)
   ; 3.1.1 assumption 5

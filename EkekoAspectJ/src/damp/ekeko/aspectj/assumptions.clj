@@ -234,40 +234,37 @@
 ;;===========================================================================================
 
 (defn 
-  aspect-usedpointcut
-  [?aspect ?pointcut]
+  aspect-usedpointcutdef
+  [?aspect ?pointcutdef]
   (l/fresh [?advice]
            (aspect-advice ?aspect ?advice)
-           (advice-pointcut ?advice ?pointcut)))
+           (advice-pointcutdefinition ?advice ?pointcutdef)))
 
-;; Using same pointcuts does not work due to issue #7
-;; so we check on pointcut name
-;; does not work due to issue #6: these guys here do not have a name
-(defn
-  aspect-usedpointcutname
-  [?aspect ?pointcutname]
-  (l/fresh [?pointcut]
-    (aspect-usedpointcut ?aspect ?pointcut)
-    (pointcutdefinition-name ?pointcut ?pointcutname)))
+;; check on pointcut name
+;; no longer needed
+;;(defn
+;; aspect-usedpointcutname
+;;  [?aspect ?pointcutname]
+;;  (l/fresh [?pointcut]
+;;    (aspect-usedpointcut ?aspect ?pointcut)
+;;    (pointcutdefinition-name ?pointcut ?pointcutname)))
 
-;; Using same pointcuts does not work due to issue #7
-;; so we check on pointcut name
-(defn aspect-allusedpointcuts
-  [?aspect ?usedpointcuts]
+(defn aspect-allusedpointcutdefs
+  [?aspect ?usedpointcutdefs]
   (l/all
     (aspect ?aspect)
-    (findall ?usedpointcut (aspect-usedpointcutname ?aspect ?usedpointcut) ?usedpointcuts)))
+    (findall ?usedpcdef (aspect-usedpointcutdef ?aspect ?usedpcdef) ?usedpointcutdefs)))
 
 ;;paper 3.1.1 assumption 2, case 2
 (defn
-  samepointcuts-reuse-super-sub1-sub2
-  [?aspect1 ?aspect2 ?usedpc1 ?usedpc2]
-  (l/fresh [?superaspect]
+  samepointcuts-reuse-fromsuper-sub1-sub2-usedpc
+  [?aspect1 ?aspect2 ?usedpc1 ]
+  (l/fresh [?superaspect ?usedpc2]
            (aspect-declaredsuperaspect+ ?aspect1 ?superaspect)
            (aspect-declaredsuperaspect+ ?aspect2 ?superaspect)
            (l/!= ?aspect1 ?aspect2)
-           (aspect-allusedpointcuts ?aspect1 ?usedpc1)
-           (aspect-allusedpointcuts ?aspect2 ?usedpc2)
+           (aspect-allusedpointcutdefs ?aspect1 ?usedpc1)
+           (aspect-allusedpointcutdefs ?aspect2 ?usedpc2)
            (same-elements ?usedpc1 ?usedpc2)
            )) 
 
