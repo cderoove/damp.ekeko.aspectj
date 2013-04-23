@@ -790,6 +790,10 @@
   "Relation between an aspect and one of the advices it declares."
   [?aspect ?advice]
   (all
+    ;;necessary to exclude synthetic advices:
+    ;;[?advice ?aspect]
+    ;;[#<BcelAdvice (perCflowEntry: call(* *(..))->org.aspectj.runtime.internal.CFlowStack HelloAspect.ajc$perCflowStack)> nil]
+    (!= nil ?aspect) 
     (advice ?advice)
     (equals ?aspect (.getDeclaringType ?advice))))
   
@@ -1827,12 +1831,10 @@
   element-advice
   "Relation between a ProgramElement and the Advice it corresponds to."
   [?element ?member]
-  (fresh [?bname ?type ?etype] 
+  (fresh [?bname] 
          (element|advice ?element)
-         (element-ancestor|type ?element ?etype)
-         (element-type ?etype ?type)
          (equals ?bname (.getBytecodeName ?element))
-         (aspect-advice ?type ?member)
+         (advice ?member)
          (equals ?bname (advice-elementbytecodename ?member))))
 
 (defn-
@@ -1842,7 +1844,6 @@
   (fresh [?intertype ?targettype]
          (intertype-element ?intertype ?element)
          (intertype-member-target ?intertype ?member ?targettype)))
-
 
 (defn-
   element-weaverthing
@@ -1859,10 +1860,6 @@
             (element-intertypemember ?element ?weaverthing)]
            [(== ?kind (IProgramElement$Kind/ADVICE))
             (element-advice ?element ?weaverthing)])))
-          
-  
-
-
 
 
 ;; Shadows
