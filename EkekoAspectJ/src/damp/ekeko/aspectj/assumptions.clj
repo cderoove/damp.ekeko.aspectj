@@ -284,7 +284,6 @@
 
 ;;===========================================================================================
 
-(comment
 ; for the simple AJ reentrancy idiom
 (defn
   reentrant-aspect-advice
@@ -292,15 +291,5 @@
   (l/fresh [?shadow]
            (aspect-advice ?aspect ?advice)
            (advice-shadow ?advice ?shadow)
-           (shadow-enclosingmethoddeclaration ?shadow ?advice)))
+           (shadow-enclosing ?shadow ?advice)))
 
-;;This should work (retrieves advice shadows within their own advice):
-;(damp.ekeko/ekeko
-;     [?aspect ?advice]
-;     (l/fresh [?shadow ?enclosing]
-;            (aspect-advice ?aspect ?advice)
- ;           (advice-shadow ?advice ?shadow)
-;            (shadow-enclosing ?shadow ?advice)))
-
-
-)

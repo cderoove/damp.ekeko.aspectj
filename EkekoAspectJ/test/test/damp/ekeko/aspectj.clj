@@ -119,6 +119,12 @@
            (assumptions/modifies-aspect1-aspect2 ?modifier ?modified))
     "#{(\"cl.pleiad.ajlmp.testInclusion.ThirdAspect\" \"cl.pleiad.ajlmp.testInclusion.FirstAspect\") (\"cl.pleiad.ajlmp.testInclusion.SecondAspect\" \"cl.pleiad.ajlmp.testInclusion.FirstAspect\")}"))
 
+(deftest test-reentrant-aspect-advice 
+  (test/tuples-correspond
+    (ekeko [?aspect ?advice] (assumptions/reentrant-aspect-advice ?aspect ?advice))
+"#{(\"cl.pleiad.ajlmp.testReentrancy.InfiniteLoop\" \"(before: (call(* *(..)) && persingleton(cl.pleiad.ajlmp.testReentrancy.InfiniteLoop))->void cl.pleiad.ajlmp.testReentrancy.InfiniteLoop.ajc$before$cl_pleiad_ajlmp_testReentrancy_InfiniteLoop$1$22d13d5e())\")}"))
+
+
 ;; Test Suite
 ;; ----------
 
@@ -143,6 +149,9 @@
   (test/against-project-named "AJ-LMP-Precedence" false test-incomplete-precedence)
   (test/against-project-named "AJ-LMP-Precedence" false test-incomplete-precedence-shadow)
  
+  ;simple reentrancy code example
+  (test/against-project-named"AJ-LMP-SimpleReentrancy" false test-reentrant-aspect-advice)
+  
   ;assumptions from paper
   ; paper 3.1.1 assumption 1 case 1 and case 2. Also paper 3.2.3 assumption 2
   (test/against-project-named "AJ-LMP-Inclusion" false test-inclusion)
