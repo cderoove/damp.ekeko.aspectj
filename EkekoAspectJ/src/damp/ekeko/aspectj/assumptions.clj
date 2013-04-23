@@ -68,7 +68,10 @@
   (l/fresh [?advice ?shadow]
          (aspect-advice ?modifier ?advice)
          (advice-shadow ?advice ?shadow)
-         (shadow-enclosing|type ?shadow ?modified)
+         (l/conde [;;shadow on 
+                   (shadow-enclosing ?shadow ?modified)] 
+                  [;;shadow within 
+                   (shadow-ancestor|type ?shadow ?modified)]) 
          (aspect ?modified)
          (l/!= ?modifier ?modified)))
 

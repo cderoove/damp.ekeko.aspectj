@@ -15,7 +15,7 @@
        [org.aspectj.weaver.patterns Pointcut AndPointcut Declare DeclarePrecedence DeclareAnnotation DeclareErrorOrWarning DeclareParents DeclarePrecedence DeclareSoft DeclareTypeErrorOrWarning]
        [damp.ekeko EkekoModel]
        [damp.ekeko.aspectj AspectJProjectModel]
-       [org.aspectj.weaver AdviceKind World ResolvedTypeMunger ConcreteTypeMunger ReferenceType UnresolvedType ResolvedType  Member ResolvedMemberImpl]
+       [org.aspectj.weaver Advice AdviceKind World ResolvedTypeMunger ConcreteTypeMunger ReferenceType UnresolvedType ResolvedType  Member ResolvedMemberImpl]
        [org.aspectj.asm AsmManager IProgramElement IProgramElement$Kind IHierarchy ]
        [org.aspectj.weaver.bcel BcelTypeMunger]))
               
@@ -170,7 +170,7 @@
       sofar)))
 
 (defn-
-  enclosing-element-satisfying
+  ancestor-element-satisfying
   "Returns the first ancestor of the given IProgramElement 
    that satisfies the given function."
   [element testf] 
@@ -185,13 +185,13 @@
 
 
 (defn-
-  element-enclosingelement|type
-  "Relation between a ProgramElement and its enclosing ProgramElement 
+  element-ancestor|type
+  "Relation between a ProgramElement and its first ancestor ProgramElement 
    that is of kind CLASS, INTERFACE, ASPECT, ANNOTATION or ENUM (if any)."
   [?element ?etype]
   (all
     (element ?element)
-    (equals ?etype (enclosing-element-satisfying 
+    (equals ?etype (ancestor-element-satisfying 
                      ?element
                      (fn [ancestor] 
                        (.isType (.getKind ancestor)))))
@@ -199,80 +199,89 @@
 
 
 (defn-
-  element-enclosingelement|member
-  "Relation between a ProgramElement and its enclosing ProgramElement 
+  element-ancestor|member
+  "Relation between a ProgramElement and its first ancestor ProgramElement 
    that is of kind FIELD, METHOD, CONSTRUCTOR, POINTCUT, ADVICE, ENUM_VALUE (if any).
    Does not consider intertype members INTER_TYPE_CONSTRUCTOR, INTER_TYPE_FIELD, INTER_TYPE_METHOD."
   [?element ?emember]
   (all
     (element ?element)
-    (equals ?emember (enclosing-element-satisfying 
+    (equals ?emember (ancestor-element-satisfying 
                      ?element
                      (fn [ancestor] 
                        (.isMember (.getKind ancestor)))))
     (!= nil ?emember)))
 
+
 (defn-
-  element-enclosingelement-kind
-  "Relation between a ProgramElement and its enclosing ProgramElement of kind IProgramElement$Kind.
+  element-ancestor|intertypemember
+  "Relation between a ProgramElement and its first ancestor ProgramElement 
+   that is of kind INTER_TYPE_CONSTRUCTOR, INTER_TYPE_FIELD or INTER_TYPE_METHOD."
+  [?element ?emember]
+  (all
+    (element ?element)
+    (equals ?emember (ancestor-element-satisfying 
+                     ?element
+                     (fn [ancestor] 
+                       (.isInterTypeMember (.getKind ancestor)))))
+    (!= nil ?emember)))
+
+
+(defn-
+  element-ancestor-kind
+  "Semi-relation between a ProgramElement and its first ancestor ProgramElement of kind IProgramElement$Kind,
+   including the ProgramElement itself.
    Last argument has to be ground."
   [?element ?enclosing ?kind]
   (all
     (element ?element)
     (equals ?enclosing 
-            (enclosing-element-satisfying 
+            (ancestor-element-satisfying 
               ?element
               (fn [ancestor] 
                 (= ?kind (.getKind ancestor)))))
     (!= nil ?enclosing)))
 
 
-
 (defn-
   element|aspect
   [?element]
-  (all
-    (element ?element)
-    (equals (IProgramElement$Kind/ASPECT) (.getKind ?element))))
+  (all 
+    (element-kind ?element (IProgramElement$Kind/ASPECT))))
 
 (defn-
   element|class
   [?element]
   (all
-    (element ?element)
-    (equals (IProgramElement$Kind/CLASS) (.getKind ?element))))
+    (element-kind ?element (IProgramElement$Kind/CLASS))))
+
 
 (defn-
   element|interface
   [?element]
   (all 
-    (element ?element)
-    (equals (IProgramElement$Kind/INTERFACE) (.getKind ?element))))
+    (element-kind ?element (IProgramElement$Kind/INTERFACE))))
 
 
 (defn-
   element|enum
   [?element]
   (all
-    (element ?element)
-    (equals (IProgramElement$Kind/ENUM) (.getKind ?element))))
+    (element-kind ?element (IProgramElement$Kind/ENUM))))
 
 (defn-
   element|type
   [?element]
-  (conde
-    [(element|enum ?element)]
-    [(element|class ?element)]
-    [(element|aspect ?element)]
-    [(element|interface ?element)]))
+  (fresh [?kind]
+         (element-kind ?element ?kind)
+         (succeeds (.isType ?kind))))
 
-
-(defn
+(defn-
   element|member
   [?element]
-  (all
-    (element ?element)
-    (succeeds (.isMember (.getKind ?element)))))
+  (fresh [?kind]
+    (element-kind  ?element ?kind)
+    (succeeds (.isMember ?kind))))
 
 
 (defn-
@@ -280,21 +289,21 @@
   [?element]
   (fresh [?kind]
     (element-kind ?element ?kind)
-    (equals (IProgramElement$Kind/METHOD) ?kind)))
+    (== (IProgramElement$Kind/METHOD) ?kind)))
 
 (defn-
   element|constructor
   [?element]
   (fresh [?kind]
     (element-kind ?element ?kind)
-    (equals (IProgramElement$Kind/CONSTRUCTOR) ?kind)))
+    (== (IProgramElement$Kind/CONSTRUCTOR) ?kind)))
 
 (defn-
   element|advice
   [?element]
   (fresh [?kind]
     (element-kind ?element ?kind)
-    (equals (IProgramElement$Kind/ADVICE) ?kind)))
+    (== (IProgramElement$Kind/ADVICE) ?kind)))
 
 
 
@@ -1785,51 +1794,81 @@
     (methodparameters-elementsignature method)))
 
 
+
 (defn-
   element-member
-  "Relation between a ProgramElement and the IResolvedMember it corresponds to.
-   "
+  "Relation between a mProgramElement and the IResolvedMember it corresponds to."
   [?element ?member]
   (fresh [?type ?etype ?kind]
-         (element-enclosingelement|type ?element ?etype)
+         (element-ancestor|type ?element ?etype)
          (element-type ?etype ?type)
-         (type-member ?type ?member)
          (element-kind ?element ?kind)
          (conda
            [(== ?kind (IProgramElement$Kind/METHOD))
             (fresh [?sig]
                    (equals ?sig (.toSignatureString ?element true))
+                   (type-member ?type ?member)
                    (equals ?sig (method-elementsignature ?member)))]
            [(== ?kind (IProgramElement$Kind/CONSTRUCTOR))
-            (equals "<init>" (.getName ?member))
             (fresh [?sig]
                    (equals ?sig (.toSignatureString ?element true))
-                   (equals ?sig (constructor-elementsignature ?member ?type)))]
-           )))
-                   
+                   (type-member ?type ?member)
+                   (equals "<init>" (.getName ?member)) ;TODO: what about <clinit>?
+                   (equals ?sig (constructor-elementsignature ?member ?type)))])))
+           
+
+(defn-
+  advice-elementbytecodename
+  [^Advice advice]
+  (when-let [method (.getSignature advice)]
+    (.getName method))) 
+
+(defn-
+  element-advice
+  "Relation between a ProgramElement and the Advice it corresponds to."
+  [?element ?member]
+  (fresh [?bname ?type ?etype] 
+         (element|advice ?element)
+         (element-ancestor|type ?element ?etype)
+         (element-type ?etype ?type)
+         (equals ?bname (.getBytecodeName ?element))
+         (aspect-advice ?type ?member)
+         (equals ?bname (advice-elementbytecodename ?member))))
+
+(defn-
+  element-intertypemember
+  "Relation between a ProgramElement and the intertype Member it corresponds to."
+  [?element ?member]
+  (fresh [?intertype ?targettype]
+         (intertype-element ?intertype ?element)
+         (intertype-member-target ?intertype ?member ?targettype)))
+
+
+(defn-
+  element-weaverthing
+  "Relation between a ProgramElement and the Type/Member/IntertypeMember/Advice it corresponds to in the weaver."
+  [?element ?weaverthing]
+  (fresh [?kind]
+    (element-kind ?element ?kind)
+    (conda [(succeeds (.isType ?kind))
+            (element-type ?element ?weaverthing)]
+           [(conde [(== ?kind (IProgramElement$Kind/METHOD))]
+                   [(== ?kind (IProgramElement$Kind/CONSTRUCTOR))])
+            (element-member ?element ?weaverthing)]
+           [(succeeds (.isInterTypeMember ?kind))
+            (element-intertypemember ?element ?weaverthing)]
+           [(== ?kind (IProgramElement$Kind/ADVICE))
+            (element-advice ?element ?weaverthing)])))
+          
+  
+
 
 
 
 ;; Shadows
 ;; -------
-
-;(defn
-;  advice-shadow
-;  "Relation between an advice and one of its shadows."
-;  [?advice ?shadow]
-;  (fresh [?aspect ?handle ?model ?relations]
-;         (aspect-advice ?aspect ?advice)
-;         (equals ?model (-> ?aspect .getWorld .getModel))
-;         (equals ?handle (AsmRelationshipProvider/getHandle ?model ?advice))
-;         
-;         (contains ?shadow (.getRelationshipMap ?model ?shadow) 
-;                   
-;                             	public List<IRelationship> get(String sourceHandle);;
-;
-;         )
-  
  
-;todo: it would be nicer if ?shadow were an actual Shadow instance
+;TODO: it would be nicer if ?shadow were an actual Shadow instance
 ;this way, we stay in the weaver world
 ;now ?shadow stems from the xcut world
 ;problem: upon matching of a shadow and advice, the shadow is not recorded in the relationship map
@@ -1849,11 +1888,19 @@
                        (xcut/xcut-advicehandle-shadowhandle ?xcut ?adviceh ?shadowh)
                        (xcut/xcut-handle-pe ?xcut ?shadowh ?shadow)))))
 
+;;for efficiency's sake (called often by shadow-enclosing):
+;;when ?shadow is already ground, will only check that it is a ProgramElement 
+;;rather than that it is the shadow of an advice 
+;;--> hence not relational
 (defn
   shadow
   [?shadow]
-  (fresh [?advice]
-         (advice-shadow ?advice ?shadow)))
+  (conda [(v+ ?shadow)
+          (element ?shadow)]
+         [(v- ?shadow)
+          (fresh [?advice]
+                 (advice-shadow ?advice ?shadow))]))
+
 
 (defn
   aspect-shadow
@@ -1864,82 +1911,130 @@
            (advice-shadow ?advice ?shadow)))
 
 
+(defn 
+  shadow-enclosing
+  "Relation between a shadow and its immediately enclosing entity
+   or the entity itself for entity shadows.
+
+   This entity is one of the entities in the relations
+   - member/1 (and its subrelations method/1, ...)
+   - intertype/1  
+   - advice/1
+   - type/1 (and its subrelations advice/1, class/1, ...).
+
+   For retrieving the first enclosing entity of a specific kind, 
+   see relations shadow-ancestor|method/2, shadow-ancestor|advice/2, ..."
+  [?shadow ?enclosing]
+  (fresh [?kind]
+         (shadow ?shadow)
+         (element-kind ?shadow ?kind)
+         (conda [(== ?kind (IProgramElement$Kind/CODE))
+                 (fresh [?parent] 
+                        (element-parent ?shadow ?parent)
+                        (element-weaverthing ?parent ?enclosing))]
+                [(!= ?kind (IProgramElement$Kind/CODE))
+                 (element-weaverthing ?shadow ?enclosing)])))
+    
+
 (defn
-  shadow-enclosing|member
+  shadow-ancestor|method
+  "Relation between a shadow and its first enclosing method (if any).
+   Does not consider the entity itself as candidate. "
   [?shadow ?member]
   (fresh [?element]
     (shadow ?shadow)
-    (element-enclosingelement|member ?shadow ?element)
+    (element-ancestor-kind ?shadow ?element (IProgramElement$Kind/METHOD))
     (element-member ?element ?member)))
 
 (defn
-  shadow-enclosing|method
-  "Relation between a shadow and its enclosing method (if any)."
+  shadow-ancestor|constructor
+  "Relation between a shadow and its first enclosing constructor (if any).
+   Does not consider the entity itself as candidate."
   [?shadow ?member]
   (fresh [?element]
     (shadow ?shadow)
-    (element-enclosingelement-kind ?shadow ?element (IProgramElement$Kind/METHOD))
+    (element-ancestor-kind ?shadow ?element (IProgramElement$Kind/CONSTRUCTOR))
     (element-member ?element ?member)))
 
 (defn
-  shadow-enclosing|constructor
-  "Relation between a shadow and its enclosing constructor (if any)."
+  shadow-ancestor|advice
+  "Relation between a shadow and its first enclosing advice (if any).
+   Does not consider the entity itself as candidate."
   [?shadow ?member]
-  (fresh [?element]
+  (fresh [?element] 
     (shadow ?shadow)
-    (element-enclosingelement-kind ?shadow ?element (IProgramElement$Kind/CONSTRUCTOR))
+    (element-ancestor-kind ?shadow ?element (IProgramElement$Kind/ADVICE))
     (element-member ?element ?member)))
 
-
 (defn
-  shadow-enclosing|intertypemethod
-  "Relation between a shadow and its enclosing intertype method (if any)."
+  shadow-ancestor|intertypemethod
+  "Relation between a shadow and its first enclosing intertype method (if any).
+   Does not consider the entity itself as candidate."
   [?shadow ?member]
-  (fresh [?element ?intertype ?targettype] 
+  (fresh [?element] 
     (shadow ?shadow)
-    (element-enclosingelement-kind ?shadow ?element (IProgramElement$Kind/INTER_TYPE_METHOD))
-    (intertype-element ?intertype ?element)
-    (intertype-member-target ?intertype ?member ?targettype)))
-
+    (element-ancestor-kind ?shadow ?element (IProgramElement$Kind/INTER_TYPE_METHOD))
+    (element-intertypemember ?element ?member)))
+    
 (defn
-  shadow-enclosing|intertypeconstructor
-  "Relation between a shadow and its enclosing intertype constructor (if any)."
+  shadow-ancestor|intertypeconstructor
+  "Relation between a shadow and its first enclosing intertype constructor (if any).
+   Does not consider the entity itself as candidate."
   [?shadow ?member]
-  (fresh [?element ?intertype ?targettype] 
+  (fresh [?element] 
     (shadow ?shadow)
-    (element-enclosingelement-kind ?shadow ?element (IProgramElement$Kind/INTER_TYPE_CONSTRUCTOR))
-    (intertype-element ?intertype ?element)
-    (intertype-member-target ?intertype ?member ?targettype)))
-  
+    (element-ancestor-kind ?shadow ?element (IProgramElement$Kind/INTER_TYPE_CONSTRUCTOR))
+    (element-intertypemember ?element ?member)))
 
 (defn
-  shadow-enclosing|type
-  "Relation between a shadow and its enclosing type (aspect/class/interface/enum) (if any)."
+  shadow-ancestor|class
+  "Relation between a shadow and its first enclosing class (if any).
+   Does not consider the entity itself as candidate."
   [?shadow ?type]
   (fresh [?element]
     (shadow ?shadow)
-    (element-enclosingelement|type ?shadow ?element)
+    (element-ancestor-kind ?shadow ?element (IProgramElement$Kind/CLASS))
     (element-type ?element ?type)))
 
 (defn
-  shadow-enclosing|class
-  "Relation between a shadow and its enclosing class (if any)."
+  shadow-ancestor|aspect
+  "Relation between a shadow and its first enclosing aspect (if any).
+   Does not consider the entity itself as candidate."
   [?shadow ?type]
   (fresh [?element]
     (shadow ?shadow)
-    (element-enclosingelement-kind ?shadow ?element (IProgramElement$Kind/CLASS))
+    (element-ancestor-kind ?shadow ?element (IProgramElement$Kind/ASPECT))
     (element-type ?element ?type)))
 
 (defn
-  shadow-enclosing|aspect
-  "Relation between a shadow and its enclosing aspect (if any)."
+  shadow-ancestor|type
+  "Relation between a shadow and its first enclosing type (aspect/class/interface/enum) (if any).
+   Does not consider the entity itself as candidate."
   [?shadow ?type]
   (fresh [?element]
     (shadow ?shadow)
-    (element-enclosingelement-kind ?shadow ?element (IProgramElement$Kind/ASPECT))
+    (element-ancestor|type ?shadow ?element)
     (element-type ?element ?type)))
 
+(defn
+  shadow-ancestor|member-or-advice
+  "Relation between a shadow and its first enclosing member (method/constructor/advice) (if any).
+   Does not consider the entity itself as candidate."
+  [?shadow ?member]
+  (fresh [?element]
+    (shadow ?shadow)
+    (element-ancestor|member ?shadow ?element)
+    (element-member ?element ?member)))
 
+(defn
+  shadow-ancestor|intertypemember
+  "Relation between a shadow and its first enclosing intertype member (method/constructor) (if any).
+   Does not consider the entity itself as candidate."
+  [?shadow ?member]
+  (fresh [?element] 
+         (shadow ?shadow)
+         (element-ancestor|intertypemember ?shadow ?element)
+         (element-intertypemember ?element ?member)))
 
 
 ;; Names (In Progress)
