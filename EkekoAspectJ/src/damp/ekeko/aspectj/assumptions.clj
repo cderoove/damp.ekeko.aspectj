@@ -240,15 +240,6 @@
            (aspect-advice ?aspect ?advice)
            (advice-pointcutdefinition ?advice ?pointcutdef)))
 
-;; check on pointcut name
-;; no longer needed
-;;(defn
-;; aspect-usedpointcutname
-;;  [?aspect ?pointcutname]
-;;  (l/fresh [?pointcut]
-;;    (aspect-usedpointcut ?aspect ?pointcut)
-;;    (pointcutdefinition-name ?pointcut ?pointcutname)))
-
 (defn aspect-allusedpointcutdefs
   [?aspect ?usedpointcutdefs]
   (l/all
@@ -265,6 +256,8 @@
            (l/!= ?aspect1 ?aspect2)
            (aspect-allusedpointcutdefs ?aspect1 ?usedpc1)
            (aspect-allusedpointcutdefs ?aspect2 ?usedpc2)
+           (l/!= ?usedpc1 [])
+           (l/!= ?usedpc2 [])
            (same-elements ?usedpc1 ?usedpc2)
            )) 
 
@@ -281,6 +274,8 @@
            (l/!= ?aspect1 ?aspect2)
            (findall ?shadow1 (aspect-shadow ?aspect1 ?shadow1) ?shadows1)
            (findall ?shadow2 (aspect-shadow ?aspect2 ?shadow2) ?shadows2)
+           (l/!= ?shadows1 [])
+           (l/!= ?shadows2 [])
            (same-elements ?shadows1 ?shadows2)))
 
 ;;===========================================================================================
