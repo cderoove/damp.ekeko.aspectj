@@ -652,7 +652,7 @@
 
 (defn
   type-declaredsuper
-  "Relation between an aspect and its super class (including java.lang.Object for aspects
+  "Relation between a type and its super class (including java.lang.Object for aspects
    that do not declare a super aspect)."
   [?type ?super]
   (all
@@ -887,7 +887,7 @@
 ;todo: there are also advice kinds that cannot be declared, but are used by the weaver (see AdviceKind)
 
 (defn
-  advicebefore 
+  advice|before 
   "Relation of before advices."
   [?advice]
   (fresh [?kind]
@@ -895,7 +895,7 @@
     (equals ?kind AdviceKind/Before)))
 
 (defn
-  adviceafter
+  advice|after
   "Relation of after advices."
   [?advice]
   (fresh [?kind]
@@ -903,7 +903,7 @@
     (equals ?kind AdviceKind/After)))
 
 (defn
-  adviceafterthrowing
+  advice|afterthrowing
   "Relation of after throwing advices."
   [?advice]
   (fresh [?kind]
@@ -911,7 +911,7 @@
     (equals ?kind AdviceKind/AfterThrowing)))
 
 (defn
-  adviceafterreturning
+  advice|afterreturning
   "Relation of after returning advices."
   [?advice]
   (fresh [?kind]
@@ -919,7 +919,7 @@
     (equals ?kind AdviceKind/AfterReturning)))
 
 (defn
-  advicearound
+  advice|around
   "Relation of around advices."
   [?advice]
   (fresh [?kind]
@@ -1917,7 +1917,7 @@
    - member/1 (and its subrelations method/1, ...)
    - intertype/1  
    - advice/1
-   - type/1 (and its subrelations advice/1, class/1, ...).
+   - type/1 (and its subrelations aspect/1, class/1, ...).
 
    For retrieving the first enclosing entity of a specific kind, 
    see relations shadow-ancestor|method/2, shadow-ancestor|advice/2, ..."
