@@ -1132,7 +1132,7 @@
    by aspect-pointcutdefinition."
   [?advice ?pointcut]
   (fresh [?raw]
-         (advice-poincut|raw ?advice ?raw)
+         (advice-pointcut|raw ?advice ?raw)
          (succeeds (instance? AndPointcut ?raw)) ;;TODO: check whether others are possible?
          (equals ?pointcut (.getLeft ?raw))))
 
