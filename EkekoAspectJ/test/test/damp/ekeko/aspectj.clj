@@ -130,6 +130,10 @@
     (ekeko [?aspect ?advice] (assumptions/reentrant-aspect-advice ?aspect ?advice))
 "#{(\"cl.pleiad.ajlmp.testReentrancy.InfiniteLoop\" \"(before: (call(* *(..)) && persingleton(cl.pleiad.ajlmp.testReentrancy.InfiniteLoop))->void cl.pleiad.ajlmp.testReentrancy.InfiniteLoop.ajc$before$cl_pleiad_ajlmp_testReentrancy_InfiniteLoop$1$22d13d5e())\")}"))
 
+(deftest test-declareparents-markerinterface
+  (test/tuples-correspond
+    (ekeko [?aspect ?interface] (assumptions/aspect-declareparents-markerinterface ?aspect ?interface))
+"#{(\"cl.pleiad.ajlmp.markeriface.ThirdAspect\" \"cl.pleiad.ajlmp.markeriface.MarkerSub\") (\"cl.pleiad.ajlmp.markeriface.FirstAspect\" \"cl.pleiad.ajlmp.markeriface.Marker\")}"))
 
 ;; Test Suite
 ;; ----------
@@ -161,6 +165,8 @@
   ;assumptions from paper
   ; paper 3.1.1 assumption 1 case 1 and case 2. Also paper 3.2.3 assumption 2
   (test/against-project-named "AJ-LMP-Inclusion" false test-inclusion)
+  ; paper 3.1.1 assumption 1 special case 2
+  (test/against-project-named "AJ-LMP-MarkerIface" false test-declareparents-markerinterface)
   ;3.1.1 assumption 2, case 1  
   (test/against-project-named "AJ-LMP-MutExHeuristics" false test-same-pointcutname)
   ;3.1.1 assumption 2, case 2

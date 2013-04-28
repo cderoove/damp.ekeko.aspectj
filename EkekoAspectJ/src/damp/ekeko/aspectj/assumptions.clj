@@ -187,36 +187,34 @@
  ;   (aspect-pointcutdefinition ?subaspect ?newpointcutdef)
 
 
-(comment
 
 ;;===========================================================================================
   
-;;MOCK -- waiting for Coen 
 (defn
   markerinterface
   [?interface]
+  (l/fresh [?member]
+    (interface ?interface)
+    (fails (type-member ?interface ?member))))
+
+(defn
+  iface-self|or|sub
+  [?interface ?subinterface]
   (l/all
     (interface ?interface)
-    (eq interface-declaredmethods nil)))
+    (interface ?subinterface)
+   (l/conde [(type-declaredinterface+ ?subinterface ?interface)]
+            [(l/== ?subinterface ?interface)])))
 
-;;paper 3.1.1 assumption 1, special case 2, first case
+;;paper 3.1.1 assumption 1, special case 2
 (defn
   aspect-declareparents-markerinterface
-  [?aspect ?target ?interface]
-  (l/all
-    (markerinterface ?interface)
-    (aspect-declareparents-interface ?aspect ?target ?interface)))
-
-;;paper 3.1.1 assumption 1, special case 2, second case
-(defn
-  aspect-declareparents-markerinterface-subinterface
-  [?aspect ?target ?interface ?subinterface]
-  (l/all
-    (markerinterface ?interface)
-    (nestedinterface ?aspect ?subinterface)
-    (superinterface+ ?interface ?subinterface)
-    (aspect-declareparents-interface ?aspect ?target ?subinterface)))
-)
+  [?aspect ?interface]
+  (l/fresh [?superinterface ?declare]
+    (markerinterface ?superinterface)
+    (iface-self|or|sub ?superinterface ?interface)
+    (declare|parents-parent|type ?declare ?interface)
+    (aspect-declare ?aspect ?declare)))
 
 ;;===========================================================================================
 
