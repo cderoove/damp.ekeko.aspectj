@@ -2,7 +2,7 @@ package cl.pleiad.ajlmp.testRefineUsedPointcuts;
 
 public abstract aspect FirstAspect {
 
-	abstract pointcut pc1();
+	public abstract pointcut pc1();
 	
 	pointcut pc2() : execution(* BaseClass.*2(..));
 	

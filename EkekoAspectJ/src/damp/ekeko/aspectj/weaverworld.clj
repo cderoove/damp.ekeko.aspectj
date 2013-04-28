@@ -1089,7 +1089,7 @@
 
 
 (defn-
-  advice-poincut|raw
+  advice-pointcut|raw
   "Relation between an Advice ?advice and its raw, implementation-level Pointcut ?pointcut.
    These are conjunctions of the user-defined Pointcut and one synthetic Pointcut corresponding 
    to its aspect's PerClause (cflow, super, object, singleton, typewithin)."
@@ -1132,7 +1132,7 @@
    by aspect-pointcutdefinition."
   [?advice ?pointcut]
   (fresh [?raw]
-         (advice-poincut|raw ?advice ?raw)
+         (advice-pointcut|raw ?advice ?raw)
          (succeeds (instance? AndPointcut ?raw)) ;;TODO: check whether others are possible?
          (equals ?pointcut (.getLeft ?raw))))
 
@@ -1399,7 +1399,7 @@
 
 (defn
   pointcutdefinition-concretizedby
-  "Relation of (possibly abstract) pointcut definitions and their concretizing (definitely concrete) pointcuts."
+  "Relation of (possibly abstract) pointcut definitions and their concretizing (definitely concrete) pointcut definitions."
   [?abstractpc ?concretepc]
   (fresh [?abaspect ?concaspect ?name]
          (aspect|abstract ?abaspect)

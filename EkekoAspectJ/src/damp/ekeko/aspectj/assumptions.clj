@@ -168,20 +168,24 @@
                               ; (reads-field ?unit ?field)
                                ))))
 
-(comment
-;; to test -- waiting for Coen to bugfix
+
+;; does not work due to issue #6
 ;; code is in AJ-LMP-RefineUsedPointcut
 ;;paper 3.1.1 assumption 6
 (defn
   refine-used-pointcut-sub-super-pointcut
-  [?subaspect ?superaspect ?pointcut]
-  (l/fresh [?newpointcut ?advice]
-    (pointcutdefinition-concretizedby ?pointcut ?newpointcut)
-    (advice-pointcut ?advice ?pointcut)
-    (aspect-advice ?advice ?superaspect)
-    (aspect-declaredsuperaspect+ ?subaspect ?superaspect) ;;better than !=
-    (aspect-pointcutdefinition ?subaspect ?newpointcut)))
-)
+  [?subaspect ?superaspect ?pointcutdef]
+  (l/fresh [?newpointcutdef ?advice]
+    (pointcutdefinition-concretizedby ?pointcutdef ?newpointcutdef)
+    (advice-pointcutdefinition ?advice ?pointcutdef)))
+ ;these are superfluous because 
+ ; - advice may not be present in a third aspect outside of hierarchy due to public pointcut: needs to refer to concrete pc
+ ; - advice may be present in an intermediate sub-aspect->no problem
+ ; - advice may not be present in the new pointcut defining aspect -> matches with ?newpointcutdef
+ ;   (aspect-advice ?advice ?superaspect)
+ ;   (aspect-declaredsuperaspect+ ?subaspect ?superaspect) ;;better than !=
+ ;   (aspect-pointcutdefinition ?subaspect ?newpointcutdef)
+
 
 (comment
 
@@ -230,40 +234,30 @@
 ;;===========================================================================================
 
 (defn 
-  aspect-usedpointcut
-  [?aspect ?pointcut]
+  aspect-usedpointcutdef
+  [?aspect ?pointcutdef]
   (l/fresh [?advice]
            (aspect-advice ?aspect ?advice)
-           (advice-pointcut ?advice ?pointcut)))
+           (advice-pointcutdefinition ?advice ?pointcutdef)))
 
-;; Using same pointcuts does not work due to issue #7
-;; so we check on pointcut name
-;; does not work due to issue #6: these guys here do not have a name
-(defn
-  aspect-usedpointcutname
-  [?aspect ?pointcutname]
-  (l/fresh [?pointcut]
-    (aspect-usedpointcut ?aspect ?pointcut)
-    (pointcutdefinition-name ?pointcut ?pointcutname)))
-
-;; Using same pointcuts does not work due to issue #7
-;; so we check on pointcut name
-(defn aspect-allusedpointcuts
-  [?aspect ?usedpointcuts]
+(defn aspect-allusedpointcutdefs
+  [?aspect ?usedpointcutdefs]
   (l/all
     (aspect ?aspect)
-    (findall ?usedpointcut (aspect-usedpointcutname ?aspect ?usedpointcut) ?usedpointcuts)))
+    (findall ?usedpcdef (aspect-usedpointcutdef ?aspect ?usedpcdef) ?usedpointcutdefs)))
 
 ;;paper 3.1.1 assumption 2, case 2
 (defn
-  samepointcuts-reuse-super-sub1-sub2
-  [?aspect1 ?aspect2 ?usedpc1 ?usedpc2]
-  (l/fresh [?superaspect]
+  samepointcuts-reuse-fromsuper-sub1-sub2-usedpc
+  [?aspect1 ?aspect2 ?usedpc1 ]
+  (l/fresh [?superaspect ?usedpc2]
            (aspect-declaredsuperaspect+ ?aspect1 ?superaspect)
            (aspect-declaredsuperaspect+ ?aspect2 ?superaspect)
            (l/!= ?aspect1 ?aspect2)
-           (aspect-allusedpointcuts ?aspect1 ?usedpc1)
-           (aspect-allusedpointcuts ?aspect2 ?usedpc2)
+           (aspect-allusedpointcutdefs ?aspect1 ?usedpc1)
+           (aspect-allusedpointcutdefs ?aspect2 ?usedpc2)
+           (l/!= ?usedpc1 [])
+           (l/!= ?usedpc2 [])
            (same-elements ?usedpc1 ?usedpc2)
            )) 
 
@@ -280,11 +274,12 @@
            (l/!= ?aspect1 ?aspect2)
            (findall ?shadow1 (aspect-shadow ?aspect1 ?shadow1) ?shadows1)
            (findall ?shadow2 (aspect-shadow ?aspect2 ?shadow2) ?shadows2)
+           (l/!= ?shadows1 [])
+           (l/!= ?shadows2 [])
            (same-elements ?shadows1 ?shadows2)))
 
 ;;===========================================================================================
 
-(comment
 ; for the simple AJ reentrancy idiom
 (defn
   reentrant-aspect-advice
@@ -292,15 +287,5 @@
   (l/fresh [?shadow]
            (aspect-advice ?aspect ?advice)
            (advice-shadow ?advice ?shadow)
-           (shadow-enclosingmethoddeclaration ?shadow ?advice)))
+           (shadow-enclosing ?shadow ?advice)))
 
-;;This should work (retrieves advice shadows within their own advice):
-;(damp.ekeko/ekeko
-;     [?aspect ?advice]
-;     (l/fresh [?shadow ?enclosing]
-;            (aspect-advice ?aspect ?advice)
- ;           (advice-shadow ?advice ?shadow)
-;            (shadow-enclosing ?shadow ?advice)))
-
-
-)

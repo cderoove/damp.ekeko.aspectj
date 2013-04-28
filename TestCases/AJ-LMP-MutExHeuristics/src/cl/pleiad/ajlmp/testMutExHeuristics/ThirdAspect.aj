@@ -4,7 +4,7 @@ public aspect ThirdAspect extends FirstAspect {
 	
 	pointcut pc2():call(* BaseClass.*2(..));
 	
-	pointcut pcthree():call(* BaseClass.*2(..));
+	pointcut pcthree():call(* Base*.*2(..));
 	
 	before() : pc1() {
 		System.out.println("ThirdAspect-Before-1");

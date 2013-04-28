@@ -11,4 +11,11 @@ public aspect FirstAspect {
 		System.out.println("FirstAspect-ITD");
 	}
 	
+	void around(BaseClass base): execution(* Base*.*1(..)) && target(base){
+		System.out.println("FirstAspect-BeforeCall-1");
+		base.itdC();
+	}
+	public void BaseClass.itdC(){
+		System.out.println("FirstAspect-ITD2");
+	}
 }

@@ -2,7 +2,7 @@ package cl.pleiad.ajlmp.testRefineUsedPointcuts;
 
 public aspect SecondAspect extends FirstAspect {
 
-	pointcut pc1():execution(* BaseClass.*1(..));
+	public pointcut pc1():execution(* BaseClass.*1(..));
 	
 	public SecondAspect(){}
 	
