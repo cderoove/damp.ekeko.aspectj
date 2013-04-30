@@ -14,7 +14,7 @@
              ;[xcut :as xcut]
              ]
             [damp.ekeko.soot
-             [soot :as ssoot]]
+             [soot :as jsoot]]
             ))
 
 ;; Assumption: incomplete precedence
@@ -85,7 +85,7 @@
          (fails 
            (l/all
              (ajsoot/intertype|method-sootmethod ?itmethod ?sootmethod)
-             (ssoot/soot-method-called-by-method ?sootmethod ?caller)))))
+             (jsoot/soot-method-called-by-method ?sootmethod ?caller)))))
 
 
 ;;Assumption no double concretization of abstract pointcuts
@@ -141,32 +141,42 @@
   assigns-field
   [?unit ?field]
   (l/fresh [?lhs]
-    (ssoot/soot-unit-assign-leftop ?unit ?lhs)
-    (ssoot/soot-value :JInstanceFieldRef ?lhs)
+    (jsoot/soot-unit-assign-leftop ?unit ?lhs)
+    (jsoot/soot-value :JInstanceFieldRef ?lhs)
     (equals ?field (.getField  ?lhs))))
  
+;eventueel (qwhile [?soot|method ?soot|unit] q=> 
+;finds possibly broken implementations of wormhole idiom, where the field is written to in between entry and exit
 (defn
   brokenwormhole-entry-exit-field	
-  [?aspect ?entryadvice ?exitadvice ?field]
+  [?aspect ?advice|entry ?advice|exit ?field]
   (aspect ?aspect)
   (type-field ?aspect ?field)
-  (aspect-advice ?aspect ?entryadvice)
-  (aspect-advice ?aspect ?exitadvice)
-  (l/fresh [?icfg]
-              (ssoot/soot-method-icfg ?entryadvice ?icfg)
-              (damp.qwal/qwal ?icfg ?entryadvice ?exitadvice 
-                    []
-                    (damp.qwal/q=>*)
-                    (damp.qwal/qcurrent [[?entryadvice ?unit]]
-                              (assigns-field ?unit ?field))
-                    (damp.qwal/q=>+)
-                    (damp.qwal/qcurrent [[?method ?unit]]
-                              (l/!= ?entryadvice ?method)
-                              (assigns-field ?unit ?field))
-                    (damp.qwal/q=>+)   
-                    (damp.qwal/qcurrent [[?exitadvice ?unit]]
-                              ; (reads-field ?unit ?field)
-                               ))))
+  (aspect-advice ?aspect ?advice|entry)
+  (aspect-advice ?aspect ?advice|exit)
+  (l/fresh [?soot|field ?soot|method|entry ?soot|method|exit]
+           (ajsoot/field-soot|field ?field ?soot|field)
+           (ajsoot/advice-soot|method ?advice|entry ?soot|method|entry)
+           (ajsoot/advice-soot|method ?advice|exit ?soot|method|exit)
+           (l/fresh [?soot|icfg ?soot|unit|start ?soot|unit|end]
+                    (jsoot/soot-method-icfg ?soot|method|entry ?soot|icfg)
+                    (jsoot/soot-method-icfg-entry ?soot|method|entry ?soot|icfg ?soot|unit|start)
+                    (jsoot/soot-method-icfg-exit ?soot|method|exit ?soot|icfg ?soot|unit|end)
+                    (damp.qwal/qwal
+                      ?soot|icfg ?soot|unit|start ?soot|unit|end []
+                      (damp.qwal/q=>*)
+                      (damp.qwal/qcurrent [[?soot|method ?soot|unit]]
+                                          (l/== ?soot|method|entry ?soot|method)
+                                          (assigns-field ?soot|unit ?soot|field))
+                      (damp.qwal/q=>+)   
+                      (damp.qwal/qcurrent [[?soot|method ?soot|unit]]
+                                          (l/!= ?soot|method|entry ?soot|method)
+                                          (assigns-field ?soot|unit ?field))
+                      (damp.qwal/q=>+)   
+                      (damp.qwal/qcurrent [[?soot|method ?soot|unit]]
+                                          ;(l/== ?soot|method|exit ?soot|method)
+                                          ;(reads-field ?soot|unit ?soot|field)
+                                          )))))
 
 
 ;; does not work due to issue #6

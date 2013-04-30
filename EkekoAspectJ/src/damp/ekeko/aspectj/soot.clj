@@ -71,7 +71,7 @@
   
 
 (defn
-  advice-sootmethod 
+  advice-soot|method 
   [?advice ?soot]
   (fresh [?model ?scene ?signature]
          (world/advice ?advice)
@@ -80,7 +80,7 @@
          (soot/soot-method-signature ?soot ?signature)))
 
 (defn
-  intertype|method-sootmethod
+  intertype|method-soot|method
   [?itmethod ?soot]
   (fresh [?model ?scene ?signature]
          (world/intertype|method ?itmethod)
@@ -91,7 +91,7 @@
 
 
 (defn
-  field-sootfield
+  field-soot|field
   [?ajfield ?soot]
   (fresh [?model ?scene ?aspect ?signature]
          (world/aspect ?aspect)
