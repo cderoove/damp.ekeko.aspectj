@@ -84,7 +84,7 @@
          (intertype|method ?itmethod)
          (fails 
            (l/all
-             (ajsoot/intertype|method-sootmethod ?itmethod ?sootmethod)
+             (ajsoot/intertype|method-soot|method ?itmethod ?sootmethod)
              (jsoot/soot-method-called-by-method ?sootmethod ?caller)))))
 
 
@@ -98,57 +98,50 @@
     (pointcutdefinition-concretizedby ?concpointcut1 ?concpointcut2)))
     
 
-(clojure.core/declare advice-writesto)
-(clojure.core/declare advice-readsfrom)
 (clojure.core/declare percflowaspect)
 (clojure.core/declare consecutiveexec-aspect-advice1-advice2)
     
 ;;Assumption this aspect implements a wormhole
 ;; -- the naive version
-;; MOCK IMPLEMENTATION - DOES NOT WORK
 (defn
-  naivewormhole-aspect-entry-exit
-  [?aspect ?entryadvice ?exitadvice]
-  (l/fresh [?instvar] 
-    (aspect-advice ?aspect ?entryadvice)
-    (type-field ?aspect ?instvar)
-    (advice-writesto ?entryadvice ?instvar) ;NOT IMPLEMENTED YET
-    (aspect-advice ?aspect ?exitadvice)
-    (advice-readsfrom ?exitadvice ?instvar)));NOT IMPLEMENTED YET
+  wormhole|naive-entry-exit-field
+  [?aspect ?advice|entry ?advice|exit ?field]
+  (l/all
+    (aspect-advice ?aspect ?advice|entry)
+    (type-field ?aspect ?field)
+    (ajsoot/advice|writes-field ?advice|entry ?field)
+    (l/!= ?advice|exit ?advice|entry)
+    (aspect-advice ?aspect ?advice|exit)
+    (ajsoot/advice|reads-field ?advice|exit ?field)))
 
 ;;Assumption this aspect implements a wormhole
 ;; -- percflow of naive
 ;; MOCK IMPLEMENTATION - DOES NOT WORK
 (defn
-  wormhole-aspect-entry-exit
-  [?aspect ?entryadvice ?exitadvice]
+  wormhole-aspect-entry-exit-field
+  [?aspect ?entryadvice ?exitadvice ?field]
   (l/all
-    (naivewormhole-aspect-entry-exit ?aspect ?entryadvice ?exitadvice)
+    (wormhole|naive-entry-exit-field ?aspect ?entryadvice ?exitadvice ?field)
     (percflowaspect ?aspect)));NOT IMPLEMENTED YET
 
 ;;Assumption this aspect implements a wormhole
-;; -- naive + execution path from entry to exit without interruptions of other advice of the same aspect
-;; MOCK IMPLEMENTATION - DOES NOT WORK
+;; -- naive + execution path from entry to exit 
+;;TODO: without interruptions of other advice of the same aspect
 (defn
-  confidentwormhole-aspect-entry-exit
-  [?aspect ?entryadvice ?exitadvice]
+  wormhole|path-entry-exit-field
+  [?aspect ?advice|entry ?advice|exit ?field]
   (l/all
-    (naivewormhole-aspect-entry-exit ?aspect ?entryadvice ?exitadvice)
-    (consecutiveexec-aspect-advice1-advice2 ?aspect ?entryadvice ?exitadvice)));NOT IMPLEMENTED YET
+    (wormhole|naive-entry-exit-field ?aspect ?advice|entry ?advice|exit ?field)
+    (one 
+      (ajsoot/advice-reachable|advice ?advice|entry ?advice|exit))))
+  
 
-
-(defn
-  assigns-field
-  [?unit ?field]
-  (l/fresh [?lhs]
-    (jsoot/soot-unit-assign-leftop ?unit ?lhs)
-    (jsoot/soot-value :JInstanceFieldRef ?lhs)
-    (equals ?field (.getField  ?lhs))))
- 
+(comment
+;TODO: start icfg traversal from callers of advice
 ;eventueel (qwhile [?soot|method ?soot|unit] q=> 
 ;finds possibly broken implementations of wormhole idiom, where the field is written to in between entry and exit
 (defn
-  brokenwormhole-entry-exit-field	
+  wormhole|broken-entry-exit-field	
   [?aspect ?advice|entry ?advice|exit ?field]
   (aspect ?aspect)
   (type-field ?aspect ?field)
@@ -167,17 +160,17 @@
                       (damp.qwal/q=>*)
                       (damp.qwal/qcurrent [[?soot|method ?soot|unit]]
                                           (l/== ?soot|method|entry ?soot|method)
-                                          (assigns-field ?soot|unit ?soot|field))
+                                          (jsoot/soot|unit|writes-soot|field ?soot|unit ?soot|field))
                       (damp.qwal/q=>+)   
                       (damp.qwal/qcurrent [[?soot|method ?soot|unit]]
                                           (l/!= ?soot|method|entry ?soot|method)
-                                          (assigns-field ?soot|unit ?field))
+                                          (jsoot/soot|unit|writes-soot|field ?soot|unit ?soot|field))
                       (damp.qwal/q=>+)   
                       (damp.qwal/qcurrent [[?soot|method ?soot|unit]]
-                                          ;(l/== ?soot|method|exit ?soot|method)
-                                          ;(reads-field ?soot|unit ?soot|field)
+                                          (l/== ?soot|method|exit ?soot|method)
+                                          (jsoot/soot|unit|reads-soot|field ?soot|unit ?soot|field)
                                           )))))
-
+)
 
 ;; does not work due to issue #6
 ;; code is in AJ-LMP-RefineUsedPointcut
