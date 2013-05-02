@@ -39,6 +39,8 @@
          (aspect-advice ?second ?ad2)
          (advice-shadow ?ad2 ?shadow)))
 
+;;===========================================================================================
+
 ;;Assumption: implicit precedence is overridden
 ;;paper 3.1.1: assumption 9 case 2
 (defn
@@ -47,6 +49,8 @@
   (l/all
     (aspect-dominates-aspect ?second ?first)
     (aspect-dominates-aspect-implicitly+ ?first ?second)))
+
+;;===========================================================================================
 
 ;;Assumption: implicit precedence is overridden for a certain shadow
 (defn
@@ -58,6 +62,8 @@
          (advice-shadow ?ad1 ?shadow)
          (aspect-advice ?second ?ad2)
          (advice-shadow ?ad2 ?shadow)))
+
+;;===========================================================================================
 
 ;;Assumption: aspect modifies other aspect
 ;; paper 3.1.1 assumption 1 case 1 and case 2
@@ -75,6 +81,8 @@
          (aspect ?modified)
          (l/!= ?modifier ?modified)))
 
+;;===========================================================================================
+
 ;;Assumption itd use: intertype method is introduced, but never called
 ;;paper 3.1.1 assumption 5
 (defn 
@@ -87,6 +95,7 @@
              (ajsoot/intertype|method-soot|method ?itmethod ?sootmethod)
              (jsoot/soot-method-called-by-method ?sootmethod ?caller)))))
 
+;;===========================================================================================
 
 ;;Assumption no double concretization of abstract pointcuts
 ;;paper 3.1.1 assumption 7 
@@ -96,13 +105,14 @@
   (l/all
     (pointcutdefinition-concretizedby ?abpointcut ?concpointcut1)
     (pointcutdefinition-concretizedby ?concpointcut1 ?concpointcut2)))
-    
+
+;;===========================================================================================
 
 (clojure.core/declare percflowaspect)
-(clojure.core/declare consecutiveexec-aspect-advice1-advice2)
     
 ;;Assumption this aspect implements a wormhole
 ;; -- the naive version
+;;paper 3.1.2 assumption 1 case 1
 (defn
   wormhole|naive-entry-exit-field
   [?aspect ?advice|entry ?advice|exit ?field]
@@ -115,18 +125,9 @@
     (ajsoot/advice|reads-field ?advice|exit ?field)))
 
 ;;Assumption this aspect implements a wormhole
-;; -- percflow of naive
-;; MOCK IMPLEMENTATION - DOES NOT WORK
-(defn
-  wormhole-aspect-entry-exit-field
-  [?aspect ?entryadvice ?exitadvice ?field]
-  (l/all
-    (wormhole|naive-entry-exit-field ?aspect ?entryadvice ?exitadvice ?field)
-    (percflowaspect ?aspect)));NOT IMPLEMENTED YET
-
-;;Assumption this aspect implements a wormhole
 ;; -- naive + execution path from entry to exit 
 ;;TODO: without interruptions of other advice of the same aspect
+;;paper 3.1.2 assumption 1 case 2
 (defn
   wormhole|path-entry-exit-field
   [?aspect ?advice|entry ?advice|exit ?field]
@@ -134,7 +135,18 @@
     (wormhole|naive-entry-exit-field ?aspect ?advice|entry ?advice|exit ?field)
     (one 
       (ajsoot/advice-reachable|advice ?advice|entry ?advice|exit))))
-  
+
+;;Assumption this aspect implements a wormhole
+;; -- percflow of naive
+;; MOCK IMPLEMENTATION - DOES NOT WORK
+;;paper 3.1.2 assumption 1 case 3
+(defn
+  wormhole-aspect-entry-exit-field
+  [?aspect ?entryadvice ?exitadvice ?field]
+  (l/all
+    (wormhole|naive-entry-exit-field ?aspect ?entryadvice ?exitadvice ?field)
+    (percflowaspect ?aspect)));NOT IMPLEMENTED YET
+
 
 (comment
 ;TODO: start icfg traversal from callers of advice
@@ -171,6 +183,8 @@
                                           (jsoot/soot|unit|reads-soot|field ?soot|unit ?soot|field)
                                           )))))
 )
+
+;;===========================================================================================
 
 ;; does not work due to issue #6
 ;; code is in AJ-LMP-RefineUsedPointcut
