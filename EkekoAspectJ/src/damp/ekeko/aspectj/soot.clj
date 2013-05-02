@@ -69,6 +69,12 @@
                                 (apply str (interpose "," (map (fn [pt] (.getName pt)) (.getParameterTypes this))))
                                 ")"
                                 ">")))
+
+(extend-type
+  nil 
+  IHasSootSignatureAsMethod
+  (sootsignature-as-method [this] 
+                           ""))
   
 
 (defn
