@@ -16,7 +16,7 @@
             [damp.ekeko.soot
              [soot :as jsoot]]
             ))
-
+  
 ;; Assumption: incomplete precedence
 (defn
   incomplete-precedence
@@ -44,11 +44,11 @@
 ;;Assumption: implicit precedence is overridden
 ;;paper 3.1.1: assumption 9 case 2
 (defn
-  overriden-implicit-precedence
+  overriden|implicit|precedence
   [?first ?second]
   (l/all
-    (aspect-dominates-aspect ?second ?first)
-    (aspect-dominates-aspect-implicitly+ ?first ?second)))
+    (aspect|dominates-aspect ?second ?first)
+    (aspect|dominates|implicitly-aspect+ ?first ?second)))
 
 ;;===========================================================================================
 
@@ -57,7 +57,7 @@
   overriden-implicit-precedence-shadow
   [?first ?second ?shadow]
   (l/fresh [?ad1 ?ad2]
-         (overriden-implicit-precedence ?first ?second)
+         (overriden|implicit|precedence ?first ?second)
          (aspect-advice ?first ?ad1)
          (advice-shadow ?ad1 ?shadow)
          (aspect-advice ?second ?ad2)
@@ -225,7 +225,7 @@
 
 ;;paper 3.1.1 assumption 1, special case 2
 (defn
-  aspect-declareparents-markerinterface
+  aspect-declareparents|markerinterface
   [?aspect ?interface]
   (l/fresh [?superinterface ?declare]
     (markerinterface ?superinterface)
@@ -237,7 +237,7 @@
 
 ;;paper 3.1.1 assumption 2, case 1
 (defn
-  same-pointcutname-aspect1-aspect2
+  same|pointcut|name-aspect1-aspect2
   [?name ?aspect1 ?aspect2]
   (l/fresh [?pc1 ?pc2]
      (aspect-pointcutdefinition ?aspect1 ?pc1)
@@ -263,7 +263,7 @@
 
 ;;paper 3.1.1 assumption 2, case 2
 (defn
-  samepointcuts-reuse-fromsuper-sub1-sub2-usedpc
+  samepointcuts|reuse|from|super|sub1-sub2-usedpc
   [?aspect1 ?aspect2 ?usedpc1 ]
   (l/fresh [?superaspect ?usedpc2]
            (aspect-declaredsuperaspect+ ?aspect1 ?superaspect)
@@ -281,7 +281,7 @@
 
 ;;paper 3.1.1 assumption 2, case 3
 (defn
-  sameshadows-aspect1-aspect2
+  sameshadows|aspect1-aspect2
   [?aspect1 ?aspect2]
   (l/fresh [?shadows1 ?shadows2]
            (aspect ?aspect1)

@@ -1618,7 +1618,7 @@
 
 ;; Aspect precedence
 (defn
-  aspect-dominates-aspect-explicitly
+  aspect|dominates-aspect-explicitly
   "Relation between an aspect ?dominator that has a higher declared
    precedence than aspect ?subordinate because of DeclarePrecedence 
    declaration ?decprec."
@@ -1630,19 +1630,19 @@
     (equals 1 (.compare ?decprec ?dominator ?subordinate))))
 
 (defn
-  aspect-dominates-aspect-explicitly+
+  aspect|dominates-aspect-explicitly+
   "Transitive explicit dominates relationship"
     [?dominator ?subordinate]
     (conde [(fresh [?prec]
-                   (aspect-dominates-aspect-explicitly ?dominator ?subordinate ?prec))]
+                   (aspect|dominates-aspect-explicitly ?dominator ?subordinate ?prec))]
            [(fresh [?intermediate ?prec]
-                   (aspect-dominates-aspect-explicitly ?dominator ?intermediate ?prec)
-                   (aspect-dominates-aspect-explicitly+ ?intermediate ?subordinate))]))
+                   (aspect|dominates-aspect-explicitly ?dominator ?intermediate ?prec)
+                   (aspect|dominates-aspect-explicitly+ ?intermediate ?subordinate))]))
 
 ;	precedence rules: sub-aspects implicitly have precedence over their super-aspect;	Not reified: for advice of same aspect lexically first advice has implicit precedence over second advice
 
 (defn
-  aspect-dominates-aspect-implicitly+
+  aspect|dominates|implicitly-aspect+
   "Implicit aspect domination relationship: a subaspect dominates its superaspect."
   [?dominator ?subordinate]
   (all
@@ -1670,7 +1670,8 @@
         [(fresh [?intermediate]
                 (aspect-dominates-aspect ?dominator ?intermediate)
                 (aspect-dominates-aspect ?intermediate ?subordinate))])
-      (fails (aspect-dominates-aspect-explicitly+ ?subordinate ?dominator))))))
+      (fails (aspect-dominates-aspect-explicitly+ ?subordinate ?dominator)))))
+)
 
 (defn- 
   domination-edge
@@ -1683,13 +1684,13 @@
 ;not very declarative, see TODO about tabling above
 ;perhaps todo: 1-dom->5 is repeatd in results
 (defn
-  aspect-dominates-aspect
+  aspect|dominates-aspect
   "Precedence domination relation between an aspect and its subordinate,
    by combining explicit precedence declarations with implicit precedence relations."
   ([?dominator ?subordinate]
     (all
       (!= ?dominator ?subordinate)
-      (aspect-dominates-aspect ?dominator ?subordinate [])))
+      (aspect|dominates-aspect ?dominator ?subordinate [])))
   ([?dominator ?subordinate ?explored-subs]
     (fresh [?sub]
            (domination-edge ?dominator ?sub)
@@ -1698,8 +1699,8 @@
              [(== ?subordinate ?sub)]
              [(fresh [?new-explored-subs]
                      (equals ?new-explored-subs (conj ?explored-subs ?sub))
-                     (aspect-dominates-aspect ?sub ?subordinate ?new-explored-subs))])
-           (fails (aspect-dominates-aspect-explicitly+ ?subordinate ?dominator)))))
+                     (aspect|dominates-aspect ?sub ?subordinate ?new-explored-subs))])
+           (fails (aspect|dominates-aspect-explicitly+ ?subordinate ?dominator)))))
            
 
 ;; Aspect instantiation policies
