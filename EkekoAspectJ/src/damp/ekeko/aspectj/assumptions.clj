@@ -25,8 +25,8 @@
     (aspect ?first)
     (aspect ?second)
     (l/!= ?first ?second)
-    (fails (aspect-dominates-aspect ?first ?second))
-    (fails (aspect-dominates-aspect ?second ?first))))
+    (fails (aspect|dominates-aspect ?first ?second))
+    (fails (aspect|dominates-aspect ?second ?first))))
 
 ;; Assumption: incomplete precedence for a certain shadow
 (defn
@@ -69,7 +69,7 @@
 ;; paper 3.1.1 assumption 1 case 1 and case 2
 ;; also paper 3.2.3 assumption 2
 (defn 
-  modifies-aspect1-aspect2
+  modifies|aspect1-aspect2
   [?modifier ?modified] ;;A2 and A1
   (l/fresh [?advice ?shadow]
          (aspect-advice ?modifier ?advice)

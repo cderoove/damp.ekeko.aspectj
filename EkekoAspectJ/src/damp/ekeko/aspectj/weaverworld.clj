@@ -1665,12 +1665,12 @@
     [?dominator ?subordinate]
     (all
       (conde
-        [(aspect-dominates-aspect-explicitly+ ?dominator ?subordinate)]
-        [(aspect-dominates-aspect-implicitly+ ?dominator ?subordinate)]
+        [(aspect|dominates-aspect-explicitly+ ?dominator ?subordinate)]
+        [(aspect|dominates-aspect-implicitly+ ?dominator ?subordinate)]
         [(fresh [?intermediate]
                 (aspect-dominates-aspect ?dominator ?intermediate)
                 (aspect-dominates-aspect ?intermediate ?subordinate))])
-      (fails (aspect-dominates-aspect-explicitly+ ?subordinate ?dominator)))))
+      (fails (aspect|dominates-aspect-explicitly+ ?subordinate ?dominator)))))
 )
 
 (defn- 
@@ -1678,8 +1678,8 @@
   [?d ?s]
   (all 
     (conde 
-      [(aspect-dominates-aspect-explicitly+ ?d ?s)]
-      [(aspect-dominates-aspect-implicitly+ ?d ?s)])))
+      [(aspect|dominates-aspect-explicitly+ ?d ?s)]
+      [(aspect|dominates|implicitly-aspect+ ?d ?s)])))
 
 ;not very declarative, see TODO about tabling above
 ;perhaps todo: 1-dom->5 is repeatd in results

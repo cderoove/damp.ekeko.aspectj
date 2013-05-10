@@ -122,7 +122,7 @@
 (deftest test-inclusion
   (test/tuples-correspond
     (ekeko [?modifier ?modified]
-           (assumptions/modifies-aspect1-aspect2 ?modifier ?modified))
+           (assumptions/modifies|aspect1-aspect2 ?modifier ?modified))
     "#{(\"cl.pleiad.ajlmp.testInclusion.ThirdAspect\" \"cl.pleiad.ajlmp.testInclusion.FirstAspect\") (\"cl.pleiad.ajlmp.testInclusion.SecondAspect\" \"cl.pleiad.ajlmp.testInclusion.FirstAspect\")}"))
 
 (deftest test-reentrant-aspect-advice 
