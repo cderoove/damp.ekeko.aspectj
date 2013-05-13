@@ -68,6 +68,23 @@
                      (intertype-member-target ?intertype ?member ?targetaspect)
                      (aspect ?targetaspect))  
 
+  ;;To re-generate documentation
+  ;;- ensure Eclipse is started using the plugin project as the working directory (e.g., /Users/cderoove/git/damp.ekeko.aspectj/EkekoAspectJ)
+  ;;- evaluate:
+  (use 'codox.main)
+  (codox.main/generate-docs {
+             :name "GASR"
+             :version "1.0.0"
+             :description "GASR (General-purpose Aspectual Source code Reasoner; an Ekeko plugin for querying AspectJ project)."
+             :output-dir "/Users/cderoove/Desktop/doc"
+             :include ['damp.ekeko.aspectj.projectmodel
+                       'damp.ekeko.aspectj.weaverworld
+                       'damp.ekeko.aspectj.soot]
+             :sources ["src"]
+             :src-dir-uri "https://github.com/cderoove/damp.ekeko.aspectj/blob/master/EkekoAspectJ"
+             :src-linenum-anchor-prefix "L"}
+   )
+  
   )
 
 
