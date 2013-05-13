@@ -4,7 +4,7 @@ GASR (*General-purpose Aspectual Source code Reasoner*) is a tool for answering 
 
 ## Documentation
 
-See our [wiki](https://github.com/cderoove/damp.ekeko.aspectj/wiki) for some [example program queries](https://github.com/cderoove/damp.ekeko/wiki/Example-Queries). 
+See our [wiki](https://github.com/cderoove/damp.ekeko.aspectj/wiki) for some [example program queries](https://github.com/cderoove/damp.ekeko.aspectj/wiki/Example-Queries). 
 
 See the [API documentation](http://cderoove.github.com/damp.ekeko.aspectj/) for an overview of the predicates than can be used within a program query.
 
