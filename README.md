@@ -10,6 +10,10 @@ See the [API documentation](http://cderoove.github.com/damp.ekeko.aspectj/) for 
 
 Slideshare hosts an [earlier presentation on GASR](http://www.slideshare.net/oniroi/detecting-aspectspecific-code-smells-using-ekeko-for-aspectj). 
 
+## Experiments
+
+The experimental results for coding aspect assumptions are in a [markdown-formatted file](https://github.com/cderoove/damp.ekeko.aspectj/blob/master/experimental-results.md).
+
 ## Dependencies
 
 GASR owes its query language to the [core.logic](https://github.com/clojure/core.logic) port to [Clojure](http://clojure.org/) of [Kanren](http://kanren.sourceforge.net/), and its IDE integration to the [Ekeko](https://github.com/cderoove/damp.ekeko/EclipsePlugin) Eclipse plugin. The latter enables launching and scheduling program queries, as well as inspecting the solutions to a query. 
