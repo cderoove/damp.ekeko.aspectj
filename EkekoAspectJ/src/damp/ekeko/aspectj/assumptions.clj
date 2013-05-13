@@ -186,24 +186,18 @@
 
 ;;===========================================================================================
 
-;; does not work due to issue #6
 ;; code is in AJ-LMP-RefineUsedPointcut
 ;;paper 3.1.1 assumption 6
 (defn
-  refine-used-pointcut-sub-super-pointcut
-  [?subaspect ?superaspect ?pointcutdef]
+  refine|used|pointcut-sub-super
+  [?pointcutdef ?subaspect ?aspect]
   (l/fresh [?newpointcutdef ?advice]
+    (aspect-pointcutdefinition ?aspect ?pointcutdef)
+    (pointcutdefinition|abstract ?pointcutdef)
     (pointcutdefinition-concretizedby ?pointcutdef ?newpointcutdef)
-    (advice-pointcutdefinition ?advice ?pointcutdef)))
- ;these are superfluous because 
- ; - advice may not be present in a third aspect outside of hierarchy due to public pointcut: needs to refer to concrete pc
- ; - advice may be present in an intermediate sub-aspect->no problem
- ; - advice may not be present in the new pointcut defining aspect -> matches with ?newpointcutdef
- ;   (aspect-advice ?advice ?superaspect)
- ;   (aspect-declaredsuperaspect+ ?subaspect ?superaspect) ;;better than !=
- ;   (aspect-pointcutdefinition ?subaspect ?newpointcutdef)
-
-
+    (aspect-pointcutdefinition ?subaspect ?newpointcutdef)
+    (aspect-advice ?aspect ?advice)
+    (advice-pointcutdefinition ?advice ?newpointcutdef)))
 
 ;;===========================================================================================
   

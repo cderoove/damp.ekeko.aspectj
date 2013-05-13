@@ -119,6 +119,12 @@
            (assumptions/samepointcuts|reuse|from|super|sub1-sub2-usedpc ?aspect1 ?aspect2 ?usedpc1))
 "#{(\"cl.pleiad.ajlmp.testMutExHeuristics.FourthAspect\" \"cl.pleiad.ajlmp.testMutExHeuristics.FifthAspect\" \"[#<ResolvedPointcutDefinition pointcut cl.pleiad.ajlmp.testMutExHeuristics.FirstAspect.pc1()>]\") (\"cl.pleiad.ajlmp.testMutExHeuristics.FifthAspect\" \"cl.pleiad.ajlmp.testMutExHeuristics.FourthAspect\" \"[#<ResolvedPointcutDefinition pointcut cl.pleiad.ajlmp.testMutExHeuristics.FirstAspect.pc1()>]\")}"))
 
+(deftest test-refinepc-sub-super
+  (test/tuples-correspond
+  (ekeko [?pointcutdef ?subaspect ?superaspect]
+           (assumptions/refine|used|pointcut-sub-super ?pointcutdef ?subaspect ?superaspect))
+ "#{(\"pointcut cl.pleiad.ajlmp.testPointcuts.AbstractAspect.abstractpc2()\" \"cl.pleiad.ajlmp.testPointcuts.FirstAspect\" \"cl.pleiad.ajlmp.testPointcuts.AbstractAspect\") (\"pointcut cl.pleiad.ajlmp.testPointcuts.AbstractAspect.abstractpc1()\" \"cl.pleiad.ajlmp.testPointcuts.SecondAspect\" \"cl.pleiad.ajlmp.testPointcuts.AbstractAspect\")}"))
+
 (deftest test-inclusion
   (test/tuples-correspond
     (ekeko [?modifier ?modified]
@@ -181,6 +187,8 @@
   (test/against-project-named "AJ-LMP-MutExHeuristics" false test-same-shadows)
   ; 3.1.1 assumption 5
   (test/against-project-named "AJ-LMP-ITD" true test-intertype|method|unused)
+  ; 3.1.1 assumption 6
+  (test/against-project-named "AJ-LMP-Pointcuts" false test-refinepc-sub-super)
   ; 3.1.1 assumption 7 
   (test/against-project-named "AJ-LMP-Pointcuts" false test-concretization)
   ;3.1.1: assumption 9 case 2
