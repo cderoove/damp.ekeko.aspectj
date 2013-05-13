@@ -297,4 +297,3 @@
            (aspect-advice ?aspect ?advice)
            (advice-shadow ?advice ?shadow)
            (shadow-enclosing ?shadow ?advice)))
-

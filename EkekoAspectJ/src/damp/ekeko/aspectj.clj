@@ -19,68 +19,55 @@
 
 (make-query-views-aspectj-aware!)
 
-
-
 (comment
+  ;; Example REPL session
+  ;; Before trying these out, make sure that the AspectJ project has been built at least once in this Eclipse session.
+  ;; For instance, by selecting the project in the dialog openeded by the Project > Clean .. menu entry. 
   
+  ;; Load all files
   (use 'damp.ekeko.aspectj)
+  ;; Switch to the namespaces that reifies the domain model of the AspectJ weaver. 
   (in-ns 'damp.ekeko.aspectj.weaverworld)
   
-  ;;before trying these out, make sure that the AspectJ project has been built at least in this Eclipse session
-  
-  (in-ns 'damp.ekeko.aspectj.weaverworld)
-  
-  ;to check: these should include indirect supers (class/interface/aspect) stemming from intertype declarations
+  ;;Solutions to the following query consist of an ?aspect and one of its direct or indirect ?super types
   (damp.ekeko/ekeko* [?aspect ?super] (aspect-super+ ?aspect ?super))
   
-  (damp.ekeko/ekeko* [?aspect ?pointcut] (aspect-pointcutdefinition ?aspect ?pointcut))
+  ;;Solutions consist of an ?aspect and one of its own, non-inherited pointcut definitions ?poincutdef
+  (damp.ekeko/ekeko* [?aspect ?pointcutdef] (aspect-pointcutdefinition ?aspect ?pointcutdef))
   
+  ;;Solutions correspond to all advices known to the weaver.
   (damp.ekeko/ekeko* [?advice] (advice ?advice))
   
-  (damp.ekeko/ekeko* [?advice]  (advicebefore ?advice))
-  
+  ;;Solutions correspond to all before advices known to the weaver.
+  (damp.ekeko/ekeko* [?advice] (advice|before ?advice))
+   
+  ;;Solutions consist of an advice definition and its location in the source code.
   (damp.ekeko/ekeko* [?advice ?location] (advice-sourcelocation ?advice ?location))
 
+  ;;Solutions consist of an advice and its pointcut.
   (damp.ekeko/ekeko* [?advice ?pointcut]  (advice-pointcut ?advice ?pointcut))
   
+  ;;Solutions consist of an advice and one of its join point shadows. 
   (damp.ekeko/ekeko* [?advice ?shadow] (advice-shadow ?advice ?shadow))
   
-  
-  ;to check: pairs of different shadows for the same advice
-  (damp.ekeko/ekeko* [?advice ?shadow1 ?shadow2] 
-                     (advice-shadow ?advice ?shadow1) 
-                     (advice-shadow ?advice ?shadow2) 
-                     (!= ?shadow1 ?shadow2))
-
-  ;to check: pairs of advices on same shadow
-  ;(looks cool!)
+  ;;Solutions consist of two different advices that share a join point shadow.
   (damp.ekeko/ekeko* [?advice1 ?advice2 ?shadow] 
                       (advice-shadow ?advice1 ?shadow) 
                       (advice-shadow ?advice2 ?shadow)
                       (!= ?advice1 ?advice2))
   
-  
+  ;;Solutions consist of an aspect and one of its intertype declarations.
   (damp.ekeko/ekeko* [?aspect ?intertype] (aspect-intertype ?aspect ?intertype))
   
-  (damp.ekeko/ekeko* [?intertype ?member ?type] (intertype-member-type ?intertype ?member ?type))
+  ;;Solutions consist of an intertype declaration, the field/method/constructor member it declares, and the target type to which this member is added.
+  (damp.ekeko/ekeko* [?intertype ?member ?type] (intertype-member-target ?intertype ?member ?type))
   
-  ;;intertype declarations that add a member to an aspect
+  ;;Solutions consist of an intertype declarations that add a member to an aspect.
   (damp.ekeko/ekeko* [?declaringaspect ?intertype ?member ?targetaspect] 
                      (aspect-intertype ?declaringaspect ?intertype)
-                     (intertype-member-type ?intertype ?member ?targetaspect)
-                     (aspect ?targetaspect))
-  
-  ;;adviced shadows that stem from an intertype declaration
-  (damp.ekeko/ekeko* [?advice ?shadow ?intertype]
-                     (intertype-element ?intertype ?shadow)
-                     (advice-shadow ?advice ?shadow))
-  
-  ;;printing out the names of the aspect instead of their simple toString
-  (damp.ekeko/ekeko [?firstname, ?secondname]
-      (fresh [?first, ?second]
-          (overriden-implicit-precedence ?first ?second)
-          (equals ?firstname (.getName ?first))
-          (equals ?secondname (.getName ?second))))
+                     (intertype-member-target ?intertype ?member ?targetaspect)
+                     (aspect ?targetaspect))  
+
   )
 
 
