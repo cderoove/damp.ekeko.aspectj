@@ -186,7 +186,6 @@
 
 ;;===========================================================================================
 
-;; code is in AJ-LMP-RefineUsedPointcut
 ;;paper 3.1.1 assumption 6
 (defn
   refine|used|pointcut-sub-super
