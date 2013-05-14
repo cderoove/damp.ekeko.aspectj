@@ -35,7 +35,7 @@ A1 relies on another aspect A2 to modify the behaviour A1 introduces. The semant
 
 #### Case 2 ####
 
-A1 relies on another aspect A2 to introduce base behaviour that A1 can then modify. The semantics of this are not formalized. This seems to refer to A2 advising something, and A1 having shadows in the advice. ** This is actually idem to case 1 because it is the dual. **
+A1 relies on another aspect A2 to introduce base behaviour that A1 can then modify. The semantics of this are not formalized. This seems to refer to A2 advising something, and A1 having shadows in the advice. **This is actually idem to case 1 because it is the dual.**
 
 ```
 (defn aspect-on-aspect [?modifier ?modified] ;;A1 and A2
@@ -52,7 +52,7 @@ Formally: weaving context of A1 is that A2 and A3 are deployed.
 
 The semantics are not clear from the text. It seems to state the following relationship using the inclusion assumption in case 1 and 2.
 
-** This mock code is untested -- no plans to implement due to being too ambiguous in the paper **
+**This mock code is untested -- there are no plans to implement due to being too ambiguous in the paper**
 
 ```
 (defn interaction-triplet-resolver-inter1-inter2 [?asp0 ?asp1 ?asp2]
@@ -96,7 +96,7 @@ There is an empty interface. (The paper said that it is defined by an aspect, bu
 
 #### Case 1 & 2 ####
 
-** HealthWatcher **
+**HealthWatcher**
 
 Match from the paper:
 
@@ -130,7 +130,7 @@ There are no straightforward matches with the paper. We do see some indications.
 )
 ```
 
-** MobileMedia **
+**MobileMedia**
 
 There are no straightforward matches with the paper, but we found some interesting facts (below the results).
 
@@ -176,7 +176,7 @@ SKIP
 
 The paper only talks about Glassbox. No matches in paper data for the HW or MM projects.
 
-** HealthWatcher **
+**HealthWatcher**
 
 Direct
 
@@ -196,7 +196,7 @@ Note that items 2 and 3 are not mentioned in the results files nor in the paper!
 
 Sub interface of marker: 0 items found
 
-** MobileMedia **
+**MobileMedia**
 
 Direct: 0 items found
 
@@ -296,7 +296,7 @@ If there are other sub-aspects they would probably match case 2 as there is only
 #### Case 1 ####
 
 
-** HealthWatcher **
+**HealthWatcher**
 
 ```
 (["subjectChange" #<ReferenceType lib.patterns.ObserverProtocol> #<ReferenceType healthwatcher.aspects.patterns.UpdateStateObserver>] ["commandTrigger" #<ReferenceType healthwatcher.aspects.patterns.ServletCommanding> #<ReferenceType lib.patterns.CommandProtocol>] ["commandTrigger" #<ReferenceType lib.patterns.CommandProtocol> #<ReferenceType healthwatcher.aspects.patterns.ServletCommanding>] ["subjectChange" #<ReferenceType healthwatcher.aspects.patterns.UpdateStateObserver> #<ReferenceType lib.patterns.ObserverProtocol>])
@@ -304,7 +304,7 @@ If there are other sub-aspects they would probably match case 2 as there is only
 
 Both are cases of implementation of abstract pc. 
 
-** MobileMedia **
+**MobileMedia**
 
 These are different command actions implemented as aspects (command pattern variation): ```handleCommandAction``` , ```initMenu```, ```constructor``` pointcut name. So we update the rule on the fly to exclude these : (note results are duplicated due to symmetry)
 
@@ -351,11 +351,11 @@ In this we see 6(*2) times duplicate pointcut code, in :
 
 #### Case 2 ####
 
-** HealthWatcher **
+**HealthWatcher**
 
 0 matches found.
 
-** MobileMedia **
+**MobileMedia**
 
 ```
 ([#<ReferenceType lancs.mobilemedia.alternative.photo.PhotoNotVideoNotMusic> #<ReferenceType lancs.mobilemedia.alternative.video.VideoNotPhotoNotMusic>
@@ -389,7 +389,7 @@ In this we see 6(*2) times duplicate pointcut code, in :
 
 #### Case 3 ####
 
-** HealthWatcher **
+**HealthWatcher**
 
 ```
 ([#<ReferenceType healthwatcher.aspects.exceptionHandling.HWTransactionExceptionHandler> #<ReferenceType healthwatcher.aspects.exceptionHandling.HWDistributionExceptionHandler>]
@@ -398,7 +398,7 @@ In this we see 6(*2) times duplicate pointcut code, in :
 
 These are complimentary: one catching transaction exceptions, one catching communication and RMI exceptions
 
-** MobileMedia **
+**MobileMedia**
 
 There is some duplication here because of the aforementioned use of the command pattern
 
@@ -473,11 +473,7 @@ In the paper is only the special case, which we are skipping for now.
 
 #### General Case ####
 
-** HealthWatcher **
-
-See healthwatcher.view.servlets.ServletWebServer for the entry point for soot.
-
-Check again with healthwatcher.business.HealthWatcherFacade
+**HealthWatcher**
 
 HW is a server + a set of servlets to be executed by a Java web server. We do not include analysis of this web server, which means that we do not have all possible execution paths through the servlets of HW. We only analyse the execution paths of the server part of the app.
 
@@ -498,27 +494,33 @@ The following ITD is not found because the ITD itself is the main. Coen should u
 ```
 
 Found:
+
 ```
 [#<BcelTypeMunger (BcelTypeMunger ResolvedTypeMunger(Method, boolean lib.patterns.Command.isExecutable()))>]
 ```
+
 Is a default implementation for the method declared in an abstract class. Yet this method is never referenced. Code comment:
+
 ```
 This interface method is optional (default: all commands are excutable); a default 
 implementation is provided by the abstract CommandProtocol aspect.
 ```
+
 This is not mentioned in the results files nor in the paper!
 
-** MobileMedia **
+**MobileMedia**
 
 ```lancs.mobilemedia.core.ui.MainUIMidlet``` contains the entry point of the app: ```startApp()```. This however does not take into account user actions coming from the UI, ```lancs.mobilemedia.core.ui.controller.AbstractController``` method ```void commandAction(Command c, Displayable d)``` from the ```javax.microedition.lcdui.CommandListener``` interface. 
 
 False positives, unknown why these turned up. :-(
+
 ```
 [#<BcelTypeMunger (BcelTypeMunger ResolvedTypeMunger(Method, boolean lancs.mobilemedia.alternative.photo.PhotoViewScreen.isFromSMS()))>] 
 [#<BcelTypeMunger (BcelTypeMunger ResolvedTypeMunger(Method, boolean lancs.mobilemedia.core.ui.controller.MediaController.playVideoMedia(java.lang.String)))>]
 ```
 
 Found:
+
 ```
 ([#<BcelTypeMunger (BcelTypeMunger ResolvedTypeMunger(Method, lancs.mobilemedia.core.ui.controller.BaseController lancs.mobilemedia.alternative.SelectMediaController.getImageController()))>]
 [#<BcelTypeMunger (BcelTypeMunger ResolvedTypeMunger(Method, lancs.mobilemedia.core.ui.datamodel.AlbumData lancs.mobilemedia.alternative.SelectMediaController.getImageAlbumData()))>]
@@ -564,11 +566,11 @@ None of the above cases are present in the paper nor in the results files for th
 
 The paper only talks about Glassbox. No matches in paper data for the HW or MM projects.
 
-** HealthWatcher **
+**HealthWatcher**
 
 0 matches
 
-** MobileMedia **
+**MobileMedia**
 
 0 matches
 
@@ -596,11 +598,11 @@ Note: this needs to take into account redefinition of pointcuts, which is only b
 
 This case is only present in Glassbox.
 
-** HealthWatcher **
+**HealthWatcher**
 
 0 matches - corresponds with paper
 
-** MobileMedia **
+**MobileMedia**
 
 0 matches - corresponds with paper 
 
@@ -643,10 +645,10 @@ This is case 1.
 
 This case is present in Glassbox.
 
-** HealthWatcher **
+**HealthWatcher**
 
 0 matches - corresponds with paper. 
 
-** MobileMedia **
+**MobileMedia**
 
 0 matches - corresponds with paper. 
