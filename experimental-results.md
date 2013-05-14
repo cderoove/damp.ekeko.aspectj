@@ -170,7 +170,7 @@ Regarding the 4 last matches (2 are dupes):
 
 #### Special case 1 ####
 
-SKIP
+Skip as its definition in the paper is too ambiguous.
 
 #### Special case 2 ####
 
@@ -360,25 +360,18 @@ In this we see 6(*2) times duplicate pointcut code, in :
 ```
 ([#<ReferenceType lancs.mobilemedia.alternative.photo.PhotoNotVideoNotMusic> #<ReferenceType lancs.mobilemedia.alternative.video.VideoNotPhotoNotMusic>
   [#<ResolvedPointcutDefinition pointcut lancs.mobilemedia.optional.sms.SMSAspect.startApplication(lancs.mobilemedia.core.ui.MainUIMidlet)> #<ResolvedPointcutDefinition pointcut lancs.mobilemedia.alternative.AbstractAlternativeFeature.startApp(lancs.mobilemedia.core.ui.MainUIMidlet)> #<ResolvedPointcutDefinition pointcut lancs.mobilemedia.alternative.PhotoAndMusicAndVideo.startApp(lancs.mobilemedia.core.ui.MainUIMidlet)> #<ResolvedPointcutDefinition pointcut lancs.mobilemedia.alternative.photoMusic.PhotoAndMusicAspect.startApp(lancs.mobilemedia.core.ui.MainUIMidlet)>]]
-;
 [#<ReferenceType lancs.mobilemedia.alternative.video.VideoNotPhotoNotMusic> #<ReferenceType lancs.mobilemedia.alternative.photo.PhotoNotVideoNotMusic>
   [#<ResolvedPointcutDefinition pointcut lancs.mobilemedia.optional.sms.SMSAspect.startApplication(lancs.mobilemedia.core.ui.MainUIMidlet)> #<ResolvedPointcutDefinition pointcut lancs.mobilemedia.alternative.AbstractAlternativeFeature.startApp(lancs.mobilemedia.core.ui.MainUIMidlet)> #<ResolvedPointcutDefinition pointcut lancs.mobilemedia.alternative.PhotoAndMusicAndVideo.startApp(lancs.mobilemedia.core.ui.MainUIMidlet)> #<ResolvedPointcutDefinition pointcut lancs.mobilemedia.alternative.photoMusic.PhotoAndMusicAspect.startApp(lancs.mobilemedia.core.ui.MainUIMidlet)>]]
-;
 [#<ReferenceType lancs.mobilemedia.alternative.photo.PhotoNotVideoNotMusic> #<ReferenceType lancs.mobilemedia.alternative.music.MusicNotPhotoNotVideo>
  [#<ResolvedPointcutDefinition pointcut lancs.mobilemedia.optional.sms.SMSAspect.startApplication(lancs.mobilemedia.core.ui.MainUIMidlet)> #<ResolvedPointcutDefinition pointcut lancs.mobilemedia.alternative.AbstractAlternativeFeature.startApp(lancs.mobilemedia.core.ui.MainUIMidlet)> #<ResolvedPointcutDefinition pointcut lancs.mobilemedia.alternative.PhotoAndMusicAndVideo.startApp(lancs.mobilemedia.core.ui.MainUIMidlet)> #<ResolvedPointcutDefinition pointcut lancs.mobilemedia.alternative.photoMusic.PhotoAndMusicAspect.startApp(lancs.mobilemedia.core.ui.MainUIMidlet)>]]
-;
 [#<ReferenceType lancs.mobilemedia.alternative.video.VideoNotPhotoNotMusic> #<ReferenceType lancs.mobilemedia.alternative.music.MusicNotPhotoNotVideo>
  [#<ResolvedPointcutDefinition pointcut lancs.mobilemedia.optional.sms.SMSAspect.startApplication(lancs.mobilemedia.core.ui.MainUIMidlet)> #<ResolvedPointcutDefinition pointcut lancs.mobilemedia.alternative.AbstractAlternativeFeature.startApp(lancs.mobilemedia.core.ui.MainUIMidlet)> #<ResolvedPointcutDefinition pointcut lancs.mobilemedia.alternative.PhotoAndMusicAndVideo.startApp(lancs.mobilemedia.core.ui.MainUIMidlet)> #<ResolvedPointcutDefinition pointcut lancs.mobilemedia.alternative.photoMusic.PhotoAndMusicAspect.startApp(lancs.mobilemedia.core.ui.MainUIMidlet)>]]
-;
 [#<ReferenceType lancs.mobilemedia.alternative.video.VideoAspect> #<ReferenceType lancs.mobilemedia.alternative.photo.PhotoAspect>
  [#<ResolvedPointcutDefinition pointcut lancs.mobilemedia.optional.capturevideo.CaptureVideoAspect.initMenu(lancs.mobilemedia.core.ui.screens.MediaListScreen)> #<ResolvedPointcutDefinition pointcut lancs.mobilemedia.alternative.video.VideoAspect.constructor(lancs.mobilemedia.core.ui.controller.AbstractController)> #<ResolvedPointcutDefinition pointcut lancs.mobilemedia.alternative.video.VideoAspect.initMenu(lancs.mobilemedia.core.ui.screens.MediaListScreen)> #<ResolvedPointcutDefinition pointcut lancs.mobilemedia.optional.favourites.FavouritesAspect.initMenu(lancs.mobilemedia.core.ui.screens.MediaListScreen)> #<ResolvedPointcutDefinition pointcut lancs.mobilemedia.alternative.photo.PhotoAspect.constructor(lancs.mobilemedia.core.ui.controller.AbstractController)> #<ResolvedPointcutDefinition pointcut lancs.mobilemedia.alternative.music.MusicAspect.constructor(lancs.mobilemedia.core.ui.controller.AbstractController)> #<ResolvedPointcutDefinition pointcut lancs.mobilemedia.alternative.photo.PhotoAspect.initMenu(lancs.mobilemedia.core.ui.screens.MediaListScreen)> #<ResolvedPointcutDefinition pointcut lancs.mobilemedia.alternative.music.MusicAspect.initMenu(lancs.mobilemedia.core.ui.screens.MediaListScreen)> #<ResolvedPointcutDefinition pointcut lancs.mobilemedia.optional.capturephoto.CapturePhotoAspect.initMenu(lancs.mobilemedia.core.ui.screens.MediaListScreen)> #<ResolvedPointcutDefinition pointcut lancs.mobilemedia.optional.sorting.SortingAspect.initMenu(lancs.mobilemedia.core.ui.screens.MediaListScreen)> #<ResolvedPointcutDefinition pointcut lancs.mobilemedia.optional.sms.SMSAspect.startApplication(lancs.mobilemedia.core.ui.MainUIMidlet)> #<ResolvedPointcutDefinition pointcut lancs.mobilemedia.alternative.AbstractAlternativeFeature.startApp(lancs.mobilemedia.core.ui.MainUIMidlet)> #<ResolvedPointcutDefinition pointcut lancs.mobilemedia.alternative.PhotoAndMusicAndVideo.startApp(lancs.mobilemedia.core.ui.MainUIMidlet)> #<ResolvedPointcutDefinition pointcut lancs.mobilemedia.alternative.photoMusic.PhotoAndMusicAspect.startApp(lancs.mobilemedia.core.ui.MainUIMidlet)>]]
-;
 [#<ReferenceType lancs.mobilemedia.alternative.photo.PhotoAspect> #<ReferenceType lancs.mobilemedia.alternative.video.VideoAspect>
  [#<ResolvedPointcutDefinition pointcut lancs.mobilemedia.optional.capturevideo.CaptureVideoAspect.initMenu(lancs.mobilemedia.core.ui.screens.MediaListScreen)> #<ResolvedPointcutDefinition pointcut lancs.mobilemedia.alternative.video.VideoAspect.constructor(lancs.mobilemedia.core.ui.controller.AbstractController)> #<ResolvedPointcutDefinition pointcut lancs.mobilemedia.alternative.video.VideoAspect.initMenu(lancs.mobilemedia.core.ui.screens.MediaListScreen)> #<ResolvedPointcutDefinition pointcut lancs.mobilemedia.optional.favourites.FavouritesAspect.initMenu(lancs.mobilemedia.core.ui.screens.MediaListScreen)> #<ResolvedPointcutDefinition pointcut lancs.mobilemedia.alternative.photo.PhotoAspect.constructor(lancs.mobilemedia.core.ui.controller.AbstractController)> #<ResolvedPointcutDefinition pointcut lancs.mobilemedia.alternative.music.MusicAspect.constructor(lancs.mobilemedia.core.ui.controller.AbstractController)> #<ResolvedPointcutDefinition pointcut lancs.mobilemedia.alternative.photo.PhotoAspect.initMenu(lancs.mobilemedia.core.ui.screens.MediaListScreen)> #<ResolvedPointcutDefinition pointcut lancs.mobilemedia.alternative.music.MusicAspect.initMenu(lancs.mobilemedia.core.ui.screens.MediaListScreen)> #<ResolvedPointcutDefinition pointcut lancs.mobilemedia.optional.capturephoto.CapturePhotoAspect.initMenu(lancs.mobilemedia.core.ui.screens.MediaListScreen)> #<ResolvedPointcutDefinition pointcut lancs.mobilemedia.optional.sorting.SortingAspect.initMenu(lancs.mobilemedia.core.ui.screens.MediaListScreen)> #<ResolvedPointcutDefinition pointcut lancs.mobilemedia.optional.sms.SMSAspect.startApplication(lancs.mobilemedia.core.ui.MainUIMidlet)> #<ResolvedPointcutDefinition pointcut lancs.mobilemedia.alternative.AbstractAlternativeFeature.startApp(lancs.mobilemedia.core.ui.MainUIMidlet)> #<ResolvedPointcutDefinition pointcut lancs.mobilemedia.alternative.PhotoAndMusicAndVideo.startApp(lancs.mobilemedia.core.ui.MainUIMidlet)> #<ResolvedPointcutDefinition pointcut lancs.mobilemedia.alternative.photoMusic.PhotoAndMusicAspect.startApp(lancs.mobilemedia.core.ui.MainUIMidlet)>]]
-;
 [#<ReferenceType lancs.mobilemedia.alternative.music.MusicNotPhotoNotVideo> #<ReferenceType lancs.mobilemedia.alternative.photo.PhotoNotVideoNotMusic>
  [#<ResolvedPointcutDefinition pointcut lancs.mobilemedia.optional.sms.SMSAspect.startApplication(lancs.mobilemedia.core.ui.MainUIMidlet)> #<ResolvedPointcutDefinition pointcut lancs.mobilemedia.alternative.AbstractAlternativeFeature.startApp(lancs.mobilemedia.core.ui.MainUIMidlet)> #<ResolvedPointcutDefinition pointcut lancs.mobilemedia.alternative.PhotoAndMusicAndVideo.startApp(lancs.mobilemedia.core.ui.MainUIMidlet)> #<ResolvedPointcutDefinition pointcut lancs.mobilemedia.alternative.photoMusic.PhotoAndMusicAspect.startApp(lancs.mobilemedia.core.ui.MainUIMidlet)>]]
-;
 [#<ReferenceType lancs.mobilemedia.alternative.music.MusicNotPhotoNotVideo> #<ReferenceType lancs.mobilemedia.alternative.video.VideoNotPhotoNotMusic>
  [#<ResolvedPointcutDefinition pointcut lancs.mobilemedia.optional.sms.SMSAspect.startApplication(lancs.mobilemedia.core.ui.MainUIMidlet)> #<ResolvedPointcutDefinition pointcut lancs.mobilemedia.alternative.AbstractAlternativeFeature.startApp(lancs.mobilemedia.core.ui.MainUIMidlet)> #<ResolvedPointcutDefinition pointcut lancs.mobilemedia.alternative.PhotoAndMusicAndVideo.startApp(lancs.mobilemedia.core.ui.MainUIMidlet)> #<ResolvedPointcutDefinition pointcut lancs.mobilemedia.alternative.photoMusic.PhotoAndMusicAspect.startApp(lancs.mobilemedia.core.ui.MainUIMidlet)>]])
 ```
@@ -451,8 +444,6 @@ We do not provide analysis for this as the compiler already provides it
 
 Formally in the paper: the weaving context of A is that somebody invokes the ITD's of A
 
-Special case is that somebody calls the ITDs of A before any advice of A is executed.
-
 #### General case ####
 
 ```
@@ -469,7 +460,6 @@ Special case is that somebody calls the ITDs of A before any advice of A is exec
 
 ### Experiments ###
 
-In the paper is only the special case, which we are skipping for now.
 
 #### General Case ####
 
@@ -486,7 +476,7 @@ Because of the above, we reject after manual verification as these are reached f
 [#<BcelTypeMunger (BcelTypeMunger ResolvedTypeMunger(Method, healthwatcher.data.factories.AbstractRepositoryFactory healthwatcher.data.factories.AbstractRepositoryFactory.getRepositoryFactory()))>]
 ```
 
-The following ITD is not found because the ITD itself is the main. Coen should update Soot control panel (issue [11](https://github.com/cderoove/damp.ekeko.aspectj/issues/11) )
+The following ITD is not found because the ITD itself is the main. 
 
 ```
 [#<BcelTypeMunger (BcelTypeMunger ResolvedTypeMunger(Method, void healthwatcher.business.HealthWatcherFacade.main(java.lang.String[])))>]
@@ -512,7 +502,7 @@ This is not mentioned in the results files nor in the paper!
 
 ```lancs.mobilemedia.core.ui.MainUIMidlet``` contains the entry point of the app: ```startApp()```. This however does not take into account user actions coming from the UI, ```lancs.mobilemedia.core.ui.controller.AbstractController``` method ```void commandAction(Command c, Displayable d)``` from the ```javax.microedition.lcdui.CommandListener``` interface. 
 
-False positives, unknown why these turned up. :-(
+False positives, not clear what their origin is:
 
 ```
 [#<BcelTypeMunger (BcelTypeMunger ResolvedTypeMunger(Method, boolean lancs.mobilemedia.alternative.photo.PhotoViewScreen.isFromSMS()))>] 
@@ -638,17 +628,14 @@ This requires some way to annotate what this explicit precedence should be. This
 
 ### Experiments ###
 
-Paper: hw.a.exceptionHandling.ExceptionHandlingPrecedence.aj; 44
-This is case 1.
+The paper only talks about case 2, in Glassbox.
 
 #### Case 2 ###
 
-This case is present in Glassbox.
-
 **HealthWatcher**
 
-0 matches - corresponds with paper. 
+0 matches - corresponds with paper and the data. 
 
 **MobileMedia**
 
-0 matches - corresponds with paper. 
+0 matches - corresponds with paper and the data. 
