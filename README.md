@@ -1,6 +1,6 @@
 # About GASR
 
-GASR (*General-purpose Aspectual Source code Reasoner*) is a tool for answering user-specified questions about the structure as well as the behavior of an aspect-oriented program. Examples range from "_which pointcut definitions are overridden in a subtype?_" over "_which pointcuts have a join point shadow in an advice?_" to "_can these advices be executed consecutively?_". Such questions have to be specified as a logic query of which the conditions quantify over the program’s source code. 
+GASR ( *General-purpose Aspectual Source code Reasoner* ) is a tool for answering user-specified questions about the structure as well as the behavior of an aspect-oriented program. Examples range from " _which pointcut definitions are overridden in a subtype?_ " over " _which pointcuts have a join point shadow in an advice?_ " to " _can these advices be executed consecutively?_ ". Such questions have to be specified as a logic query of which the conditions quantify over the program’s source code. 
 
 ## Documentation
 
