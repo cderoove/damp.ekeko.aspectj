@@ -16,5 +16,5 @@ The experimental results for coding aspect assumptions are in a [markdown-format
 
 ## Dependencies
 
-GASR owes its query language to the [core.logic](https://github.com/clojure/core.logic) port to [Clojure](http://clojure.org/) of [Kanren](http://kanren.sourceforge.net/), and its IDE integration to the [Ekeko](https://github.com/cderoove/damp.ekeko/EkekoPlugin) Eclipse plugin. The latter enables launching and scheduling program queries, as well as inspecting the solutions to a query. 
+GASR owes its query language to the [core.logic](https://github.com/clojure/core.logic) port to [Clojure](http://clojure.org/) of [Kanren](http://kanren.sourceforge.net/), and its IDE integration to the [Ekeko](https://github.com/cderoove/damp.ekeko/tree/master/EkekoPlugin) Eclipse plugin. The latter enables launching and scheduling program queries, as well as inspecting the solutions to a query. 
 
