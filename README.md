@@ -18,3 +18,8 @@ The experimental results for coding aspect assumptions are in a [markdown-format
 
 GASR owes its query language to the [core.logic](https://github.com/clojure/core.logic) port to [Clojure](http://clojure.org/) of [Kanren](http://kanren.sourceforge.net/), and its IDE integration to the [Ekeko](https://github.com/cderoove/damp.ekeko/tree/master/EkekoPlugin) Eclipse plugin. The latter enables launching and scheduling program queries, as well as inspecting the solutions to a query. 
 
+## License  
+
+Copyright © 2012-2013 GASR contributors: [Coen De Roover](http://soft.vub.ac.be/~cderoove/), [Johan Fabry](http://www.dcc.uchile.cl/~jfabry)
+
+Distributed under the Eclipse Public License (EPL version 1.0). See ``LICENSE.html``.
