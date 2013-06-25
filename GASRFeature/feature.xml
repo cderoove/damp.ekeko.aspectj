@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="damp.ekeko.aspectj.feature"
+      label="GASR"
+      version="1.0.1">
+
+   <description url="https://github.com/cderoove/damp.ekeko.aspectj">
+      GASR (General-purpose Aspectual Source code Reasoner) is a tool
+for answering user-specified questions about the structure as
+well as the behavior of an aspect-oriented program. Examples
+range from &quot;which pointcut definitions are overridden in a subtype?
+over &quot;which pointcuts have a join point shadow in an advice?&quot;
+to &quot;can these advices be executed consecutively?&quot;. Such questions
+have to be specified as a logic query of which the conditions
+quantify over the program’s source code.
+
+GASR owes its query language to the core.logic port to Clojure
+of Kanren, and its IDE integration to the Ekeko Eclipse plugin.
+The latter enables launching and scheduling program queries,
+as well as inspecting the solutions to a query.
+   </description>
+
+   <copyright>
+      Copyright (c) 2012-2013 GASR contributors: Coen De Roover, Johan Fabry
+   </copyright>
+
+   <license url="http://www.eclipse.org/legal/epl-v10.html">
+      Distributed under the Eclipse Public License (EPL version 1.0).
+   </license>
+
+   <url>
+      <update label="Ekeko Update Site" url="http://soft.vub.ac.be/~cderoove/eclipse/"/>
+   </url>
+
+   <requires>
+      <import plugin="org.eclipse.jface" version="3.8.102" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.swt" version="3.100.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.osgi" version="3.8.2" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.resources" version="3.8.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.runtime" version="3.8.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.aspectj" version="2.2.3" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ajdt.core" version="2.2.3" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jdt.core" version="3.8.3" match="greaterOrEqual"/>
+      <import plugin="damp.ekeko.plugin" version="1.0.3" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jface.text" version="3.8.2" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ajdt.ui" version="2.2.3" match="greaterOrEqual"/>
+      <import feature="org.aspectj" version="1.7.3.20130613144500-a" match="greaterOrEqual"/>
+      <import feature="org.eclipse.ajdt" version="2.2.3.e42x-RELEASE-20130623-1000" match="greaterOrEqual"/>
+      <import feature="damp.ekeko.feature" version="2.0.0"/>
+   </requires>
+
+   <plugin
+         id="damp.ekeko.aspectj.plugin"
+         download-size="0"
+         install-size="0"
+         version="1.0.1"
+         unpack="false"/>
+
+</feature>
