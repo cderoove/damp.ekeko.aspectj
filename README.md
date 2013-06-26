@@ -6,11 +6,14 @@ GASR owes its query language to the [core.logic](https://github.com/clojure/core
 
 ## Documentation
 
-See our [wiki](https://github.com/cderoove/damp.ekeko.aspectj/wiki) for some [example program queries](https://github.com/cderoove/damp.ekeko.aspectj/wiki/Example-Queries). 
+Our [SCAM13](http://www.ieee-scam.org/2013/) paper titled [Aspectual Source Code Analysis with GASR](http://soft.vub.ac.be/Publications/2013/vub-soft-tr-13-06.pdf) introduces GASR. The paper's experimental data  can be found in a [markdown-formatted file](https://github.com/cderoove/damp.ekeko.aspectj/blob/master/experimental-results.md).
+
+See the GASR [wiki](https://github.com/cderoove/damp.ekeko.aspectj/wiki) for some [example program queries](https://github.com/cderoove/damp.ekeko.aspectj/wiki/Example-Queries). 
 
 See the [API documentation](http://cderoove.github.com/damp.ekeko.aspectj/) for an overview of the predicates than can be used within a program query.
 
 Slideshare hosts an [earlier presentation on GASR](http://www.slideshare.net/oniroi/detecting-aspectspecific-code-smells-using-ekeko-for-aspectj). 
+
 
 ## Installation
 
@@ -25,10 +28,6 @@ GASR has been tested against [Eclipse Juno (4.2)](http://www.eclipse.org).
 
 Alternatively, the plugin can also be built from the [EkekoAspectJ](https://github.com/cderoove/damp.ekeko.aspectj/tree/master/EkekoAspectJ) Eclipse project in this repository.
 
-
-## Experiments from SCAM13 paper
-
-The experimental results for coding aspect assumptions are in a [markdown-formatted file](https://github.com/cderoove/damp.ekeko.aspectj/blob/master/experimental-results.md).
 
 
 ## License  
