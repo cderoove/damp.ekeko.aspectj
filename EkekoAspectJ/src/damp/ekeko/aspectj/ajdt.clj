@@ -2,7 +2,7 @@
     ^{:doc "Low-level AJDT relations."
     :author "Coen De Roover"}
      damp.ekeko.aspectj.ajdt
-    (:refer-clojure :exclude [== type declare])
+    (:refer-clojure :exclude [== type declare class])
     (:use [clojure.core.logic])
     (:use [damp.ekeko logic])
     (:require 
@@ -121,7 +121,7 @@
               (fresh [?cu]
                 (ast :CompilationUnit ?cu)
                 (child+ ?cu ?n)
-                (succeeds (= c (class ?n)))))))
+                (succeeds (= c (clojure.core/class ?n)))))))
 
 
 

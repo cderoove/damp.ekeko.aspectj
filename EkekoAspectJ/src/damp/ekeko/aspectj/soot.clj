@@ -2,7 +2,7 @@
     ^{:doc "Low-level AspectJ-specific Soot relations."
     :author "Coen De Roover"}
      damp.ekeko.aspectj.soot
-    (:refer-clojure :exclude [== type declare])
+    (:refer-clojure :exclude [== type declare class])
     (:use [clojure.core.logic])
     (:use [damp.ekeko logic])
     (:require 

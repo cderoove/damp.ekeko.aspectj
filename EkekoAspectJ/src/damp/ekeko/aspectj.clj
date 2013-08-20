@@ -1,6 +1,6 @@
 (ns 
   damp.ekeko.aspectj
-  (:refer-clojure :exclude [== type declare])
+  (:refer-clojure :exclude [== type declare class])
   (:require [clojure.core.logic :as l])
   (:use [damp.ekeko logic])
   (:use [damp.ekeko])
