@@ -24,7 +24,7 @@ Ensure dependencies [Ekeko](https://github.com/cderoove/damp.ekeko/tree/master/E
 
 See [Installing New Software](http://help.eclipse.org/juno/topic/org.eclipse.platform.doc.user/tasks/tasks-124.htm) for help on installing Eclipse plugins from an update site. 
 
-GASR has been tested against [Eclipse Juno (4.2)](http://www.eclipse.org).
+GASR has been tested against [Eclipse Kepler (4.3)](http://www.eclipse.org).
 
 Alternatively, the plugin can also be built from the [EkekoAspectJ](https://github.com/cderoove/damp.ekeko.aspectj/tree/master/EkekoAspectJ) Eclipse project in this repository.
 
