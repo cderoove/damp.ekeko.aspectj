@@ -73,7 +73,7 @@ public class AspectJProjectModel extends JavaProjectModel {
 		ajWorldFacade =  new AJWorldFacade(p);
 	}
 	
-	private void updateAJWorldAsSeenByWeaver() {
+	protected void updateAJWorldAsSeenByWeaver() {
 		IProject p = getProject();
 		AjCompiler compiler = AspectJPlugin.getDefault().getCompilerFactory().getCompilerForProject(p);
 		//causes a NPE in ajde internals
