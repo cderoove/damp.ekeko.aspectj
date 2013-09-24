@@ -2,7 +2,7 @@
 <feature
       id="damp.ekeko.aspectj.feature"
       label="GASR"
-      version="1.0.1">
+      version="1.0.2">
 
    <description url="https://github.com/cderoove/damp.ekeko.aspectj">
       GASR (General-purpose Aspectual Source code Reasoner) is a tool
@@ -47,13 +47,14 @@ as well as inspecting the solutions to a query.
       <import feature="org.aspectj" version="1.7.3.20130613144500-a" match="greaterOrEqual"/>
       <import feature="org.eclipse.ajdt" version="2.2.3.e42x-RELEASE-20130623-1000" match="greaterOrEqual"/>
       <import feature="damp.ekeko.feature" version="2.0.0"/>
+      <import plugin="damp.libs" version="1.0.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
          id="damp.ekeko.aspectj.plugin"
          download-size="0"
          install-size="0"
-         version="1.0.1"
+         version="1.0.2"
          unpack="false"/>
 
 </feature>

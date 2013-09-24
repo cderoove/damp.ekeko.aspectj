@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Ekeko Plugin for AspectJ
 Bundle-SymbolicName: damp.ekeko.aspectj.plugin;singleton:=true
-Bundle-Version: 1.0.1
+Bundle-Version: 1.0.2
 Bundle-Activator: damp.ekeko.aspectj.Activator
 Require-Bundle: org.eclipse.jface;bundle-version="3.8.101",
  org.eclipse.swt;bundle-version="3.100.1",
@@ -14,15 +14,11 @@ Require-Bundle: org.eclipse.jface;bundle-version="3.8.101",
  org.eclipse.jdt.core;bundle-version="3.8.2",
  damp.ekeko.plugin;bundle-version="1.0.3",
  org.eclipse.jface.text;bundle-version="3.8.1",
- org.eclipse.ajdt.ui;bundle-version="2.2.3"
+ org.eclipse.ajdt.ui;bundle-version="2.2.3",
+ damp.libs;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: damp.ekeko.aspectj
-Eclipse-RegisterBuddy: damp.ekeko.plugin
+Eclipse-RegisterBuddy: damp.ekeko.plugin, damp.libs
 Bundle-ClassPath: lib/dorothy-0.0.3.jar,
- lib/guava-11.0.2.jar,
- .,
- lib/codox.core-0.6.4.jar,
- lib/hiccup-1.0.2.jar,
- lib/tools.namespace-0.1.3.jar,
- lib/java.classpath-0.1.1.jar
+ .
