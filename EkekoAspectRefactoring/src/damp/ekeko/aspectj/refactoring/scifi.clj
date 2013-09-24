@@ -1,4 +1,6 @@
 (ns damp.ekeko.aspectj.refactoring.scifi
+  ^{:doc "Source Change Invariants through Fictional Input"
+    :author "Carlos Noguera" }
  (:refer-clojure :exclude [== type declare class])
  (:require [damp.ekeko.aspectj.weaverworld :as aj])
  (:require [clojure.core.logic :as l])

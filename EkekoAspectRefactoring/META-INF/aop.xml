@@ -3,5 +3,5 @@
 <aspects>
 <aspect name="damp.ekeko.aspectj.refactoring.aspects.RefactoringConditionsHook" />
 </aspects>
-<weaver options="-verbose"/>
+<!--<weaver options="-verbose"/>-->
 </aspectj>
