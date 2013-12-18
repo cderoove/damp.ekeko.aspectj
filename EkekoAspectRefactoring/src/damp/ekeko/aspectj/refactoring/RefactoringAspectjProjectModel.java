@@ -2,10 +2,6 @@ package damp.ekeko.aspectj.refactoring;
 
 import java.util.Map;
 
-import org.aspectj.ajde.core.AjCompiler;
-import org.aspectj.ajdt.internal.core.builder.AjState;
-import org.aspectj.ajdt.internal.core.builder.IncrementalStateManager;
-import org.eclipse.ajdt.core.AspectJPlugin;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.JavaModelException;
@@ -47,7 +43,8 @@ public class RefactoringAspectjProjectModel extends AspectJProjectModel {
 	
 	private void processChangedCompilationUnit(ICompilationUnit icu, CompilationUnit cu) {
 		CompilationUnit old = icu2ast.remove(icu);
-		removeInformationFromVisitor(visitCompilationUnitForInformation(old));
+		if(old != null)
+			removeInformationFromVisitor(visitCompilationUnitForInformation(old));
 //		CompilationUnit cu = parse(icu,null);
 		icu2ast.put(icu, cu);
 		addInformationFromVisitor(visitCompilationUnitForInformation(cu));

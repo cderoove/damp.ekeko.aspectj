@@ -7,8 +7,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.aspectj.ajde.core.AjCompiler;
 import org.aspectj.ajdt.internal.core.builder.AjState;
 import org.aspectj.ajdt.internal.core.builder.IncrementalStateManager;
-import org.aspectj.org.eclipse.jdt.core.IJavaElement;
-import org.aspectj.org.eclipse.jdt.core.IJavaProject;
 import org.aspectj.org.eclipse.jdt.core.dom.AST;
 import org.aspectj.org.eclipse.jdt.core.dom.ASTNode;
 import org.aspectj.org.eclipse.jdt.core.dom.ASTParser;
@@ -21,7 +19,6 @@ import org.eclipse.ajdt.core.javaelements.AJCompilationUnitManager;
 import org.eclipse.ajdt.core.model.AJProjectModelFacade;
 import org.eclipse.ajdt.core.model.AJProjectModelFactory;
 import org.eclipse.ajdt.core.model.AJWorldFacade;
-import org.eclipse.core.resources.IBuildConfiguration;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
@@ -38,8 +35,8 @@ public class AspectJProjectModel extends JavaProjectModel {
 
 	private ConcurrentHashMap<AJCompilationUnit, CompilationUnit> ajicu2ajast;
 	private ConcurrentHashMap<CompilationUnit, AJCompilationUnit> ajast2ajicu;
-	
-	
+
+
 	private AJProjectModelFacade ajFacade;
 	private AJWorldFacade ajWorldFacade;
 	private World ajWorld;
@@ -51,28 +48,28 @@ public class AspectJProjectModel extends JavaProjectModel {
 		ajast2ajicu = new ConcurrentHashMap<CompilationUnit, AJCompilationUnit>();
 
 	}
-	
+
 	public AJCompilationUnit getAJCompilationUnitForCompilationUnit(CompilationUnit cu) {
 		return ajast2ajicu.get(cu);
 	}
-	
+
 	public CompilationUnit getCompilationUnitForAJCompilationUnit(AJCompilationUnit  icu) {
 		return ajicu2ajast.get(icu);
 	}
 
-	
-	
+
+
 	private void updateAJBuildInformation() throws CoreException {
 		updateAJProjectFacade();
 		updateAJWorldFacade();
 		updateAJWorldAsSeenByWeaver();
 	}
-	
+
 	private void updateAJWorldFacade() {
 		IProject p = getProject();
 		ajWorldFacade =  new AJWorldFacade(p);
 	}
-	
+
 	protected void updateAJWorldAsSeenByWeaver() {
 		IProject p = getProject();
 		AjCompiler compiler = AspectJPlugin.getDefault().getCompilerFactory().getCompilerForProject(p);
@@ -84,7 +81,7 @@ public class AspectJProjectModel extends JavaProjectModel {
 		else
 			ajWorld = null;
 	}
-	
+
 	private void updateAJProjectFacade() throws CoreException {
 		IProject p = getProject();
 		System.out.println("Updating AspectJ project model facade for:" + p.getName());
@@ -94,11 +91,11 @@ public class AspectJProjectModel extends JavaProjectModel {
 			performCleanProjectBuild();
 		}
 	}
-	
+
 	private void performCleanProjectBuild() throws CoreException {
 		//does not have intended effect...
 		getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
-		
+
 		/*
 		IProject p = getProject();
 		IBuildConfiguration[] buildConfigs = p.getBuildConfigs();
@@ -107,43 +104,43 @@ public class AspectJProjectModel extends JavaProjectModel {
 						p.build(bc,IncrementalProjectBuilder.FULL_BUILD, null);
 
 		}
-	 
-	 */ 
-		
+
+		 */ 
+
 	}
 
 	public AJProjectModelFacade getAJProjectFacade() {
 		return ajFacade;
 	}
-	
+
 	public AJWorldFacade getAJWorldFacade() {
 		return ajWorldFacade;
 	}
-	
+
 	public World getAJWorldAsSeenByWeaver() {
 		return ajWorld;
 	}
 
-	
+
 	public boolean isAJCompilationUnit(ICompilationUnit icu) {
 		return icu instanceof AJCompilationUnit;
 	}
-	
+
 	public boolean isJCompilationUnit(ICompilationUnit icu) {
 		//PackageFragmentRoot.getCompilationUnits() returns an AJCompilationUnit instance
 		//and a CompilationUnit instance for each .aj file ..	
 		return 	!icu.getResource().getFileExtension().equals(AspectJPlugin.AJ_FILE_EXT);
 	}
-	
+
 	public AJCompilationUnit ajCuForICU(ICompilationUnit icu) {
 		return (AJCompilationUnit) AJCompilationUnitManager.mapToAJCompilationUnit(icu);
 	}
-	
+
 	//model elements
 	public Iterable<AJCompilationUnit> getAJCompilationUnits() {
 		return ajicu2ajast.keySet();
 	}
-	
+
 	//ast nodes
 	public Iterable<CompilationUnit> getAspectJCompilationUnits() {
 		return ajicu2ajast.values();
@@ -174,7 +171,7 @@ public class AspectJProjectModel extends JavaProjectModel {
 				ajcu.discardOriginalContentMode();
 			}
 		}
-		
+
 		ajdtparser.setSource(contents);
 		ASTNode result = ajdtparser.createAST(monitor);
 		return (CompilationUnit) result;
@@ -191,6 +188,8 @@ public class AspectJProjectModel extends JavaProjectModel {
 		updateAJBuildInformation();
 		System.out.println("Populating AspectJProjectModel for: " + javaProject.getElementName());
 		for(IPackageFragment frag : javaProject.getPackageFragments()) {
+			if(monitor.isCanceled())
+				buildCanceled();
 			ICompilationUnit[] icus = frag.getCompilationUnits();
 			for(ICompilationUnit icu : icus) {
 				if (isAJCompilationUnit(icu)) {
@@ -204,15 +203,19 @@ public class AspectJProjectModel extends JavaProjectModel {
 						e.printStackTrace();
 					}
 				} 
-				if (isJCompilationUnit(icu))
-					icu2ast.put(icu, super.parse(icu, monitor));
-				}
-			}		
+				if (isJCompilationUnit(icu)) {
+					org.eclipse.jdt.core.dom.CompilationUnit cu = super.parseCompilationUnit(icu, monitor);
+					if(cu != null)
+						icu2ast.put(icu, cu);
+				}	
+
+			}	
+		}		
 		gatherInformationFromCompilationUnits();
 		gatherInformationFromAJCompilationUnits();
 	}
 
-	
+
 	private void gatherInformationFromAJCompilationUnits() {
 		final long startTime = System.currentTimeMillis();
 		//for(CompilationUnit cu : ajicu2ajast.values()) 	
@@ -229,12 +232,12 @@ public class AspectJProjectModel extends JavaProjectModel {
 		clean();
 		populate(monitor);
 	}
-	
+
 
 	@Override
 	protected void addControlFlowGraphInformationForMethodDeclaration(MethodDeclaration m) {
 	}
-	
-	
-	
+
+
+
 }
