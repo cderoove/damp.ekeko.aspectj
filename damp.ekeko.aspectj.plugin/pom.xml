@@ -4,11 +4,12 @@
 
   <parent>
     <relativePath>../pom.xml</relativePath>
-    <groupId>damp.ekeko</groupId>
-    <artifactId>parent</artifactId>
-	<version>2.0.9</version> <!-- bump this -->
+    <groupId>damp.ekeko.aspectj</groupId>
+    <artifactId>damp.ekeko.aspectj</artifactId>
+	<version>1.0.4-SNAPSHOT</version> <!-- bump this -->
   </parent>
 
   <artifactId>damp.ekeko.aspectj.plugin</artifactId>
   <packaging>eclipse-plugin</packaging>
+  <version>1.0.4-SNAPSHOT</version>
 </project> 

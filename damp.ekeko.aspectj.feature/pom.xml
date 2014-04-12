@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+	<modelVersion>4.0.0</modelVersion>
+
+
+	<parent>
+		<relativePath>../pom.xml</relativePath>
+		<groupId>damp.ekeko.aspectj</groupId>
+		<artifactId>damp.ekeko.aspectj</artifactId>
+		<version>1.0.4-SNAPSHOT</version> <!-- bump this -->
+	</parent>
+
+
+	<artifactId>damp.ekeko.aspectj.feature</artifactId>
+	<packaging>eclipse-feature</packaging>
+	<version>1.0.4-SNAPSHOT</version>
+	
+</project> 
