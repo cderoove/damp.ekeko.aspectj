@@ -4,16 +4,15 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>damp.ekeko.snippets</groupId>
-	<artifactId>damp.ekeko.snippets</artifactId>
+	<groupId>damp.ekeko.aspectj</groupId>
+	<artifactId>damp.ekeko.aspectj</artifactId>
 	<version>1.0.4-SNAPSHOT</version> <!-- bump this -->
 
 
 	<packaging>pom</packaging>
 	<modules>
-		<module>./damp.ekeko.snippets.plugin</module>
-		<module>./damp.ekeko.snippets.plugin.test</module>
-		<module>./damp.ekeko.snippets.feature</module>
+		<module>./damp.ekeko.aspectj.plugin</module>
+		<module>./damp.ekeko.aspectj.feature</module>
 	</modules>
 
 
@@ -35,8 +34,11 @@
 			<url>http://updatesite.ccw-ide.org/stable</url>
 			<layout>p2</layout>
 		</repository>
-
-
+		<repository>
+			<id>AJDT 4.3</id>
+			<url>http://download.eclipse.org/tools/ajdt/43/update</url>
+			<layout>p2</layout>
+		</repository>
 	</repositories>
 
 	<distributionManagement>
