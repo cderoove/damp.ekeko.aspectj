@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Ekeko Plugin for AspectJ
 Bundle-SymbolicName: damp.ekeko.aspectj.plugin;singleton:=true
 Bundle-Version: 1.0.4.qualifier
-Bundle-Activator: damp.ekeko.aspectj.Activator
+Bundle-Activator: damp.ekeko.aspectj.EkekoAspectJPlugin
 Require-Bundle: org.eclipse.jface;bundle-version="3.8.101",
  org.eclipse.swt;bundle-version="3.100.1",
  org.eclipse.osgi;bundle-version="3.8.1",
@@ -15,7 +15,8 @@ Require-Bundle: org.eclipse.jface;bundle-version="3.8.101",
  org.eclipse.jface.text;bundle-version="3.8.1",
  org.eclipse.ajdt.ui;bundle-version="2.2.3",
  damp.libs;bundle-version="1.0.0",
- damp.ekeko.plugin
+ damp.ekeko.plugin,
+ org.eclipse.ui;bundle-version="3.105.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: damp.ekeko.aspectj

@@ -3,11 +3,11 @@ package damp.ekeko.aspectj;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
-public class Activator implements BundleActivator {
+public class EkekoAspectJPlugin implements BundleActivator {
 
 	public static final String PLUGIN_ID = "damp.ekeko.aspectj.plugin";
 	
-	private static Activator plugin;
+	private static EkekoAspectJPlugin plugin;
 	
 	public void start(BundleContext context) throws Exception {
 		plugin = this;
@@ -17,7 +17,7 @@ public class Activator implements BundleActivator {
 		plugin = null;
 	}
 	
-	public static Activator getDefault() {
+	public static EkekoAspectJPlugin getDefault() {
 		return plugin;
 	}
 
