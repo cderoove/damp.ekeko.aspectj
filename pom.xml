@@ -12,6 +12,7 @@
 	<packaging>pom</packaging>
 	<modules>
 		<module>./damp.ekeko.aspectj.plugin</module>
+		<module>./damp.ekeko.aspectj.plugin.test</module>
 		<module>./damp.ekeko.aspectj.feature</module>
 	</modules>
 
