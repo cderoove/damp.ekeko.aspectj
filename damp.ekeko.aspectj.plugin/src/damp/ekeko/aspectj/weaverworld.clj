@@ -321,7 +321,7 @@
   ;see org.aspectj.weaver.World$TypeMap, consider configuring TypeMap.DONT_USE_REFS to avoid the weaver from discarding expandable types.
   (all 
     (weaverworld ?world)
-    (equals ?typemap (-> ?world .getTypeMap .getMainMap))))
+    (equals ?typemap (seq (-> ?world .getTypeMap .getMainMap)))))
   
 
 (defn
@@ -447,11 +447,11 @@
     (equals ?set (-> ?aspect .getWorld .getCrosscuttingMembersSet))
     (equals
       ?members
-      (.get 
-        (interop/get-invisible-field (class ^CrosscuttingMembersSet ?set)
-                                     (symbol "members")
-                                     ?set)
-        ?aspect))))
+      (seq (.get 
+             (interop/get-invisible-field (class ^CrosscuttingMembersSet ?set)
+                                          (symbol "members")
+                                          ?set)
+             ?aspect)))))
 
 
 (defn
