@@ -44,7 +44,9 @@
   (conda [(v+ ?world)
           (succeeds (instance? World ?world))]
          [(v- ?world)
-          (contains (weaverworlds) ?world)]))
+          (fresh [?worlds]
+                 (equals ?worlds (weaverworlds))
+                 (contains ?worlds ?world))]))
 
 
 ;world -> getModel (an AsmManager) -> 
@@ -89,9 +91,10 @@
   element-child
   "Relation between a ProgramElement ?element and one of its children ?child."
   [?element ?child-element]
-  (all
-    (element ?element) 
-    (contains (.getChildren ?element) ?child-element)))
+  (fresh [?children]
+    (element ?element)
+    (equals ?children (.getChildren ?element))
+    (contains  ?children ?child-element)))
 
 (defn-
   element-child+
@@ -627,9 +630,10 @@
    declares to be implementing (for a class and aspect)
    or extending (for an interface)."
   [?type ?interface]
-  (all
+  (fresh [?interfaces]
     (type ?type)
-    (contains (.getDeclaredInterfaces ?type) ?interface)))  
+    (equals ?interfaces (.getDeclaredInterfaces ?type))
+    (contains ?interfaces ?interface)))  
 
 (defn
   type-declaredinterface+
@@ -734,10 +738,11 @@
    super types (classes, aspects as well as interfaces),
    including those that stem from an intertype declaration."
   [?type ?super]
-  (all
+  (fresh [?supers]
     (!= ?super ?type)
     (type ?type)
-    (contains (iterator-seq (.getHierarchy ?type true true)) ?super)))
+    (equals ?supers (iterator-seq (.getHierarchy ?type true true)))
+    (contains ?supers ?super)))
 
 
 (defn
@@ -825,9 +830,10 @@
     [(v+ ?advice) 
      (succeeds (instance? org.aspectj.weaver.ShadowMunger ?advice))]
     [(v- ?advice) 
-     (fresh [?world]
+     (fresh [?world ?advices]
             (weaverworld ?world)
-            (contains (-> ?world .getCrosscuttingMembersSet .getShadowMungers) ?advice))]))
+            (equals ?advices (-> ?world .getCrosscuttingMembersSet .getShadowMungers))
+            (contains ?advices  ?advice))]))
 
 
 ;(defn
@@ -981,8 +987,12 @@
        (fresh [?world ?set]
               (weaverworld ?world)
               (equals ?set (.getCrosscuttingMembersSet ?world))
-              (conde [(contains (.getTypeMungers ?set) ?intertype)]
-                     [(contains (.getLateTypeMungers ?set) ?intertype)]))])
+              (conde [(fresh [?col]
+                             (equals ?col (.getTypeMungers ?set))
+                             (contains ?col ?intertype))]
+                     [(fresh [?col]
+                             (equals ?col (.getLateTypeMungers ?set))
+                             (contains ?col ?intertype))]))])
     (fresh [?munger]
            ;;from the doc: returns null for mungers that are used internally, but were not part of a declared thing in source code.
            (equals ?munger (.getMunger ?intertype))
@@ -1165,9 +1175,9 @@
     [(v+ ?pc)
      (succeeds (instance? Pointcut ?pc))]
     [(v- ?pc)
-     (contains (pointcuts|noduplicates) ?pc)]))
-
-
+     (fresh [?pcs]
+            (equals ?pcs (pointcuts|noduplicates))
+            (contains ?pcs ?pc))]))
 
 (defn
   advice-pointcutdefinition
@@ -1420,9 +1430,10 @@
   aspect-declare
   "Relation between an aspect and one of its declare declarations."
   [?aspect ?declare]
-  (all
-    (aspect ?aspect)
-    (contains (.getDeclares ?aspect) ?declare)))
+  (fresh [?declares]
+         (aspect ?aspect)
+         (equals ?declares (.getDeclares ?aspect))
+         (contains ?declares ?declare)))
 
 
 (defn

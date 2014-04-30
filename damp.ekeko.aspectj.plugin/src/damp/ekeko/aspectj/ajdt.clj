@@ -154,9 +154,10 @@
   "Relation between an AJCompilationUnit and one of the aspects 
    its defines using the aspect keyword."
   [?ajcu ?aspect]
-  (all
+  (fresh [?aspects]
     (compilationunit ?ajcu)
-    (contains (.getAllAspects ^AJCompilationUnit ?ajcu) ?aspect)
+    (equals ?aspects (.getAllAspects ^AJCompilationUnit ?ajcu))
+    (contains ?aspects ?aspect)
     (succeeds (instance? AspectElement ?aspect))))
 
 (defn
@@ -171,18 +172,20 @@
   "Relation between an AJCompilationUnit and one of the aspects 
    it defines using the @aspect annotation on a class. "
   [?ajcu ?sourcetype]
-  (all
+  (fresh [?aspects]
     (compilationunit ?ajcu)
-    (contains (.getAllAspects ^AJCompilationUnit ?ajcu) ?sourcetype)
+    (equals ?aspects (.getAllAspects ^AJCompilationUnit ?ajcu))
+    (contains ?aspects ?sourcetype)
     (succeeds (instance? SourceType ?sourcetype))))
 
 (defn
   aspect-advice
   "Relation between an aspect and one if its advices."
   [?aspect ?advice]
-  (all 
+  (fresh [?advices]
     (aspect ?aspect)
-    (contains (.getAdvice ^AspectElement ?aspect) ?advice)))
+    (equals ?advices (.getAdvice ^AspectElement ?aspect))
+    (contains ?advices ?advice)))
 
 (defn
   advice
@@ -197,9 +200,10 @@
   aspect-declare
   "Relation between an aspect and one of its declares."
   [?aspect ?declare]
-  (all
+  (fresh [?declares]
     (aspect ?aspect)
-    (contains (.getDeclares ^AspectElement ?aspect) ?declare)))
+    (equals ?declares (.getDeclares ^AspectElement ?aspect))
+    (contains ?declares ?declare)))
 
 (defn
   declare
@@ -213,9 +217,10 @@
   aspect-pointcut
   "Relation between an aspect and one of its pointcuts."
   [?aspect ?pointcut]
-  (all
+  (fresh [?pointcuts]
     (aspect ?aspect)
-    (contains (.getPointcuts ^AspectElement ?aspect) ?pointcut)))
+    (equals ?pointcuts (.getPointcuts ^AspectElement ?aspect))
+    (contains ?pointcuts ?pointcut)))
          
 (defn
   pointcut
@@ -229,9 +234,10 @@
   aspect-intertype
   "Relation between an aspect and one of its intertype declarations."
   [?aspect ?itd]
-  (all
+  (fresh [?itds]
     (aspect ?aspect)
-    (contains (.getITDs ^AspectElement ?aspect) ?itd)))
+    (equals ?itds (.getITDs ^AspectElement ?aspect))
+    (contains ?itds ?itd)))
 
 (defn
   intertype
@@ -276,9 +282,10 @@
   aspect-field
   "Relation between an aspect and one of its fields."  
   [?aspect ?field]
-  (all
+  (fresh [?fields]
     (aspect ?aspect)
-    (contains (.getFields ^AspectElement  ?aspect) ?field)))
+    (equals ?fields (.getFields ^AspectElement  ?aspect))
+    (contains ?fields ?field)))
 
 (defn
   field
@@ -300,9 +307,10 @@
   aspect-method
   "Relation between an aspect and one of its methods."  
   [?aspect ?method]
-  (all
+  (fresh [?methods]
     (aspect ?aspect)
-    (contains (.getMethods ^AspectElement  ?aspect) ?method)
+    (equals ?methods (.getMethods ^AspectElement  ?aspect))
+    (contains ?methods ?method)
     (succeeds (aspectj-imethod-represents-method? ?method))))
 
 (defn
@@ -346,11 +354,12 @@
   [?element ?model]
   (let [ekeko
         (damp.ekeko.ekekomodel/ekeko-model)]
-  (fresh [?key]
+  (fresh [?key ?models]
          (element ?key ?element)
-         (contains (.getProjectModel ^EkekoModel ekeko
-                           ^IProject (.getProject (.getJavaProject ^IJavaElement ?element)))
-                   ?model)
+         (equals ?models 
+                 (.getProjectModel ^EkekoModel ekeko
+                   ^IProject (.getProject (.getJavaProject ^IJavaElement ?element))))
+         (contains ?models ?model)
          (succeeds (instance? AspectJProjectModel ?model)))))
 
 ;; Link between model elements and AST nodes
@@ -395,7 +404,9 @@
   (conda [(v+ ?xcut)
           (succeeds (instance? AJProjectModelFacade ?xcut))]
          [(v- ?xcut)
-          (contains (xcuts) ?xcut)]))
+          (fresh [?cuts]
+                 (equals ?cuts (xcuts))
+                 (contains ?cuts ?xcut))]))
 
 (defn-
   element-xcut
@@ -410,8 +421,9 @@
 (defn
   xcut-relationtype-relation
   [?xcut ?relation-type ?relation]
-  (fresh [?types]
-         (contains (seq (AJRelationshipManager/getAllRelationshipTypes)) ?relation-type)
+  (fresh [?types ?relationtypes]
+         (equals ?relationtypes (seq (AJRelationshipManager/getAllRelationshipTypes)))
+         (contains ?relationtypes ?relation-type)
          (equals ?types (into-array AJRelationshipType [?relation-type]))
          (xcut ?xcut)
          (equals ?relation (.getRelationshipsForProject ^AJProjectModelFacade ?xcut ?types))))
@@ -446,11 +458,12 @@
 (defn-
   xcut-advicehandle-shadowhandle
   [?xcut ?advicehandle ?shadowhandle]
-  (fresh [?relation ?relelement]
+  (fresh [?relation ?relelement ?targets]
          (xcut-relationtype-relation ?xcut (AJRelationshipManager/ADVISES) ?relation)
          (contains ?relation ?relelement)
          (equals ?advicehandle (.getSourceHandle ?relelement))
-         (contains (.getTargets ?relelement) ?shadowhandle)))
+         (equals ?targets (.getTargets ?relelement))
+         (contains ?targets ?shadowhandle)))
 
 (defn
   advice-shadow
@@ -490,7 +503,9 @@
   (conda [(v+ ?world)
           (succeeds (instance? World ?world))]
          [(v- ?world)
-          (contains (weaverworlds) ?world)]))
+          (fresh [?worlds]
+                 (equals ?worlds (weaverworlds))
+                 (contains ?worlds ?world))]))
 
 (defn-
   element-weaverworld

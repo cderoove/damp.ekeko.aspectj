@@ -43,7 +43,9 @@
   (conda [(v+ ?xcut)
           (succeeds (instance? AJProjectModelFacade ?xcut))]
          [(v- ?xcut)
-          (contains (xcuts) ?xcut)]))
+          (fresh [?cuts]
+                 (equals ?cuts (xcuts))
+                 (contains ?cuts ?xcut))]))
 
 (defn-
   element-xcut
@@ -60,10 +62,12 @@
   "Relation between an XCut model ?xcut (an AJProjectModelFacade) and one of its relations ?relation, of type ?relation-type."
   [?xcut ?relation-type ?relation]
   (fresh [?types]
-         (contains (seq (AJRelationshipManager/getAllRelationshipTypes)) ?relation-type)
-         (equals ?types (into-array AJRelationshipType [?relation-type]))
-         (xcut ?xcut)
-         (equals ?relation (.getRelationshipsForProject ^AJProjectModelFacade ?xcut ?types))))
+         (fresh [?reltypes]
+                (equals ?reltypes (seq (AJRelationshipManager/getAllRelationshipTypes)))
+                (contains ?reltypes ?relation-type)
+                (equals ?types (into-array AJRelationshipType [?relation-type]))
+                (xcut ?xcut)
+                (equals ?relation (.getRelationshipsForProject ^AJProjectModelFacade ?xcut ?types)))))
 
 ;handle to JDT JavaElement
 (defn
@@ -103,11 +107,12 @@
 (defn
   xcut-advicehandle-shadowhandle
   [?xcut ?advicehandle ?shadowhandle]
-  (fresh [?relation ?relelement]
+  (fresh [?relation ?relelement ?targets]
          (xcut-relationtype-relation ?xcut (AJRelationshipManager/ADVISES) ?relation)
          (contains ?relation ?relelement)
          (equals ?advicehandle (.getSourceHandle ?relelement))
-         (contains (.getTargets ?relelement) ?shadowhandle)))
+         (equals ?targets (.getTargets ?relelement))
+         (contains ?targets ?shadowhandle)))
 
 
 (comment
