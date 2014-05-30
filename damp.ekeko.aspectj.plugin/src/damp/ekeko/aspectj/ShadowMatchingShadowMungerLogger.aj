@@ -1,6 +1,5 @@
 package damp.ekeko.aspectj;
 
-import org.aspectj.asm.AsmManager;
 import org.aspectj.weaver.bcel.BcelWorld; 
 import org.aspectj.weaver.Shadow;
 import org.aspectj.weaver.ShadowMunger;

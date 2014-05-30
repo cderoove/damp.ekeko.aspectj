@@ -5,4 +5,4 @@ Bundle-SymbolicName: damp.ekeko.aspectj.plugin.test
 Bundle-Version: 1.0.4.qualifier
 Fragment-Host: damp.ekeko.aspectj.plugin
 Require-Bundle: org.junit
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
