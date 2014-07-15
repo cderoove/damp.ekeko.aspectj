@@ -24,7 +24,9 @@ Ensure dependencies [Ekeko](https://github.com/cderoove/damp.ekeko/tree/master/E
 
 See [Installing New Software](http://help.eclipse.org/juno/topic/org.eclipse.platform.doc.user/tasks/tasks-124.htm) for help on installing Eclipse plugins from an update site. 
 
-GASR has been tested against [Eclipse Kepler (4.3)](http://www.eclipse.org).
+GASR has been tested against [Eclipse Luna (4.4)](http://www.eclipse.org).
+Eclipse update site for AspectJ development snapshots that are Luna compatible:
+http://download.eclipse.org/tools/ajdt/44/dev/update/
 
 Alternatively, the plugin can also be built from the [EkekoAspectJ](https://github.com/cderoove/damp.ekeko.aspectj/tree/master/EkekoAspectJ) Eclipse project in this repository.
 
@@ -32,6 +34,6 @@ Alternatively, the plugin can also be built from the [EkekoAspectJ](https://gith
 
 ## License  
 
-Copyright © 2012-2013 GASR contributors: [Coen De Roover](http://soft.vub.ac.be/~cderoove/), [Johan Fabry](http://www.dcc.uchile.cl/~jfabry)
+Copyright © 2012-2014 GASR contributors: [Coen De Roover](http://soft.vub.ac.be/~cderoove/), [Johan Fabry](http://www.dcc.uchile.cl/~jfabry)
 
 Distributed under the Eclipse Public License (EPL version 1.0). See ``LICENSE.html``.

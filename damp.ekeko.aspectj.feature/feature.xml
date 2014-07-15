@@ -30,6 +30,7 @@ as well as inspecting the solutions to a query.
 
    <url>
       <update label="Ekeko Update Site" url="http://soft.vub.ac.be/~cderoove/eclipse/"/>
+      <discovery label="AspectJ development snapshots for Eclipse Luna" url="http://download.eclipse.org/tools/ajdt/44/dev/update/"/>
    </url>
 
    <requires>
