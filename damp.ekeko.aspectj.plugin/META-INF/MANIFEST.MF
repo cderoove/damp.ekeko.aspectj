@@ -18,7 +18,7 @@ Require-Bundle: org.eclipse.jface;bundle-version="3.8.101",
  damp.ekeko.plugin,
  org.eclipse.ui;bundle-version="3.105.0"
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: damp.ekeko.aspectj
 Eclipse-RegisterBuddy: damp.ekeko.plugin, damp.libs
 Bundle-ClassPath: lib/dorothy-0.0.3.jar,
