@@ -1,24 +1,26 @@
 (ns
-    ^{:doc "Low-level AspectJ WeaverWorld relations."
+  ^{:doc "Low-level AspectJ WeaverWorld relations."
     :author "Coen De Roover, Johan Fabry" }
-     damp.ekeko.aspectj.weaverworld
-    (:refer-clojure :exclude [== type declare class])
-    (:use [clojure.core.logic])
-    (:use [damp.ekeko logic])
-    (:require 
-      [damp.util [interop :as interop]]
-      [damp.ekeko.aspectj [projectmodel :as projectmodel]]
-      [damp.ekeko.aspectj [xcut :as xcut]])
-     (:import 
-       [org.eclipse.ajdt.core.model AJProjectModelFacade AJRelationshipType AJRelationshipManager]
-       [org.aspectj.weaver.model AsmRelationshipProvider]
-       [org.aspectj.weaver.patterns Pointcut AndPointcut Declare DeclarePrecedence DeclareAnnotation DeclareErrorOrWarning DeclareParents DeclarePrecedence DeclareSoft DeclareTypeErrorOrWarning]
-       [damp.ekeko EkekoModel]
-       [damp.ekeko.aspectj AspectJProjectModel]
-       [org.aspectj.weaver Advice AdviceKind World ResolvedTypeMunger ConcreteTypeMunger ReferenceType UnresolvedType ResolvedType  Member ResolvedMemberImpl]
-       [org.aspectj.asm AsmManager IProgramElement IProgramElement$Kind IHierarchy ]
-       [org.aspectj.weaver.bcel BcelTypeMunger]))
-              
+damp.ekeko.aspectj.weaverworld
+  (:refer-clojure :exclude [== type declare class])
+  (:use [clojure.core.logic])
+  (:use [damp.ekeko logic])
+  (:require 
+    [damp.util [interop :as interop]]
+    [damp.ekeko.aspectj [projectmodel :as projectmodel]]
+    [damp.ekeko.aspectj [xcut :as xcut]])
+  (:import 
+    [org.eclipse.ajdt.core.model AJProjectModelFacade AJRelationshipType AJRelationshipManager]
+    [org.aspectj.weaver.model AsmRelationshipProvider]
+    [org.aspectj.weaver.patterns Pointcut AndPointcut Declare DeclarePrecedence DeclareAnnotation DeclareErrorOrWarning DeclareParents DeclarePrecedence DeclareSoft DeclareTypeErrorOrWarning]
+    [damp.ekeko EkekoModel]
+    [damp.ekeko.aspectj AspectJProjectModel]
+    [org.aspectj.weaver AnnotationAJ Advice AdviceKind World ResolvedTypeMunger ConcreteTypeMunger ReferenceType UnresolvedType ResolvedType  Member ResolvedMemberImpl]
+    [org.aspectj.asm AsmManager IProgramElement IProgramElement$Kind IHierarchy ]
+    [org.aspectj.weaver.bcel BcelTypeMunger]
+    [org.aspectj.apache.bcel.classfile.annotation ElementValue AnnotationElementValue ArrayElementValue ClassElementValue EnumElementValue SimpleElementValue]
+    ))
+
 
 ;(set! *warn-on-reflection* true)
 
@@ -92,9 +94,9 @@
   "Relation between a ProgramElement ?element and one of its children ?child."
   [?element ?child-element]
   (fresh [?children]
-    (element ?element)
-    (equals ?children (.getChildren ?element))
-    (contains  ?children ?child-element)))
+         (element ?element)
+         (equals ?children (.getChildren ?element))
+         (contains  ?children ?child-element)))
 
 (defn-
   element-child+
@@ -210,9 +212,9 @@
   (all
     (element ?element)
     (equals ?emember (ancestor-element-satisfying 
-                     ?element
-                     (fn [ancestor] 
-                       (.isMember (.getKind ancestor)))))
+                       ?element
+                       (fn [ancestor] 
+                         (.isMember (.getKind ancestor)))))
     (!= nil ?emember)))
 
 
@@ -224,9 +226,9 @@
   (all
     (element ?element)
     (equals ?emember (ancestor-element-satisfying 
-                     ?element
-                     (fn [ancestor] 
-                       (.isInterTypeMember (.getKind ancestor)))))
+                       ?element
+                       (fn [ancestor] 
+                         (.isInterTypeMember (.getKind ancestor)))))
     (!= nil ?emember)))
 
 
@@ -283,30 +285,30 @@
   element|member
   [?element]
   (fresh [?kind]
-    (element-kind  ?element ?kind)
-    (succeeds (.isMember ?kind))))
+         (element-kind  ?element ?kind)
+         (succeeds (.isMember ?kind))))
 
 
 (defn-
   element|method
   [?element]
   (fresh [?kind]
-    (element-kind ?element ?kind)
-    (== (IProgramElement$Kind/METHOD) ?kind)))
+         (element-kind ?element ?kind)
+         (== (IProgramElement$Kind/METHOD) ?kind)))
 
 (defn-
   element|constructor
   [?element]
   (fresh [?kind]
-    (element-kind ?element ?kind)
-    (== (IProgramElement$Kind/CONSTRUCTOR) ?kind)))
+         (element-kind ?element ?kind)
+         (== (IProgramElement$Kind/CONSTRUCTOR) ?kind)))
 
 (defn-
   element|advice
   [?element]
   (fresh [?kind]
-    (element-kind ?element ?kind)
-    (== (IProgramElement$Kind/ADVICE) ?kind)))
+         (element-kind ?element ?kind)
+         (== (IProgramElement$Kind/ADVICE) ?kind)))
 
 
 
@@ -322,7 +324,7 @@
   (all 
     (weaverworld ?world)
     (equals ?typemap (seq (-> ?world .getTypeMap .getMainMap)))))
-  
+
 
 (defn
   type
@@ -354,6 +356,19 @@
     (type ?resolvedtype)
     (succeeds (.isClass ?resolvedtype))))
 
+
+;problem: typemap only returns user-defined annotation types
+;i.e. those for which .isExposedToWeaver returns true
+;see comment on annotation/1
+(defn
+  type|annotation
+  "Relation of annotation type declarations known to the AspectJ weaver."
+  [?annotypedeclaration]
+  (all 
+    (type ?annotypedeclaration)
+    (succeeds (.isAnnotation ?annotypedeclaration))))
+
+
 (defn
   anonymous
   "Relation of anonymous types known to the AspectJ weaver."
@@ -362,7 +377,7 @@
     (type ?resolvedtype)
     (succeeds (.isAnonymous ?resolvedtype))))
 
-  
+
 (defn
   enum
   "Relation of enum types known to the AspectJ weaver."
@@ -416,11 +431,11 @@
   "Relation between a nested and its outermost type."
   [?nested ?outermost]
   (fresh [?outer] 
-    (nestedtype-outertype ?nested ?outer)
-    (conda [(nestedtype ?outer)
-            (nestedtype-outermosttype ?outer ?outermost)]
-           [(== ?outermost ?outer)])))
-    
+         (nestedtype-outertype ?nested ?outer)
+         (conda [(nestedtype ?outer)
+                 (nestedtype-outermosttype ?outer ?outermost)]
+                [(== ?outermost ?outer)])))
+
 
 (defn
   aspect
@@ -443,15 +458,15 @@
   "Relation between an aspect and its CrosscuttingMembersSet."
   [?aspect ?members]
   (fresh [?set]
-    (aspect ?aspect)
-    (equals ?set (-> ?aspect .getWorld .getCrosscuttingMembersSet))
-    (equals
-      ?members
-      (seq (.get 
-             (interop/get-invisible-field (class ^CrosscuttingMembersSet ?set)
-                                          (symbol "members")
-                                          ?set)
-             ?aspect)))))
+         (aspect ?aspect)
+         (equals ?set (-> ?aspect .getWorld .getCrosscuttingMembersSet))
+         (equals
+           ?members
+           (seq (.get 
+                  (interop/get-invisible-field (class ^CrosscuttingMembersSet ?set)
+                                               (symbol "members")
+                                               ?set)
+                  ?aspect)))))
 
 
 (defn
@@ -477,8 +492,8 @@
   "Relation between a type and one of its declared fields as known to the weaver."
   [?resolvedtype ?field]
   (fresh [?fields]
-    (type-fields ?resolvedtype ?fields)
-    (contains ?fields ?field)))
+         (type-fields ?resolvedtype ?fields)
+         (contains ?fields ?field)))
 
 (defn
   type-field+
@@ -491,9 +506,9 @@
                     (type-field ?t ?f)))"
   [?resolvedtype ?field]
   (fresh [?fields]
-    (type-fields+ ?resolvedtype ?fields)
-    (contains ?fields ?field)))
-  
+         (type-fields+ ?resolvedtype ?fields)
+         (contains ?fields ?field)))
+
 (defn
   field
   "Relation of field members known to the weaver."
@@ -525,16 +540,16 @@
   "Relation between a type and one of its declared methods as known to the weaver."
   [?resolvedtype ?method]
   (fresh [?methods]
-    (type-methods ?resolvedtype ?methods)
-    (contains ?methods ?method)))
+         (type-methods ?resolvedtype ?methods)
+         (contains ?methods ?method)))
 
 (defn
   type-method+
   "Relation between a type and one of its declared or inherited methods (as known to the weaver)."
   [?resolvedtype ?method]
   (fresh [?methods]
-    (type-methods+ ?resolvedtype ?methods)
-    (contains ?methods ?method)))
+         (type-methods+ ?resolvedtype ?methods)
+         (contains ?methods ?method)))
 
 
 (defn
@@ -587,7 +602,7 @@
   (all
     (type ?type)
     (type|ajsynthetic? ?type false)))
-   
+
 (defn
   type|synthetic
   "Relation of types that are AspectJ synthetic."
@@ -595,6 +610,123 @@
   (all
     (type ?type)
     (type|ajsynthetic? ?type true)))
+
+
+(defn
+  type|reference
+  "Relation of reference (i.e., non-primitive types) known to the AspectJ weaver."
+  [?type]
+  (all 
+    (type ?type)
+    (succeeds (instance? ReferenceType ?type))))
+
+
+(defn-
+  type-annotations 
+  "Relation between a ReferenceType and its annotations."
+  [?type ?annotations]
+  (all
+    (type|reference ?type)
+    (equals ?annotations (.getAnnotations ?type))))
+
+(clojure.core/declare annotation)
+
+(defn
+  type-annotation
+  "Relation between a type declarations and its annotation instances."
+  [?type ?annotation]
+  (fresh [?annotations]
+         (type-annotations ?type ?annotations)
+         (contains ?annotations ?annotation)
+         (annotation ?annotation) ;to ensure only those of which the type is exposed to the weaver are returned
+         ))
+
+
+(defn
+  annotation
+  "Relation of annotation instances exposed to the AspectJ weaver.
+   Does not return instances of e.g., library-definined annotation types such as @Retention or @Target.
+   See type|annotation/1 for the relation of all annotation types exposed to the weaver."
+  [?annotation]
+  (all 
+    (conda 
+      [(v+ ?annotation)
+       (succeeds (instance? AnnotationAJ ?annotation))]
+      [(v- ?annotation)
+       (fresh [?target]
+              (conde [(type-annotation ?target ?annotation)]) ;todo: consider other targets (e.g., method etc)
+              )])
+    (succeeds (.isExposedToWeaver (.getType ?annotation)))))
+;.isExposedToWeaver is to align the results of type|annotation/1 and annotation-type/1
+;because the TypeMap reified by type/1 does not contain entries for e.g., library-defined annotation types
+;otherwise:
+;-> 4 solutions: 
+; (annotation-annotationtype ?annotation ?type)
+; (type|annotation ?type)
+;-> 2 solutions:
+; (type|annotation ?type)
+; (annotation-annotationtype ?annotation ?type)
+
+
+(defn
+  annotation-annotationtype
+  "Relation between an annotation instance and its type (i.e., a ResolvedType instance).
+   See type|annotation/1 for the relation of all annotation types."
+  [?annotation ?annotationtype]
+  (all
+    (annotation ?annotation)
+    (equals ?annotationtype (.getType ?annotation))))
+
+
+(defn-
+  annotation-values
+  [?annotation ?values]
+  (fresh [?bcel]
+        (annotation ?annotation)
+        (equals ?bcel (.getBcelAnnotation ?annotation))
+        (equals ?values (.getValues ?bcel))))
+
+
+;todo: also support AnnotationElementValue, ArrayElementValue, EnumElementValue
+(defprotocol IBCelToWeaver
+  (toweavervalue [bcel world] ))
+
+(extend-type ElementValue IBCelToWeaver
+  (toweavervalue [bcel world]
+    (.stringifyValue bcel)))
+
+(extend-type ClassElementValue IBCelToWeaver
+  (toweavervalue [bcel world]
+    (.lookupBySignature world (.getClassString bcel))))
+
+(extend-type SimpleElementValue IBCelToWeaver
+  (toweavervalue [bcel world]
+    (read-string (.stringifyValue bcel))))
+
+
+;(extend-type EnumElementValue IBCelToWeaver
+;  (toweavervalue [bcel world]
+;    (.lookupBySignature world (.getEnumTypeString bcel)) ;what about the getEnumValueString?
+;    ))
+
+
+
+(defn
+  annotation-key-value
+  "Relation of an annotation, one of its keys (a String), and the value of this key.
+   Currently only supports values of type Class (reified as elements of relation type/1) or of a primitive type (reified as Java values).
+   Other values are reified to their string representation."
+  [?annotation ?name ?value]
+  (fresh [?pairs ?pair ?bcelvalue ?world] ;of type org.aspectj.apache.bcel.classfile.annoation.ElementValue
+         (annotation ?annotation)
+         (equals ?world (.getWorld (.getType ?annotation)))
+         (annotation-values ?annotation ?pairs)
+         (contains ?pairs ?pair)
+         (equals ?name (.getNameString ?pair))
+         (equals ?bcelvalue (.getValue ?pair))
+         (equals ?value (toweavervalue ?bcelvalue ?world))
+         ))
+
 
 
 (defn- 
@@ -614,7 +746,7 @@
   (all
     (member ?member)
     (member|ajsynthetic? ?member true)))
-  
+
 ;;TODO: perhaps filter out using signature?
 (defn
   member|nonsynthetic
@@ -623,7 +755,7 @@
   (all
     (member ?member)
     (member|ajsynthetic? ?member false)))
-  
+
 (defn
   type-declaredinterface
   "Relation between a type and one of the interfaces it 
@@ -631,9 +763,9 @@
    or extending (for an interface)."
   [?type ?interface]
   (fresh [?interfaces]
-    (type ?type)
-    (equals ?interfaces (.getDeclaredInterfaces ?type))
-    (contains ?interfaces ?interface)))  
+         (type ?type)
+         (equals ?interfaces (.getDeclaredInterfaces ?type))
+         (contains ?interfaces ?interface)))  
 
 (defn
   type-declaredinterface+
@@ -642,8 +774,8 @@
   (conde
     [(type-declaredinterface ?type ?ancestor) ]
     [(fresh [?inbetween]
-              (type-declaredinterface ?type ?inbetween)
-              (type-declaredinterface+ ?inbetween ?ancestor))]))
+            (type-declaredinterface ?type ?inbetween)
+            (type-declaredinterface+ ?inbetween ?ancestor))]))
 
 (defn
   aspect-declaredinterface
@@ -699,8 +831,8 @@
   (conde
     [(type-declaredsuper ?type ?ancestor) ]
     [(fresh [?inbetween]
-              (type-declaredsuper ?type ?inbetween)
-              (type-declaredsuper+ ?inbetween ?ancestor))]))
+            (type-declaredsuper ?type ?inbetween)
+            (type-declaredsuper+ ?inbetween ?ancestor))]))
 
 
 (defn
@@ -710,7 +842,7 @@
   (all
     (aspect ?aspect)
     (type-declaredsuper+ ?aspect ?ancestor)))
-  
+
 (defn
   aspect-declaredsuperaspect+
   "Relation between an aspect and one of the ancestor aspects in its declared super hierarchy."
@@ -739,10 +871,10 @@
    including those that stem from an intertype declaration."
   [?type ?super]
   (fresh [?supers]
-    (!= ?super ?type)
-    (type ?type)
-    (equals ?supers (iterator-seq (.getHierarchy ?type true true)))
-    (contains ?supers ?super)))
+         (!= ?super ?type)
+         (type ?type)
+         (equals ?supers (iterator-seq (.getHierarchy ?type true true)))
+         (contains ?supers ?super)))
 
 
 (defn
@@ -783,7 +915,7 @@
   (all
     (aspect-super+ ?aspect ?type)
     (class ?type)))
-  
+
 
 ;; Advice
 ;; ------
@@ -801,7 +933,7 @@
     (!= nil ?aspect) 
     (advice ?advice)
     (equals ?aspect (.getDeclaringType ?advice))))
-  
+
 
 ;Incorrect: for some aspects, does not return all advices
 ;(defn
@@ -854,15 +986,15 @@
 ;    (advice ?advice)
 ;    (equals ?handle (.handle ?advice))))
 
-  
+
 (defn
   advice-handle
   "Relation between an advice and the handle for its corresponding ProgramElement."
   [?advice ?handle]
   (fresh [?aspect]
-    (aspect-advice ?aspect ?advice)
-    (equals ?handle 
-            (AsmRelationshipProvider/getHandle  (-> ?aspect .getWorld .getModel) ?advice))))
+         (aspect-advice ?aspect ?advice)
+         (equals ?handle 
+                 (AsmRelationshipProvider/getHandle  (-> ?aspect .getWorld .getModel) ?advice))))
 
 (defn
   advice-sourcelocation
@@ -897,40 +1029,40 @@
   "Relation of before advices."
   [?advice]
   (fresh [?kind]
-    (advice-kind ?advice ?kind)
-    (equals ?kind AdviceKind/Before)))
+         (advice-kind ?advice ?kind)
+         (equals ?kind AdviceKind/Before)))
 
 (defn
   advice|after
   "Relation of after advices."
   [?advice]
   (fresh [?kind]
-    (advice-kind ?advice ?kind)
-    (equals ?kind AdviceKind/After)))
+         (advice-kind ?advice ?kind)
+         (equals ?kind AdviceKind/After)))
 
 (defn
   advice|afterthrowing
   "Relation of after throwing advices."
   [?advice]
   (fresh [?kind]
-    (advice-kind ?advice ?kind)
-    (equals ?kind AdviceKind/AfterThrowing)))
+         (advice-kind ?advice ?kind)
+         (equals ?kind AdviceKind/AfterThrowing)))
 
 (defn
   advice|afterreturning
   "Relation of after returning advices."
   [?advice]
   (fresh [?kind]
-    (advice-kind ?advice ?kind)
-    (equals ?kind AdviceKind/AfterReturning)))
+         (advice-kind ?advice ?kind)
+         (equals ?kind AdviceKind/AfterReturning)))
 
 (defn
   advice|around
   "Relation of around advices."
   [?advice]
   (fresh [?kind]
-    (advice-kind ?advice ?kind)
-    (equals ?kind AdviceKind/Around)))
+         (advice-kind ?advice ?kind)
+         (equals ?kind AdviceKind/Around)))
 
 
 ;; Intertype declarations
@@ -948,7 +1080,7 @@
 
 
 (clojure.core/declare intertype)
-                     
+
 (defn
   aspect-intertype
   "Relation between an aspect and one of its intertype declarations (a ConcreteTypeMunger)."
@@ -960,7 +1092,7 @@
 
 (def
   ^{:doc "Alias for aspect-intertype."}
-  type-intertype
+type-intertype
   aspect-intertype)
 
 
@@ -998,7 +1130,7 @@
            (equals ?munger (.getMunger ?intertype))
            (!= nil ?munger))))
 
-  
+
 ;note: ConcreteTypeMunger.getMunger returns a ResolvedTypeMunger (from a previous weaving stage)
 
 (defn
@@ -1024,7 +1156,7 @@
   (fresh [?kind]
          (intertype-kind ?intertype ?kind)
          (equals ?kind (ResolvedTypeMunger/Method))))
- 
+
 
 (defn
   intertype|constructor
@@ -1041,12 +1173,12 @@
   (a ResolvedMemberImpl), and the type to which this member is added (a ResolvedType). "
   [?intertype ?member ?type]
   (fresh [?unresolved]
-    (intertype ?intertype)
-    (equals ?member (.getSignature ?intertype))
-    (equals ?unresolved (.getDeclaringType ?member))
-    (equals ?type (.resolve ?unresolved (.getWorld ?intertype)))))
-  
-   
+         (intertype ?intertype)
+         (equals ?member (.getSignature ?intertype))
+         (equals ?unresolved (.getDeclaringType ?member))
+         (equals ?type (.resolve ?unresolved (.getWorld ?intertype)))))
+
+
 ;; implemented in this manner because I don't know how to create a handle for a ConcreteTypeMunger / ResolvedMemberImpl 
 ;; AsmRelationShipProviver.createIntertypeDeclaredChild(AsmManager model, ResolvedType aspect, BcelTypeMunger itd) {
 (defn
@@ -1074,7 +1206,7 @@
          (!= nil ?equivalentmember)
          (equals ?signaturestring (.toSignatureString ?equivalentmember))
          (element-signature ?member ?signaturestring))) 
-  
+
 
 
 ;; SourceLocation
@@ -1105,9 +1237,9 @@
    to its aspect's PerClause (cflow, super, object, singleton, typewithin)."
   [?advice ?pointcut]
   (all
-         (advice ?advice)
-         (equals ?pointcut (.getPointcut ?advice))))
-  
+    (advice ?advice)
+    (equals ?pointcut (.getPointcut ?advice))))
+
 
 ;; some info: 
 ;; KindedPointcut or MatchesNothingPointcut returned by
@@ -1165,7 +1297,7 @@
   []
   (let [results (run* [?pc] (pointcut|maybeduplicate ?pc))]
     (vec (set results))))
-  
+
 
 (defn
   pointcut
@@ -1187,9 +1319,9 @@
   (fresh [?pc]
          (advice-pointcut ?advice ?pc)
          (pointcutdefinition-pointcut ?pointcutdefinition ?pc)))
-    
 
-  
+
+
 ;;TODO: decide whether to define relations on Pointcut hierarcy or on PointcutDefinitionHierarchy? 
 ;; (former is probably better, as there are advices with inline pointcuts)
 
@@ -1332,7 +1464,7 @@
   (all 
     (aspect ?aspect)
     (type-pointcutdefinitions+|exposed ?aspect ?pointcutdefinitions)))
-    
+
 (defn
   class-pointcutdefinitions+|exposed
   "Relation between a class and all of its exposed pointcutdefinitions.
@@ -1348,8 +1480,8 @@
    In contrast to type-pointcutdefinition+, overrides are resolved."
   [?type ?pointcutdefinition]
   (fresh [?pointcutdefinitions]
-    (type-pointcutdefinitions+|exposed ?type ?pointcutdefinitions)
-    (contains ?pointcutdefinitions ?pointcutdefinition)))
+         (type-pointcutdefinitions+|exposed ?type ?pointcutdefinitions)
+         (contains ?pointcutdefinitions ?pointcutdefinition)))
 
 (defn
   class-pointcutdefinition+|exposed
@@ -1357,8 +1489,8 @@
    In contrast to class-pointcutdefinition+, overrides are resolved."
   [?type ?pointcutdefinition]
   (fresh [?pointcutdefinitions]
-    (class-pointcutdefinitions+|exposed ?type ?pointcutdefinitions)
-    (contains ?pointcutdefinitions ?pointcutdefinition)))
+         (class-pointcutdefinitions+|exposed ?type ?pointcutdefinitions)
+         (contains ?pointcutdefinitions ?pointcutdefinition)))
 
 (defn
   aspect-pointcutdefinition+|exposed
@@ -1366,8 +1498,8 @@
    In contrast to aspect-pointcutdefinition+, overrides are resolved."
   [?type ?pointcutdefinition]
   (fresh [?pointcutdefinitions]
-    (aspect-pointcutdefinitions+|exposed ?type ?pointcutdefinitions)
-    (contains ?pointcutdefinitions ?pointcutdefinition)))
+         (aspect-pointcutdefinitions+|exposed ?type ?pointcutdefinitions)
+         (contains ?pointcutdefinitions ?pointcutdefinition)))
 
 
 (defn
@@ -1445,7 +1577,7 @@
          [(v- ?declare)
           (fresh [?aspect]
                  (aspect-declare ?aspect ?declare))]))
-  
+
 (defn
   declare|parents
   "Relation of all parents declare declarations."
@@ -1511,8 +1643,8 @@
   "Relation of all warning declare declarations (type pattern)."
   [?declare]
   (declare ?declare)
-    (succeeds (instance? DeclareTypeErrorOrWarning ?declare))
-    (equals true (.isError ?declare)))
+  (succeeds (instance? DeclareTypeErrorOrWarning ?declare))
+  (equals true (.isError ?declare)))
 
 
 
@@ -1549,7 +1681,7 @@
          (weaverworld ?world)
          (declare|parents-parents|patterns ?declare ?patterns)
          (equals ?types (typepatterns2types ?patterns ?world))))
-         
+
 
 (defn
   declare|parents-parent|type
@@ -1561,15 +1693,15 @@
 
 
 (comment
-
-; Commented out because isExtends is always true
-; TODO:if necessary to distinguish extends/implements declare parents, find other way
-
-; // note - will always return true after deserialization, this doesn't affect weaver
-;	public boolean isExtends() {
-;		return this.isExtends;
-;	}
-
+  
+  ; Commented out because isExtends is always true
+  ; TODO:if necessary to distinguish extends/implements declare parents, find other way
+  
+  ; // note - will always return true after deserialization, this doesn't affect weaver
+  ;	public boolean isExtends() {
+  ;		return this.isExtends;
+  ;	}
+  
   
   (defn
     declare|parents|extends
@@ -1578,8 +1710,8 @@
     (all
       (declare|parents ?declare)
       (succeeds (.isExtends ?declare))))
-
-)
+  
+  )
 
 
 
@@ -1643,12 +1775,12 @@
 (defn
   aspect|dominates-aspect-explicitly+
   "Transitive explicit dominates relationship"
-    [?dominator ?subordinate]
-    (conde [(fresh [?prec]
-                   (aspect|dominates-aspect-explicitly ?dominator ?subordinate ?prec))]
-           [(fresh [?intermediate ?prec]
-                   (aspect|dominates-aspect-explicitly ?dominator ?intermediate ?prec)
-                   (aspect|dominates-aspect-explicitly+ ?intermediate ?subordinate))]))
+  [?dominator ?subordinate]
+  (conde [(fresh [?prec]
+                 (aspect|dominates-aspect-explicitly ?dominator ?subordinate ?prec))]
+         [(fresh [?intermediate ?prec]
+                 (aspect|dominates-aspect-explicitly ?dominator ?intermediate ?prec)
+                 (aspect|dominates-aspect-explicitly+ ?intermediate ?subordinate))]))
 
 ;	precedence rules: sub-aspects implicitly have precedence over their super-aspect;	Not reified: for advice of same aspect lexically first advice has implicit precedence over second advice
 
@@ -1672,17 +1804,17 @@
     aspect-dominates-aspect
     "Precedence domination relation between an aspect and its subordinate,
    by combining explicit precedence declarations with implicit precedence relations."
-  (tabled 
-    [?dominator ?subordinate]
-    (all
-      (conde
-        [(aspect|dominates-aspect-explicitly+ ?dominator ?subordinate)]
-        [(aspect|dominates-aspect-implicitly+ ?dominator ?subordinate)]
-        [(fresh [?intermediate]
-                (aspect-dominates-aspect ?dominator ?intermediate)
-                (aspect-dominates-aspect ?intermediate ?subordinate))])
-      (fails (aspect|dominates-aspect-explicitly+ ?subordinate ?dominator)))))
-)
+    (tabled 
+      [?dominator ?subordinate]
+      (all
+        (conde
+          [(aspect|dominates-aspect-explicitly+ ?dominator ?subordinate)]
+          [(aspect|dominates-aspect-implicitly+ ?dominator ?subordinate)]
+          [(fresh [?intermediate]
+                  (aspect-dominates-aspect ?dominator ?intermediate)
+                  (aspect-dominates-aspect ?intermediate ?subordinate))])
+        (fails (aspect|dominates-aspect-explicitly+ ?subordinate ?dominator)))))
+  )
 
 (defn- 
   domination-edge
@@ -1712,40 +1844,40 @@
                      (equals ?new-explored-subs (conj ?explored-subs ?sub))
                      (aspect|dominates-aspect ?sub ?subordinate ?new-explored-subs))])
            (fails (aspect|dominates-aspect-explicitly+ ?subordinate ?dominator)))))
-           
+
 
 ;; Aspect instantiation policies
 ;; -----------------------------
 
 (comment
-
-;; This one returns PerClause instances of which the inAspect field is still null .. 
   
-;; TODO: retrieve correctly instantiated ones through the right-hand-side of advice-raw .... and then link those
-;; back to their defining aspect (will have to eliminate duplicates)
-;; (damp.ekeko/ekeko [?policy]
-;;                      (fresh [?a ?p] 
-;;                      (advice ?a)
-;;                      (equals ?p (.getPointcut ?a)) 
-;;                      (succeeds (instance? AndPointcut ?p))
-;;                      (equals ?policy (.getRight ?p))))
-
-
-(defn
-  aspect-policy 
-  "Relation between an aspect and its instantiation policy (instance of PerClause).
+  ;; This one returns PerClause instances of which the inAspect field is still null .. 
+  
+  ;; TODO: retrieve correctly instantiated ones through the right-hand-side of advice-raw .... and then link those
+  ;; back to their defining aspect (will have to eliminate duplicates)
+  ;; (damp.ekeko/ekeko [?policy]
+  ;;                      (fresh [?a ?p] 
+  ;;                      (advice ?a)
+  ;;                      (equals ?p (.getPointcut ?a)) 
+  ;;                      (succeeds (instance? AndPointcut ?p))
+  ;;                      (equals ?policy (.getRight ?p))))
+  
+  
+  (defn
+    aspect-policy 
+    "Relation between an aspect and its instantiation policy (instance of PerClause).
    Includes implicit policies (e.g., perSingleton and perFromSuper)."
-  [?aspect ?policy]
-  (all
-    (aspect ?aspect)
-    (equals ?policy (.getPerClause ?aspect))))
-
-)
+    [?aspect ?policy]
+    (all
+      (aspect ?aspect)
+      (equals ?policy (.getPerClause ?aspect))))
   
+  )
 
 
 
-  
+
+
 
 
 
@@ -1767,7 +1899,7 @@
                   (.getAJProjectFacade ^AspectJProjectModel model)))
               (projectmodel/aspectj-project-models)))
     (succeeds (.hasModel ?xcut))))
-    
+
 
 ;; Link between ProgramElement (weaverworld/element) and ResolvedType (weaverworld/type)
 ;; -------------------------------------------------------------------------------------
@@ -1831,7 +1963,7 @@
                    (type-member ?type ?member)
                    (equals "<init>" (.getName ?member)) ;TODO: what about <clinit>?
                    (equals ?sig (constructor-elementsignature ?member ?type)))])))
-           
+
 
 (defn-
   advice-elementbytecodename
@@ -1862,21 +1994,21 @@
   "Relation between a ProgramElement and the Type/Member/IntertypeMember/Advice it corresponds to in the weaver."
   [?element ?weaverthing]
   (fresh [?kind]
-    (element-kind ?element ?kind)
-    (conda [(succeeds (.isType ?kind))
-            (element-type ?element ?weaverthing)]
-           [(conde [(== ?kind (IProgramElement$Kind/METHOD))]
-                   [(== ?kind (IProgramElement$Kind/CONSTRUCTOR))])
-            (element-member ?element ?weaverthing)]
-           [(succeeds (.isInterTypeMember ?kind))
-            (element-intertypemember ?element ?weaverthing)]
-           [(== ?kind (IProgramElement$Kind/ADVICE))
-            (element-advice ?element ?weaverthing)])))
+         (element-kind ?element ?kind)
+         (conda [(succeeds (.isType ?kind))
+                 (element-type ?element ?weaverthing)]
+                [(conde [(== ?kind (IProgramElement$Kind/METHOD))]
+                        [(== ?kind (IProgramElement$Kind/CONSTRUCTOR))])
+                 (element-member ?element ?weaverthing)]
+                [(succeeds (.isInterTypeMember ?kind))
+                 (element-intertypemember ?element ?weaverthing)]
+                [(== ?kind (IProgramElement$Kind/ADVICE))
+                 (element-advice ?element ?weaverthing)])))
 
 
 ;; Shadows
 ;; -------
- 
+
 ;TODO: it would be nicer if ?shadow were an actual Shadow instance
 ;this way, we stay in the weaver world
 ;now ?shadow stems from the xcut world
@@ -1916,8 +2048,8 @@
   "Relation between an aspect and one of the shadows of its advices."
   [?aspect ?shadow]
   (fresh [?advice]
-           (aspect-advice ?aspect ?advice)
-           (advice-shadow ?advice ?shadow)))
+         (aspect-advice ?aspect ?advice)
+         (advice-shadow ?advice ?shadow)))
 
 
 (defn 
@@ -1943,7 +2075,7 @@
                         (element-weaverthing ?parent ?enclosing))]
                 [(!= ?kind (IProgramElement$Kind/CODE))
                  (element-weaverthing ?shadow ?enclosing)])))
-    
+
 
 (defn
   shadow-ancestor|method
@@ -1951,9 +2083,9 @@
    Does not consider the entity itself as candidate. "
   [?shadow ?member]
   (fresh [?element]
-    (shadow ?shadow)
-    (element-ancestor-kind ?shadow ?element (IProgramElement$Kind/METHOD))
-    (element-member ?element ?member)))
+         (shadow ?shadow)
+         (element-ancestor-kind ?shadow ?element (IProgramElement$Kind/METHOD))
+         (element-member ?element ?member)))
 
 (defn
   shadow-ancestor|constructor
@@ -1961,9 +2093,9 @@
    Does not consider the entity itself as candidate."
   [?shadow ?member]
   (fresh [?element]
-    (shadow ?shadow)
-    (element-ancestor-kind ?shadow ?element (IProgramElement$Kind/CONSTRUCTOR))
-    (element-member ?element ?member)))
+         (shadow ?shadow)
+         (element-ancestor-kind ?shadow ?element (IProgramElement$Kind/CONSTRUCTOR))
+         (element-member ?element ?member)))
 
 (defn
   shadow-ancestor|advice
@@ -1971,9 +2103,9 @@
    Does not consider the entity itself as candidate."
   [?shadow ?member]
   (fresh [?element] 
-    (shadow ?shadow)
-    (element-ancestor-kind ?shadow ?element (IProgramElement$Kind/ADVICE))
-    (element-member ?element ?member)))
+         (shadow ?shadow)
+         (element-ancestor-kind ?shadow ?element (IProgramElement$Kind/ADVICE))
+         (element-member ?element ?member)))
 
 (defn
   shadow-ancestor|intertypemethod
@@ -1981,19 +2113,19 @@
    Does not consider the entity itself as candidate."
   [?shadow ?member]
   (fresh [?element] 
-    (shadow ?shadow)
-    (element-ancestor-kind ?shadow ?element (IProgramElement$Kind/INTER_TYPE_METHOD))
-    (element-intertypemember ?element ?member)))
-    
+         (shadow ?shadow)
+         (element-ancestor-kind ?shadow ?element (IProgramElement$Kind/INTER_TYPE_METHOD))
+         (element-intertypemember ?element ?member)))
+
 (defn
   shadow-ancestor|intertypeconstructor
   "Relation between a shadow and its first enclosing intertype constructor (if any).
    Does not consider the entity itself as candidate."
   [?shadow ?member]
   (fresh [?element] 
-    (shadow ?shadow)
-    (element-ancestor-kind ?shadow ?element (IProgramElement$Kind/INTER_TYPE_CONSTRUCTOR))
-    (element-intertypemember ?element ?member)))
+         (shadow ?shadow)
+         (element-ancestor-kind ?shadow ?element (IProgramElement$Kind/INTER_TYPE_CONSTRUCTOR))
+         (element-intertypemember ?element ?member)))
 
 (defn
   shadow-ancestor|class
@@ -2001,9 +2133,9 @@
    Does not consider the entity itself as candidate."
   [?shadow ?type]
   (fresh [?element]
-    (shadow ?shadow)
-    (element-ancestor-kind ?shadow ?element (IProgramElement$Kind/CLASS))
-    (element-type ?element ?type)))
+         (shadow ?shadow)
+         (element-ancestor-kind ?shadow ?element (IProgramElement$Kind/CLASS))
+         (element-type ?element ?type)))
 
 (defn
   shadow-ancestor|aspect
@@ -2011,9 +2143,9 @@
    Does not consider the entity itself as candidate."
   [?shadow ?type]
   (fresh [?element]
-    (shadow ?shadow)
-    (element-ancestor-kind ?shadow ?element (IProgramElement$Kind/ASPECT))
-    (element-type ?element ?type)))
+         (shadow ?shadow)
+         (element-ancestor-kind ?shadow ?element (IProgramElement$Kind/ASPECT))
+         (element-type ?element ?type)))
 
 (defn
   shadow-ancestor|type
@@ -2021,9 +2153,9 @@
    Does not consider the entity itself as candidate."
   [?shadow ?type]
   (fresh [?element]
-    (shadow ?shadow)
-    (element-ancestor|type ?shadow ?element)
-    (element-type ?element ?type)))
+         (shadow ?shadow)
+         (element-ancestor|type ?shadow ?element)
+         (element-type ?element ?type)))
 
 (defn
   shadow-ancestor|member-or-advice
@@ -2031,9 +2163,9 @@
    Does not consider the entity itself as candidate."
   [?shadow ?member]
   (fresh [?element]
-    (shadow ?shadow)
-    (element-ancestor|member ?shadow ?element)
-    (element-member ?element ?member)))
+         (shadow ?shadow)
+         (element-ancestor|member ?shadow ?element)
+         (element-member ?element ?member)))
 
 (defn
   shadow-ancestor|intertypemember
@@ -2073,4 +2205,4 @@
   (all (intertype|method ?intertype)
        (equals ?name (.toString (.getSignature (.getMunger ?intertype))))))
 
-     
+
