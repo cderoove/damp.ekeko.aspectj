@@ -33,7 +33,8 @@ public class EkekoAspectJTest {
 				"AJ-LMP-Interface", 
 				"AJ-LMP-MutExHeuristics",
 				"AJ-LMP-Precedence",
-				"AJ-LMP-SimpleReentrancy"
+				"AJ-LMP-SimpleReentrancy",
+				"AJ-LMP-Annotations"
 		};
 		for(String projectName : projectNames) {
 			EkekoTestHelper.ensureProjectImported(myBundle, "/resources/TestCases/", projectName);

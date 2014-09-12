@@ -148,6 +148,45 @@
     "#{(\"cl.pleiad.ajlmp.testWormhole.WrongOrderWormholeAspect\" \"(before: (execution(* cl.pleiad.ajlmp.testWormhole.BaseClass.*2()) && persingleton(cl.pleiad.ajlmp.testWormhole.WrongOrderWormholeAspect))->void cl.pleiad.ajlmp.testWormhole.WrongOrderWormholeAspect.ajc$before$cl_pleiad_ajlmp_testWormhole_WrongOrderWormholeAspect$1$b325ee9f())\" \"(before: ((execution(* cl.pleiad.ajlmp.testWormhole.BaseClass.*1(int)) && args(BindingTypePattern(int, 0))) && persingleton(cl.pleiad.ajlmp.testWormhole.WrongOrderWormholeAspect))->void cl.pleiad.ajlmp.testWormhole.WrongOrderWormholeAspect.ajc$before$cl_pleiad_ajlmp_testWormhole_WrongOrderWormholeAspect$2$72a7b216(int))\" \"int cl.pleiad.ajlmp.testWormhole.WrongOrderWormholeAspect.store\") (\"cl.pleiad.ajlmp.testWormhole.WormholeAspect\" \"(before: ((execution(* cl.pleiad.ajlmp.testWormhole.BaseClass.*1(int)) && args(BindingTypePattern(int, 0))) && persingleton(cl.pleiad.ajlmp.testWormhole.WormholeAspect))->void cl.pleiad.ajlmp.testWormhole.WormholeAspect.ajc$before$cl_pleiad_ajlmp_testWormhole_WormholeAspect$1$9821f264(int))\" \"(before: (execution(* cl.pleiad.ajlmp.testWormhole.BaseClass.*2()) && persingleton(cl.pleiad.ajlmp.testWormhole.WormholeAspect))->void cl.pleiad.ajlmp.testWormhole.WormholeAspect.ajc$before$cl_pleiad_ajlmp_testWormhole_WormholeAspect$2$b325ee9f())\" \"int cl.pleiad.ajlmp.testWormhole.WormholeAspect.store\") (\"cl.pleiad.ajlmp.testWormhole.TSWormholeAspect\" \"(before: ((execution(* cl.pleiad.ajlmp.testWormhole.BaseClass.*1(int)) && args(BindingTypePattern(int, 0))) && percflow(cl.pleiad.ajlmp.testWormhole.TSWormholeAspect on execution(* cl.pleiad.ajlmp.testWormhole.BaseClass.run())))->void cl.pleiad.ajlmp.testWormhole.TSWormholeAspect.ajc$before$cl_pleiad_ajlmp_testWormhole_TSWormholeAspect$1$9821f264(int))\" \"(before: (execution(* cl.pleiad.ajlmp.testWormhole.BaseClass.*2()) && percflow(cl.pleiad.ajlmp.testWormhole.TSWormholeAspect on execution(* cl.pleiad.ajlmp.testWormhole.BaseClass.run())))->void cl.pleiad.ajlmp.testWormhole.TSWormholeAspect.ajc$before$cl_pleiad_ajlmp_testWormhole_TSWormholeAspect$2$b325ee9f())\" \"int cl.pleiad.ajlmp.testWormhole.TSWormholeAspect.store\")}"))
 
 
+(deftest test-annotation-pointcutdefinition
+  (test/tuples-correspond
+    (damp.ekeko/ekeko [?p ?m] (world/pointcutdefinition-annotation ?p ?m))
+    "#{(\"pointcut damp.ekeko.aspectj.annotations.HelloAspect.methodCall()\" \"Anno[Ldamp/ekeko/aspectj/annotations/RequiresPrevious; rVis value=(string)onPointCutDefinition]\")}"))
+
+
+(deftest test-annotation-advice
+  (test/tuples-correspond
+    (damp.ekeko/ekeko [?a ?an] (world/advice-annotation ?a ?an))
+    "#{(\"(before: (call(* *(..)) && percflow(damp.ekeko.aspectj.annotations.HelloAspect on methodCall()))->void damp.ekeko.aspectj.annotations.HelloAspect.ajc$before$damp_ekeko_aspectj_annotations_HelloAspect$1$1e623020())\" \"Anno[Ldamp/ekeko/aspectj/annotations/RequiresPrevious; rVis value=(string)onAdvice]\")}"))
+
+
+(deftest test-annotation-aspect
+  (test/tuples-correspond
+    (damp.ekeko/ekeko [?t]
+                      (fresh [?a ?at]
+                      (world/aspect ?t) 
+                      (world/type-annotation ?t ?a)
+                      (world/annotation-annotationtype ?a ?at)
+                      (world/type-name ?at "damp.ekeko.aspectj.annotations.OneOf")))
+    "#{(\"damp.ekeko.aspectj.annotations.HelloAspect\")}"))
+
+(deftest test-annotation-contents
+  (test/tuples-correspond
+    (damp.ekeko/ekeko [?annotatedaspect ?requiredaspect]
+                      (fresh [?annotationtype ?annotation]
+                             (world/type-name ?annotationtype "damp.ekeko.aspectj.annotations.Requires")
+                             (world/annotation-annotationtype ?annotation ?annotationtype)
+                             (world/type-annotation ?annotatedaspect ?annotation)
+                             (world/aspect ?annotatedaspect)
+                             (world/annotation-key-value ?annotation "aspect" ?requiredaspect)
+                             (world/aspect ?requiredaspect)))
+    "#{(\"damp.ekeko.aspectj.annotations.HelloAspect\" \"damp.ekeko.aspectj.annotations.HelloAspect\")}"))
+
+    
+    
+
+
+
 ;; Test Suite
 ;; ----------
 
@@ -199,7 +238,15 @@
   ;(test/against-project-named "AJ-LMP-Wormhole" true test-naive-wormhole)
   ;temporarily disabled because running soot takes too long in an integration test 
   
-  )
+  
+  ;;Annotations
+  (test/against-project-named "AJ-LMP-Annotations" false test-annotation-pointcutdefinition)
+  (test/against-project-named "AJ-LMP-Annotations" false test-annotation-advice)
+  (test/against-project-named "AJ-LMP-Annotations" false test-annotation-aspect)
+  (test/against-project-named "AJ-LMP-Annotations" false test-annotation-contents)
+
+  
+    )
 
 (defn 
   test-ns-hook 
