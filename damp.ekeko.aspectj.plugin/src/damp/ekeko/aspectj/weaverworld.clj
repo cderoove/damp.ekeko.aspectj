@@ -516,6 +516,18 @@ damp.ekeko.aspectj.weaverworld
   (fresh [?type]
          (type-field ?type ?field)))
 
+(clojure.core/declare annotated-annotation)
+
+
+(defn
+  field-annotation
+  "Relation between a field member and one of its annotations."
+  [?field ?annotation]
+  (all
+    (field ?field)
+    (annotated-annotation ?field ?annotation)))
+  
+
 (defn
   type-methods
   "Relation between a type and its declared methods as known to the weaver."
@@ -554,11 +566,19 @@ damp.ekeko.aspectj.weaverworld
 
 (defn
   method
-  "Relation of method members known to the weaver."
+  "Relation of method members known to the weaver.
+   Use member|nonsynthetic/1 to filter out synthetic methods created to support the weaver."
   [?method]
   (fresh [?type]
          (type-method ?type ?method)))
 
+
+(defn
+  method-annotation
+  [?method ?annotation]
+  (all
+    (method ?method)
+    (annotated-annotation ?method ?annotation)))
 
 
 (clojure.core/declare type-pointcutdefinition)
@@ -622,25 +642,31 @@ damp.ekeko.aspectj.weaverworld
 
 
 (defn-
-  type-annotations 
-  "Relation between a ReferenceType and its annotations."
-  [?type ?annotations]
+  annotated-annotations
+  [?target ?annos]
   (all
-    (type|reference ?type)
-    (equals ?annotations (.getAnnotations ?type))))
+    (v+ ?target)
+    (equals ?annos (.getAnnotations ?target))))
+
 
 (clojure.core/declare annotation)
+
+(defn-
+  annotated-annotation
+  [?target ?anno]
+  (fresh [?annos]
+         (annotated-annotations ?target ?annos)
+         (contains ?annos ?anno)
+         (annotation ?anno) ;to ensure only those of which the type is exposed to the weaver are returned
+         ))
 
 (defn
   type-annotation
   "Relation between a type declarations and its annotation instances."
   [?type ?annotation]
-  (fresh [?annotations]
-         (type-annotations ?type ?annotations)
-         (contains ?annotations ?annotation)
-         (annotation ?annotation) ;to ensure only those of which the type is exposed to the weaver are returned
-         ))
-
+  (all
+    (type|reference ?type)
+    (annotated-annotation ?type ?annotation)))
 
 (defn
   annotation
@@ -654,7 +680,10 @@ damp.ekeko.aspectj.weaverworld
        (succeeds (instance? AnnotationAJ ?annotation))]
       [(v- ?annotation)
        (fresh [?target]
-              (conde [(type-annotation ?target ?annotation)]) ;todo: consider other targets (e.g., method etc)
+              (conde [(type-annotation ?target ?annotation)]
+                     [(method-annotation ?target ?annotation)]
+                     [(field-annotation ?target ?annotation)]
+                     ) 
               )])
     (succeeds (.isExposedToWeaver (.getType ?annotation)))))
 ;.isExposedToWeaver is to align the results of type|annotation/1 and annotation-type/1
@@ -687,9 +716,9 @@ damp.ekeko.aspectj.weaverworld
         (equals ?values (.getValues ?bcel))))
 
 
-;todo: also support AnnotationElementValue, ArrayElementValue, EnumElementValue
+;todo: also support AnnotationElementValue, EnumElementValue
 (defprotocol IBCelToWeaver
-  (toweavervalue [bcel world] ))
+  (toweavervalue [bcel world]))
 
 (extend-type ElementValue IBCelToWeaver
   (toweavervalue [bcel world]
@@ -703,6 +732,9 @@ damp.ekeko.aspectj.weaverworld
   (toweavervalue [bcel world]
     (read-string (.stringifyValue bcel))))
 
+(extend-type ArrayElementValue IBCelToWeaver
+  (toweavervalue [bcel world]
+    (into [] (map (fn [el] (toweavervalue el world)) (.getElementValuesArray bcel)))))
 
 ;(extend-type EnumElementValue IBCelToWeaver
 ;  (toweavervalue [bcel world]
@@ -714,7 +746,8 @@ damp.ekeko.aspectj.weaverworld
 (defn
   annotation-key-value
   "Relation of an annotation, one of its keys (a String), and the value of this key.
-   Currently only supports values of type Class (reified as elements of relation type/1) or of a primitive type (reified as Java values).
+   Currently only supports values of type Class (reified as elements of relation type/1) or of a primitive type (reified as Java values),
+   or an array of such values.
    Other values are reified to their string representation."
   [?annotation ?name ?value]
   (fresh [?pairs ?pair ?bcelvalue ?world] ;of type org.aspectj.apache.bcel.classfile.annoation.ElementValue
@@ -966,6 +999,25 @@ damp.ekeko.aspectj.weaverworld
             (weaverworld ?world)
             (equals ?advices (-> ?world .getCrosscuttingMembersSet .getShadowMungers))
             (contains ?advices  ?advice))]))
+
+;TODO: any corner cases?
+(defn
+  advice-method|ajsynthetic
+  "Relation between advice and the AJ synthetic method it is compiled to."
+  [?advice ?method]
+  (all 
+    (advice ?advice)
+    (equals ?method (.getSignature ?advice))))
+
+
+;note: no need to include in annotation/1, as already included in method-annotation/2
+(defn
+  advice-annotation
+  "Relation between advice and one of its annotations."
+  [?advice ?annotation]
+  (fresh [?method]
+         (advice-method|ajsynthetic ?advice ?method)
+         (method-annotation ?method ?annotation)))
 
 
 ;(defn
@@ -1408,7 +1460,7 @@ type-intertype
 
 (defn
   class-pointcutdefinition
-  "Relation between an aspect and one of the pointcuts it declares."
+  "Relation between a class and one of the pointcuts it declares."
   [?class ?pointcutdefinition]
   (fresh [?pointcutdefinitions] 
          (class-pointcutdefinitions ?class ?pointcutdefinitions)
@@ -1536,8 +1588,41 @@ type-intertype
     (pointcutdefinition|concrete ?pointcutdefinition)
     (equals ?pointcut (.getPointcut ?pointcutdefinition))))
 
-
 (clojure.core/declare pointcutdefinition-name)
+
+(clojure.core/declare method-name)
+
+
+;only a heuristic ...
+(defn-
+  methodnamedaspointcut
+  [methodname pointcutname]
+  (let [mangled (str "ajc$pointcut$$" pointcutname)]
+    (.startsWith methodname mangled)))
+    
+
+(defn
+  pointcutdefinition-method|ajsynthetic
+  "Relation between pointcutdefinition and the AJ synthetic method it is compiled to."
+  [?pointcutdefinition ?method]
+  (fresh [?type ?pdname ?mname]
+         (type-pointcutdefinition ?type ?pointcutdefinition)
+         (pointcutdefinition-name ?pointcutdefinition ?pdname)
+         (type-method ?type ?method)
+         (member|synthetic ?method)
+         (method-name ?method ?mname)
+         (succeeds (methodnamedaspointcut ?mname ?pdname)))) 
+
+;note: no need to include in annotation/1, as already included in method-annotation/2
+(defn
+  pointcutdefinition-annotation
+  "Relation between a pointcut definition and one of its annotations."
+  [?pointcutdefinition ?annotation]
+  (fresh [?method]
+         (pointcutdefinition-method|ajsynthetic ?pointcutdefinition ?method)
+         (method-annotation ?method ?annotation)))
+
+
 
 (defn
   pointcutdefinition-concretizedby
@@ -2204,5 +2289,13 @@ type-intertype
   [?intertype ?name]
   (all (intertype|method ?intertype)
        (equals ?name (.toString (.getSignature (.getMunger ?intertype))))))
+
+(defn
+  method-name
+  "Relation between method and its name."
+  [?method ?name]
+  (all 
+    (method ?method)
+    (equals ?name (.getName ?method))))
 
 
