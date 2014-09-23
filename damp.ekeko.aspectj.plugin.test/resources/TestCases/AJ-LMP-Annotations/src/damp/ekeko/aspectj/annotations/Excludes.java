@@ -3,9 +3,10 @@ package damp.ekeko.aspectj.annotations;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
 
-@Target(ElementType.METHOD)
-public @interface RequiresPrevious {
+@Target(ElementType.TYPE)
+public @interface Excludes {
 		
-	String signature() default "";
+	String aspect() default "";
 	String label() default "";
+	
 }

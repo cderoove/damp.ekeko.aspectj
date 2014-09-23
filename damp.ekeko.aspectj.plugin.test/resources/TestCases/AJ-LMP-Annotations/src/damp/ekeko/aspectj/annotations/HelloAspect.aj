@@ -1,7 +1,8 @@
 package damp.ekeko.aspectj.annotations;
 
-@Requires(aspect=HelloAspect.class)
-@OneOf(aspects={HelloAspect.class, HelloAspect.class})
+@Requires(aspect="HelloAspect")
+//@Requires(label ="asdf")
+@OneOf(aspects={"HelloAspect", "HelloAspect"},labels={"foobar"})
 public aspect HelloAspect percflow(methodCall() ) {
 	private int callCount = 0; 
 	
@@ -10,7 +11,7 @@ public aspect HelloAspect percflow(methodCall() ) {
 	public int getCount() { return callCount;
 	}
 
-	@RequiresPrevious("onAspectMethod")
+	@RequiresPrevious(signature="onAspectMethod") 
 	public int getTotalCount() { return totalCount;
 	}
 	
@@ -20,10 +21,10 @@ public aspect HelloAspect percflow(methodCall() ) {
 		HelloAspect aspect = HelloAspect.aspectOf(); System.out.println( "Object Count is " + aspect.getCount()
 				+ " Total count " + aspect.getTotalCount() ); 
 	}
-	@RequiresPrevious("onPointCutDefinition")
+	@RequiresPrevious(signature="onPointCutDefinition")
 	pointcut methodCall() : call(* *(..) );
 
-	@RequiresPrevious("onAdvice")
+	@RequiresPrevious(signature="onAdvice")
 	before(): methodCall() { callCount++; totalCount++;}
 
 }

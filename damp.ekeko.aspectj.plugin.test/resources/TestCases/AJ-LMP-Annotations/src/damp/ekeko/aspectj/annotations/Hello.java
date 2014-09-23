@@ -1,9 +1,9 @@
 package damp.ekeko.aspectj.annotations;
 
-@Requires(aspect=HelloAspect.class, label="Foobar")
+@Requires(aspect="HelloAspect", label="Foobar")
 public class Hello {
 
-	@RequiresPrevious("onMethod")
+	@RequiresPrevious(signature="onMethod")
 	void b() {
 		System.out.println("In b"); 
 	}
