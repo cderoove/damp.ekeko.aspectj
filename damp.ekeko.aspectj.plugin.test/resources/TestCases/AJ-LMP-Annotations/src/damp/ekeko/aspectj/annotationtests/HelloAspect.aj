@@ -1,4 +1,6 @@
-package damp.ekeko.aspectj.annotations;
+package damp.ekeko.aspectj.annotationtests;
+
+import damp.ekeko.aspectj.annotations.*;
 
 @Requires(aspect="HelloAspect")
 //@Requires(label ="asdf")

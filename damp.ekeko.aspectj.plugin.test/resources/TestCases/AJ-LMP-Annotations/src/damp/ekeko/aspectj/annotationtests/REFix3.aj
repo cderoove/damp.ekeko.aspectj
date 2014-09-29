@@ -1,4 +1,7 @@
-package damp.ekeko.aspectj.annotations;
+package damp.ekeko.aspectj.annotationtests;
+
+import damp.ekeko.aspectj.annotations.*;
+
 /*
  * Fixture for Requires and Excludes
  */
