@@ -168,7 +168,7 @@
                       (world/type-annotation ?t ?a)
                       (world/annotation-annotationtype ?a ?at)
                       (world/type-name ?at "damp.ekeko.aspectj.annotations.OneOf")))
-    "#{(\"damp.ekeko.aspectj.annotations.HelloAspect\")}"))
+    "#{(\"damp.ekeko.aspectj.annotationtests.HelloAspect\")}"))
 
 (deftest test-annotation-contents
   (test/tuples-correspond
@@ -180,7 +180,7 @@
                              (world/aspect ?annotatedaspect)
                              (world/annotation-key-value ?annotation "aspect" ?requiredaspect)
                              (world/aspect ?requiredaspect)))
-    "#{(\"damp.ekeko.aspectj.annotations.HelloAspect\" \"damp.ekeko.aspectj.annotations.HelloAspect\")}"))
+    "#{(\"damp.ekeko.aspectj.annotationtests.HelloAspect\" \"damp.ekeko.aspectj.annotationtests.HelloAspect\")}"))
 
     
     

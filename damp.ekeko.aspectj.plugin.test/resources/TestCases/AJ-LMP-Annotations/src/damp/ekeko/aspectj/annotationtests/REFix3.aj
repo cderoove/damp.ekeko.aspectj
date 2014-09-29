@@ -7,8 +7,8 @@ import damp.ekeko.aspectj.annotations.*;
  */
 @Requires(aspect = "Aspect3a", label = "Label3a")
 @Excludes(aspect = "Aspect3b")
-@Excludes(label = "Label3b")
-@Excludes(label = "Label3c")
+//@Excludes(label = "Label3b")
+//@Excludes(label = "Label3c")
 public aspect REFix3 {
 
 }

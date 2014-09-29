@@ -19,6 +19,6 @@ public class LaFix1 {
 	public LaFix1(int nolabel){}
 	
 	@Label("ConsLabel1a")
-	@Label("ConsLabel1b")
+//	@Label("ConsLabel1b")
 	public LaFix1(String multi){}
 }

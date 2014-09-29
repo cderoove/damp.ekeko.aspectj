@@ -6,7 +6,7 @@ import java.lang.annotation.Target;
 
 
 @Target(ElementType.TYPE)
-@Repeatable(MultiRequires.class)
+//@Repeatable(MultiRequires.class)
 public @interface Requires {
 		
 	String aspect() default "";

@@ -6,11 +6,11 @@ import damp.ekeko.aspectj.annotations.*;
  * Fixture 2 for labels
  */
 @Label("Label2a")
-@Label("Label2b")
+//@Label("Label2b")
 public aspect LaFix2 {
 
 	@Label("MethLabel2a")
-	@Label("MethLabel2b")
+//	@Label("MethLabel2b")
 	public void multiLabeledMethod(){}
 	
 	@Label("MethLabel2")
@@ -32,6 +32,6 @@ public aspect LaFix2 {
 	before(): barCall() {}
 	
 	@Label("AdvLabel2a")
-	@Label("AdvLabel2b")
+//	@Label("AdvLabel2b")
 	before(): fooCall() || barCall() {}
 }

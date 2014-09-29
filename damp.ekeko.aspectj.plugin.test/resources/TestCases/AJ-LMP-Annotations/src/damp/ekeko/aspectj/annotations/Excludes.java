@@ -6,7 +6,7 @@ import java.lang.annotation.Target;
 
 
 @Target(ElementType.TYPE)
-@Repeatable(MultiExcludes.class)
+//@Repeatable(MultiExcludes.class)
 public @interface Excludes {
 		
 	String aspect() default "";
