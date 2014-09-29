@@ -53,7 +53,6 @@
     (type-name ?at ?atn)))
 
 ;;TEST OK %pointcuts present
-;;TO FORMALIZE IN TEST
 (defn 
   behavior-label|annotation
   [?behavior ?ann]

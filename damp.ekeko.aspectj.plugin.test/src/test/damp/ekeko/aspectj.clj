@@ -165,6 +165,11 @@
     (damp.ekeko/ekeko [?type ?ann] (annotations/type-label|annotation ?type ?ann))
     "#{(\"damp.ekeko.aspectj.annotationtests.LaFix1\" \"Anno[Ldamp/ekeko/aspectj/annotations/Label; rInvis value=(string)Label1]\") (\"damp.ekeko.aspectj.annotationtests.LaFix2\" \"Anno[Ldamp/ekeko/aspectj/annotations/Label; rInvis value=(string)Label2a]\")}"))
 
+(deftest test-annotation-label-behavior
+  (test/tuples-correspond
+    (damp.ekeko/ekeko [?type ?ann] (annotations/behavior-label|annotation ?type ?ann))
+    "#{(\"void damp.ekeko.aspectj.annotationtests.LaFix2.ajc$before$damp_ekeko_aspectj_annotationtests_LaFix2$3$716cfb74()\" \"Anno[Ldamp/ekeko/aspectj/annotations/Label; rInvis value=(string)AdvLabel2a]\") (\"void damp.ekeko.aspectj.annotationtests.LaFix1.<init>()\" \"Anno[Ldamp/ekeko/aspectj/annotations/Label; rInvis value=(string)ConsLabel]\") (\"void damp.ekeko.aspectj.annotationtests.LaFix2.ajc$before$damp_ekeko_aspectj_annotationtests_LaFix2$1$8598ac45()\" \"Anno[Ldamp/ekeko/aspectj/annotations/Label; rInvis value=(string)AdvLabel2]\") (\"void damp.ekeko.aspectj.annotationtests.LaFix1.<init>(java.lang.String)\" \"Anno[Ldamp/ekeko/aspectj/annotations/Label; rInvis value=(string)ConsLabel1a]\") (\"void damp.ekeko.aspectj.annotationtests.LaFix2.<init>()\" \"Anno[Ldamp/ekeko/aspectj/annotations/Label; rInvis value=(string)ConsLabel2]\") (\"void damp.ekeko.aspectj.annotationtests.LaFix2.multiLabeledMethod()\" \"Anno[Ldamp/ekeko/aspectj/annotations/Label; rInvis value=(string)MethLabel2a]\") (\"void damp.ekeko.aspectj.annotationtests.LaFix2.ajc$pointcut$$barCall$200()\" \"Anno[Ldamp/ekeko/aspectj/annotations/Label; rInvis value=(string)PCLabel2]\") (\"void damp.ekeko.aspectj.annotationtests.LaFix2.labeledMethod()\" \"Anno[Ldamp/ekeko/aspectj/annotations/Label; rInvis value=(string)MethLabel2]\") (\"void damp.ekeko.aspectj.annotationtests.LaFix1.labeledMethod()\" \"Anno[Ldamp/ekeko/aspectj/annotations/Label; rInvis value=(string)MethLabel]\")}"))
+
 (deftest test-annotation-aspect
   (test/tuples-correspond
     (damp.ekeko/ekeko [?t]
@@ -248,6 +253,7 @@
   ;(test/against-project-named "AJ-LMP-Annotations" false test-annotation-pointcutdefinition)
   ;(test/against-project-named "AJ-LMP-Annotations" false test-annotation-advice)
   (test/against-project-named "AJ-LMP-Annotations" false test-annotation-label-types)
+  (test/against-project-named "AJ-LMP-Annotations" false test-annotation-label-behavior)
   (test/against-project-named "AJ-LMP-Annotations" false test-annotation-aspect)
   (test/against-project-named "AJ-LMP-Annotations" false test-annotation-contents)
 
