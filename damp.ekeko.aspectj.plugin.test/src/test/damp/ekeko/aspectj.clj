@@ -15,6 +15,7 @@
      [xcut :as xcut] 
      [weaverworld :as world]
      [assumptions :as assumptions]
+     [annotations :as annotations]
      ])
   (:use clojure.test)) 
 
@@ -159,6 +160,10 @@
     (damp.ekeko/ekeko [?a ?an] (world/advice-annotation ?a ?an))
     "#{(\"(before: (call(* *(..)) && percflow(damp.ekeko.aspectj.annotations.HelloAspect on methodCall()))->void damp.ekeko.aspectj.annotations.HelloAspect.ajc$before$damp_ekeko_aspectj_annotations_HelloAspect$1$1e623020())\" \"Anno[Ldamp/ekeko/aspectj/annotations/RequiresPrevious; rVis value=(string)onAdvice]\")}"))
 
+(deftest test-annotation-label-types
+  (test/tuples-correspond
+    (damp.ekeko/ekeko [?type ?ann] (annotations/type-label|annotation ?type ?ann))
+    "#{(\"damp.ekeko.aspectj.annotationtests.LaFix1\" \"Anno[Ldamp/ekeko/aspectj/annotations/Label; rInvis value=(string)Label1]\") (\"damp.ekeko.aspectj.annotationtests.LaFix2\" \"Anno[Ldamp/ekeko/aspectj/annotations/Label; rInvis value=(string)Label2a]\")}"))
 
 (deftest test-annotation-aspect
   (test/tuples-correspond
@@ -242,6 +247,7 @@
   ;;Annotations
   ;(test/against-project-named "AJ-LMP-Annotations" false test-annotation-pointcutdefinition)
   ;(test/against-project-named "AJ-LMP-Annotations" false test-annotation-advice)
+  (test/against-project-named "AJ-LMP-Annotations" false test-annotation-label-types)
   (test/against-project-named "AJ-LMP-Annotations" false test-annotation-aspect)
   (test/against-project-named "AJ-LMP-Annotations" false test-annotation-contents)
 

@@ -300,25 +300,3 @@
 ;;===========================================================================================
 
 ; Annotations
-
-(defn
-  type-annotation-annotation|type|name
-  [?type ?annotation ?atn]
-  (l/fresh [?at]
-    (type-annotation ?type ?annotation)
-    (annotation-annotationtype ?annotation ?at)
-    (type-name ?at ?atn)))
-    
-(defn
-  type-requires|annotation
-  [?type ?ann]
-  (l/all
-    (type-annotation-annotation|type|name ?type ?ann "damp.ekeko.aspectj.annotations.Requires")))
-
-(defn
-  type-oneOf|annotation
-  [?type ?ann]
-  (l/all 
-    (type-annotation-annotation|type|name ?type ?ann "damp.ekeko.aspectj.annotations.OneOf"))
-)
-
