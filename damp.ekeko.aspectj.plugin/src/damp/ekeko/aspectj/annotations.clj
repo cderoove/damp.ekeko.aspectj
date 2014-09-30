@@ -49,12 +49,28 @@
   [?meth ?annotation ?atn]
   (l/fresh [?at]
     (method-annotation ?meth ?annotation)
+    (l/fails (pointcutdefinition-annotation ?meth ?annotation))
     (annotation-annotationtype ?annotation ?at)
     (type-name ?at ?atn)))
 
-;;TEST OK %pointcuts present
+(defn pointcut-annotation-annotation|type|name
+  [?pc ?annotation ?atn]
+  (l/fresh [?at]
+    (pointcutdefinition-annotation ?pc ?annotation)
+    (annotation-annotationtype ?annotation ?at)
+    (type-name ?at ?atn)))   
+
+;;pointcuts present
 (defn 
   behavior-label|annotation
   [?behavior ?ann]
   (l/all
     (behavior-annotation-annotation|type|name ?behavior ?ann "damp.ekeko.aspectj.annotations.Label")))
+
+(defn
+  pointcut-label|annotation
+  [?pc ?ann]
+  (l/all
+    (pointcut-annotation-annotation|type|name ?pc ?ann "damp.ekeko.aspectj.annotations.Label")))
+  
+
