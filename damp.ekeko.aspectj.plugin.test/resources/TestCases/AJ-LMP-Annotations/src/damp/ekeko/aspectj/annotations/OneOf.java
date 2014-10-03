@@ -6,6 +6,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface OneOf {
 		
-	String[] aspects() default {};
-	String[] labels() default {};
+	String[] aspect() default {};
+	String[] label() default {};
 }

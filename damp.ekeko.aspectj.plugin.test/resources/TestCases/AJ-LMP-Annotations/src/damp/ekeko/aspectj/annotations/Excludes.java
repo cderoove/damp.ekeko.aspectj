@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 //@Repeatable(MultiExcludes.class)
 public @interface Excludes {
 		
-	String aspect() default "";
-	String label() default "";
+	String[] aspect() default {};
+	String[] label() default {};
 	
 }

@@ -7,5 +7,5 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE,ElementType.METHOD,ElementType.CONSTRUCTOR})
 //@Repeatable(MultiLabel.class)
 public @interface Label {
-	String value();
+	String[] value();
 }

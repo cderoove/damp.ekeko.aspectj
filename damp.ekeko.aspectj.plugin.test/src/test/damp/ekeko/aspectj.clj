@@ -148,18 +148,6 @@
     (ekeko [?aspect ?advice|entry ?advice|exit ?field] (assumptions/wormhole|naive-entry-exit-field ?aspect ?advice|entry ?advice|exit ?field))
     "#{(\"cl.pleiad.ajlmp.testWormhole.WrongOrderWormholeAspect\" \"(before: (execution(* cl.pleiad.ajlmp.testWormhole.BaseClass.*2()) && persingleton(cl.pleiad.ajlmp.testWormhole.WrongOrderWormholeAspect))->void cl.pleiad.ajlmp.testWormhole.WrongOrderWormholeAspect.ajc$before$cl_pleiad_ajlmp_testWormhole_WrongOrderWormholeAspect$1$b325ee9f())\" \"(before: ((execution(* cl.pleiad.ajlmp.testWormhole.BaseClass.*1(int)) && args(BindingTypePattern(int, 0))) && persingleton(cl.pleiad.ajlmp.testWormhole.WrongOrderWormholeAspect))->void cl.pleiad.ajlmp.testWormhole.WrongOrderWormholeAspect.ajc$before$cl_pleiad_ajlmp_testWormhole_WrongOrderWormholeAspect$2$72a7b216(int))\" \"int cl.pleiad.ajlmp.testWormhole.WrongOrderWormholeAspect.store\") (\"cl.pleiad.ajlmp.testWormhole.WormholeAspect\" \"(before: ((execution(* cl.pleiad.ajlmp.testWormhole.BaseClass.*1(int)) && args(BindingTypePattern(int, 0))) && persingleton(cl.pleiad.ajlmp.testWormhole.WormholeAspect))->void cl.pleiad.ajlmp.testWormhole.WormholeAspect.ajc$before$cl_pleiad_ajlmp_testWormhole_WormholeAspect$1$9821f264(int))\" \"(before: (execution(* cl.pleiad.ajlmp.testWormhole.BaseClass.*2()) && persingleton(cl.pleiad.ajlmp.testWormhole.WormholeAspect))->void cl.pleiad.ajlmp.testWormhole.WormholeAspect.ajc$before$cl_pleiad_ajlmp_testWormhole_WormholeAspect$2$b325ee9f())\" \"int cl.pleiad.ajlmp.testWormhole.WormholeAspect.store\") (\"cl.pleiad.ajlmp.testWormhole.TSWormholeAspect\" \"(before: ((execution(* cl.pleiad.ajlmp.testWormhole.BaseClass.*1(int)) && args(BindingTypePattern(int, 0))) && percflow(cl.pleiad.ajlmp.testWormhole.TSWormholeAspect on execution(* cl.pleiad.ajlmp.testWormhole.BaseClass.run())))->void cl.pleiad.ajlmp.testWormhole.TSWormholeAspect.ajc$before$cl_pleiad_ajlmp_testWormhole_TSWormholeAspect$1$9821f264(int))\" \"(before: (execution(* cl.pleiad.ajlmp.testWormhole.BaseClass.*2()) && percflow(cl.pleiad.ajlmp.testWormhole.TSWormholeAspect on execution(* cl.pleiad.ajlmp.testWormhole.BaseClass.run())))->void cl.pleiad.ajlmp.testWormhole.TSWormholeAspect.ajc$before$cl_pleiad_ajlmp_testWormhole_TSWormholeAspect$2$b325ee9f())\" \"int cl.pleiad.ajlmp.testWormhole.TSWormholeAspect.store\")}"))
 
-;;FIX ME
-(deftest test-annotation-pointcutdefinition
-  (test/tuples-correspond
-    (damp.ekeko/ekeko [?p ?m] (world/pointcutdefinition-annotation ?p ?m))
-    "#{(\"pointcut damp.ekeko.aspectj.annotations.HelloAspect.methodCall()\" \"Anno[Ldamp/ekeko/aspectj/annotations/RequiresPrevious; rVis value=(string)onPointCutDefinition]\")}"))
-
-;;FIX ME
-(deftest test-annotation-advice
-  (test/tuples-correspond
-    (damp.ekeko/ekeko [?a ?an] (world/advice-annotation ?a ?an))
-    "#{(\"(before: (call(* *(..)) && percflow(damp.ekeko.aspectj.annotations.HelloAspect on methodCall()))->void damp.ekeko.aspectj.annotations.HelloAspect.ajc$before$damp_ekeko_aspectj_annotations_HelloAspect$1$1e623020())\" \"Anno[Ldamp/ekeko/aspectj/annotations/RequiresPrevious; rVis value=(string)onAdvice]\")}"))
-
 (deftest test-annotation-label-types
   (test/tuples-correspond
     (damp.ekeko/ekeko [?type ?ann] (annotations/type-label|annotation ?type ?ann))
@@ -216,8 +204,8 @@
   
   ;sanity check
   ;GASR is insane
-  ;(test/against-project-named "AJ-LMP-Precedence" false test-aspect)
-  
+  (test/against-project-named "AJ-LMP-Precedence" false test-aspect)
+
   ;precedence logic
   (test/against-project-named "AJ-LMP-Precedence" false test-explicit-decprec+)
   (test/against-project-named "AJ-LMP-Precedence" false test-implicit-precedence+)
@@ -256,11 +244,10 @@
   ;temporarily disabled because running soot takes too long in an integration test 
   
   ;;Annotations
-  ;(test/against-project-named "AJ-LMP-Annotations" false test-annotation-pointcutdefinition)
-  ;(test/against-project-named "AJ-LMP-Annotations" false test-annotation-advice)
+
   (test/against-project-named "AJ-LMP-Annotations" false test-annotation-label-types)
   ;implementation also returns pointcuts
-  ;(test/against-project-named "AJ-LMP-Annotations" false test-annotation-label-behavior)
+  (test/against-project-named "AJ-LMP-Annotations" false test-annotation-label-behavior)
   (test/against-project-named "AJ-LMP-Annotations" false test-annotation-label-pointcut)
   (test/against-project-named "AJ-LMP-Annotations" false test-annotation-aspect)
   (test/against-project-named "AJ-LMP-Annotations" false test-annotation-contents)
@@ -278,8 +265,8 @@
 
 ; note: uncommenting would run the tests upon loading
 
-(comment  
+;(comment  
   
 (run-tests)
   
-)
+;)

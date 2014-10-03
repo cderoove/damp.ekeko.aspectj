@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 //@Repeatable(MultiRequires.class)
 public @interface Requires {
 		
-	String aspect() default "";
-	String label() default "";
+	String[] aspect() default {};
+	String[] label() default {};
 	
 }

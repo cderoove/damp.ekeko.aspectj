@@ -29,6 +29,13 @@
   (l/all
     (type-annotation-annotation|type|name ?type ?ann "damp.ekeko.aspectj.annotations.Requires")))
 
+;;TO TEST  
+(defn
+  type-excludes|annotation
+  [?type ?ann]
+  (l/all
+    (type-annotation-annotation|type|name ?type ?ann "damp.ekeko.aspectj.annotations.Excludes")))
+
 ;;TO TEST    
 (defn
   type-oneOf|annotation
@@ -49,7 +56,8 @@
   [?meth ?annotation ?atn]
   (l/fresh [?at]
     (method-annotation ?meth ?annotation)
-    (l/fails (pointcutdefinition-annotation ?meth ?annotation))
+    ;adding this does not seem to solve the problem ?
+   ; (l/fails (pointcutdefinition-annotation ?meth ?annotation))
     (annotation-annotationtype ?annotation ?at)
     (type-name ?at ?atn)))
 
