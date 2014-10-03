@@ -6,8 +6,8 @@ import damp.ekeko.aspectj.annotations.Requires;
 /*
  * Fixture for Requires and Excludes
  */
-@Requires(aspect = {"Aspect4a","Aspect4b"}, label = "Label4a")
-@Excludes(aspect = "Aspect4c", label = "Label4b")
+@Requires(type = {"Aspect4a","Aspect4b"}, label = "Label4a")
+@Excludes(type = "Aspect4c", label = "Label4b")
 public class REFix4 {
 
 }

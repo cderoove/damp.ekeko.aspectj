@@ -7,7 +7,7 @@ import damp.ekeko.aspectj.annotations.Requires;
  * Fixture for Requires and Excludes
  */
 @Requires(label = "Label2")
-@Excludes(aspect = "Aspect2")
+@Excludes(type = "Aspect2")
 public class REFix2 {
 
 }
