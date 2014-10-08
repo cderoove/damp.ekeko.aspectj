@@ -82,3 +82,36 @@
     (pointcut-annotation-annotation|type|name ?pc ?ann "damp.ekeko.aspectj.annotations.Label")))
   
 
+;;Type pattern matching
+
+(defn- type-simple-name 
+  [?type ?sn]
+  (l/all 
+    (class ?type)
+    (equals ?sn (.getSimpleName ?type))))
+
+(defn- type-name|sub
+  [?sn ?subtype]
+  (l/fresh [?type]
+           (type-simple-name ?type ?sn)
+           (type-super+ ?subtype ?type)))
+
+(defn- type-name|sub+
+  [?sn ?subtype]
+  (l/conde
+    [(type-simple-name ?subtype ?sn)]
+    [(type-name|sub ?sn ?subtype)]))
+
+
+(defn- type-pattern|type
+  [?typePat ?match]
+  (l/fresh [?name ?nameplus]
+           (v+ ?typePat)
+           (equals ?name (clojure.string/replace ?typePat #"[+]" ""))
+           (equals ?nameplus (str ?name "+"))
+           (l/conda
+             [(l/==  ?nameplus ?typePat)
+              (type-name|sub+ ?name ?match)]
+             [(l/!= ?nameplus ?typePat)
+              (type-simple-name ?match ?typePat)])))
+    
