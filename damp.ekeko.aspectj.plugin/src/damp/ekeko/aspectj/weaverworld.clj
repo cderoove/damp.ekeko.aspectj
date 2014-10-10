@@ -2302,7 +2302,7 @@ type-intertype
 ;;pointcut type matching
 
 (defn 
-  match-type|pattern
+  type-type|pattern
   "non relational match to a type given a type pattern"
   [?type ?pat]
   (fresh
@@ -2311,7 +2311,7 @@ type-intertype
     (type ?type)
     (weaverworld ?w)
     (equals ?pattern (.parseTypePattern (new PatternParser ?pat)))
-    (equals (lvar) (.resolve ?pattern ?w)) ;;Witness the horror (How do you invoke void methods?)
+    (perform (.resolve ?pattern ?w)) 
     (equals true (.matchesStatically ?pattern ?type))))
 
     
