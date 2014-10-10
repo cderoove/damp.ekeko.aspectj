@@ -12,12 +12,13 @@ damp.ekeko.aspectj.weaverworld
   (:import 
     [org.eclipse.ajdt.core.model AJProjectModelFacade AJRelationshipType AJRelationshipManager]
     [org.aspectj.weaver.model AsmRelationshipProvider]
-    [org.aspectj.weaver.patterns Pointcut AndPointcut Declare DeclarePrecedence DeclareAnnotation DeclareErrorOrWarning DeclareParents DeclarePrecedence DeclareSoft DeclareTypeErrorOrWarning]
+    [org.aspectj.weaver.patterns Pointcut AndPointcut Declare DeclarePrecedence DeclareAnnotation DeclareErrorOrWarning DeclareParents DeclarePrecedence DeclareSoft DeclareTypeErrorOrWarning PatternParser]
     [damp.ekeko EkekoModel]
     [damp.ekeko.aspectj AspectJProjectModel]
     [org.aspectj.weaver AnnotationAJ Advice AdviceKind World ResolvedTypeMunger ConcreteTypeMunger ReferenceType UnresolvedType ResolvedType  Member ResolvedMemberImpl]
     [org.aspectj.asm AsmManager IProgramElement IProgramElement$Kind IHierarchy ]
     [org.aspectj.weaver.bcel BcelTypeMunger]
+    [org.aspectj.weaver.tools StandardPointcutParser TypePatternMatcher]
     [org.aspectj.apache.bcel.classfile.annotation ElementValue AnnotationElementValue ArrayElementValue ClassElementValue EnumElementValue SimpleElementValue]
     ))
 
@@ -2298,4 +2299,20 @@ type-intertype
     (method ?method)
     (equals ?name (.getName ?method))))
 
+;;pointcut type matching
 
+(defn 
+  match-type|pattern
+  "non relational match to a type given a type pattern"
+  [?type ?pat]
+  (fresh
+    [?pattern ?parsedPat ?w]
+    (v+ ?pat)
+    (type ?type)
+    (weaverworld ?w)
+    (equals ?pattern (.parseTypePattern (new PatternParser ?pat)))
+    (equals (lvar) (.resolve ?pattern ?w)) ;;Witness the horror (How do you invoke void methods?)
+    (equals true (.matchesStatically ?pattern ?type))))
+
+    
+    
