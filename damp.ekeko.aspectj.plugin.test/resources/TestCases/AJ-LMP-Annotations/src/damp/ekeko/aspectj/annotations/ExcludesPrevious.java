@@ -6,5 +6,6 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD,ElementType.CONSTRUCTOR})
 public @interface ExcludesPrevious {
 		
-	String[] label();
+	String[] label() default "";
+	String[] signature() default "";
 }
