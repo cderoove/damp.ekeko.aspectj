@@ -16,50 +16,62 @@
 
 (defn
   type-annotation-annotation|type|name
-  [?type ?annotation ?atn]
+  [?type ?ann ?atn]
   (l/fresh [?at]
-    (type-annotation ?type ?annotation)
-    (annotation-annotationtype ?annotation ?at)
+    (type-annotation ?type ?ann)
+    (annotation-annotationtype ?ann ?at)
     (type-name ?at ?atn)))
 
-;;TO TEST    
 (defn
-  type-requires|annotation
-  [?type ?ann]
+  type-annotation|key-annotation|value-annotation|type|name
+  [?type ?key ?value ?atn]
+  (l/fresh [?ann]
+    (type-annotation-annotation|type|name ?type ?ann ?atn)
+    (annotation-key-value ?ann ?key ?value)))
+
+(defn
+  requiring|type-key-val
+  [?type ?key ?val]
   (l/all
-    (type-annotation-annotation|type|name ?type ?ann "damp.ekeko.aspectj.annotations.Requires")))
+    (type-annotation|key-annotation|value-annotation|type|name ?type ?key ?val "damp.ekeko.aspectj.annotations.Requires")))
 
 ;;TO TEST  
 (defn
-  type-excludes|annotation
-  [?type ?ann]
+  excluding|type-key-val
+  [?type ?key ?val]
   (l/all
-    (type-annotation-annotation|type|name ?type ?ann "damp.ekeko.aspectj.annotations.Excludes")))
+    (type-annotation|key-annotation|value-annotation|type|name ?type ?key ?val "damp.ekeko.aspectj.annotations.Excludes")))
 
 ;;TO TEST    
 (defn
-  type-oneOf|annotation
-  [?type ?ann]
-  (l/all 
-    (type-annotation-annotation|type|name ?type ?ann "damp.ekeko.aspectj.annotations.OneOf")))
+  oneOfing|type-key-val
+  [?type ?key ?val]
+  (l/all
+    (type-annotation|key-annotation|value-annotation|type|name ?type ?key ?val  "damp.ekeko.aspectj.annotations.OneOf")))
 
 (defn
-  type-label|annotation
-  [?type ?ann]
-  (l/all
-    (type-annotation-annotation|type|name ?type ?ann "damp.ekeko.aspectj.annotations.Label")))
+  labeled|type-label|val
+  [?type ?val]
+  (l/fresh [?key]
+    (type-annotation|key-annotation|value-annotation|type|name ?type ?key ?val "damp.ekeko.aspectj.annotations.Label")))
 
 ;This is for methods, advice, constructors 
-;; FIX ME: method-annotation also returns annotations for pointcuts
 (defn
   behavior-annotation-annotation|type|name
   [?meth ?annotation ?atn]
   (l/fresh [?at]
     (method-annotation ?meth ?annotation)
-    ;adding this does not seem to solve the problem ?
-   ; (l/fails (pointcutdefinition-annotation ?meth ?annotation))
+    (fails (l/fresh [?pc] (pointcutdefinition-method|ajsynthetic ?pc ?meth)))
     (annotation-annotationtype ?annotation ?at)
     (type-name ?at ?atn)))
+
+(defn
+  behavior-annotation|key-annotation|value-annotation|type|name
+  [?meth ?key ?value ?atn]
+  (l/fresh [?ann]
+    (behavior-annotation-annotation|type|name ?meth ?ann ?atn)
+    (annotation-key-value ?ann ?key ?value)))
+
 
 (defn pointcut-annotation-annotation|type|name
   [?pc ?annotation ?atn]
@@ -68,18 +80,24 @@
     (annotation-annotationtype ?annotation ?at)
     (type-name ?at ?atn)))   
 
-;;pointcuts present
-(defn 
-  behavior-label|annotation
-  [?behavior ?ann]
-  (l/all
-    (behavior-annotation-annotation|type|name ?behavior ?ann "damp.ekeko.aspectj.annotations.Label")))
+(defn
+  pointcut-annotation|key-annotation|value-annotation|type|name
+  [?pc ?key ?value ?atn]
+  (l/fresh [?ann]
+    (pointcut-annotation-annotation|type|name ?pc ?ann ?atn)
+    (annotation-key-value ?ann ?key ?value)))
 
 (defn
-  pointcut-label|annotation
-  [?pc ?ann]
-  (l/all
-    (pointcut-annotation-annotation|type|name ?pc ?ann "damp.ekeko.aspectj.annotations.Label")))
+  labeled|behavior-label|val
+  [?behavior ?val]
+  (l/fresh [?key]
+    (behavior-annotation|key-annotation|value-annotation|type|name ?behavior ?key ?val "damp.ekeko.aspectj.annotations.Label")))
+
+(defn
+  labeled|pointcut-label|val
+  [?pc ?val]
+  (l/fresh [?key]
+    (pointcut-annotation|key-annotation|value-annotation|type|name ?pc ?key ?val "damp.ekeko.aspectj.annotations.Label")))
   
 
 ;;Type pattern matching
