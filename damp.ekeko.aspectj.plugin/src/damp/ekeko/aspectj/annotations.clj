@@ -35,14 +35,12 @@
   (l/all
     (type-annotation|key-annotation|value-annotation|type|name ?type ?key ?val "damp.ekeko.aspectj.annotations.Requires")))
 
-;;TO TEST  
 (defn
   excluding|type-key-val
   [?type ?key ?val]
   (l/all
     (type-annotation|key-annotation|value-annotation|type|name ?type ?key ?val "damp.ekeko.aspectj.annotations.Excludes")))
 
-;;TO TEST    
 (defn
   oneOfing|type-key-val
   [?type ?key ?val]
@@ -98,7 +96,12 @@
   [?pc ?val]
   (l/fresh [?key]
     (pointcut-annotation|key-annotation|value-annotation|type|name ?pc ?key ?val "damp.ekeko.aspectj.annotations.Label")))
-  
+ 
+(defn 
+  reqPrev|behavior-key-val
+  [?behavior ?key ?val]
+  (l/all
+    (behavior-annotation|key-annotation|value-annotation|type|name ?behavior ?key ?val "damp.ekeko.aspectj.annotations.RequiresPrevious")))
 
 ;;Type pattern matching
 
