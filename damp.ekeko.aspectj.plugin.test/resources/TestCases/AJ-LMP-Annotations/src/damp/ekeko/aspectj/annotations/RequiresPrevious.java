@@ -5,7 +5,5 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.METHOD,ElementType.CONSTRUCTOR})
 public @interface RequiresPrevious {
-		
-	String[] label() default "";
-	String[] signature() default "";
+	String[] value();
 }

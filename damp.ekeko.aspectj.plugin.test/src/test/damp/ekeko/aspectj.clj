@@ -178,6 +178,17 @@
     (damp.ekeko/ekeko [?type ?key ?val] (annotations/oneOfing|type-key-val ?type ?key ?val))
     "#{(\"damp.ekeko.aspectj.annotationtests.OOFix3\" \"label\" \"[Label3a Label3b]\") (\"damp.ekeko.aspectj.annotationtests.OOFix1\" \"type\" \"[Aspect1a Aspect1b]\") (\"damp.ekeko.aspectj.annotationtests.OOFix2\" \"label\" \"[Label2a Label2b]\") (\"damp.ekeko.aspectj.annotationtests.OOFix3\" \"type\" \"[Aspect3a Aspect3b]\")}"))
 
+(deftest test-annotation-requiresPrevious
+  (test/tuples-correspond
+    (damp.ekeko/ekeko [?beh ?val] (annotations/reqPrev|behavior-val ?beh ?val))
+    "#{(\"void damp.ekeko.aspectj.annotationtests.REPFix2.methoda()\" \"[Label2Rc Label2Rd]\") (\"void damp.ekeko.aspectj.annotationtests.REPFix1.<init>()\" \"[Label1Ra]\") (\"void damp.ekeko.aspectj.annotationtests.REPFix2.ajc$before$damp_ekeko_aspectj_annotationtests_REPFix2$1$8598ac45()\" \"[Label2Re]\") (\"void damp.ekeko.aspectj.annotationtests.REPFix2.<init>()\" \"[Label2Ra Label2Rb]\") (\"void damp.ekeko.aspectj.annotationtests.REPFix1.methoda()\" \"[Label1Rb]\") (\"void damp.ekeko.aspectj.annotationtests.REPFix2.ajc$around$damp_ekeko_aspectj_annotationtests_REPFix2$3$8598ac45(org.aspectj.runtime.internal.AroundClosure)\" \"[Label2Rf Label2Rg]\")}"))
+
+(deftest test-annotation-excludesPrevious
+  (test/tuples-correspond
+    (damp.ekeko/ekeko [?beh ?val] (annotations/exclPrev|behavior-val ?beh ?val))
+    "#{(\"void damp.ekeko.aspectj.annotationtests.REPFix2.ajc$after$damp_ekeko_aspectj_annotationtests_REPFix2$2$8598ac45()\" \"[Label2Ee]\") (\"void damp.ekeko.aspectj.annotationtests.REPFix2.ajc$around$damp_ekeko_aspectj_annotationtests_REPFix2$3$8598ac45(org.aspectj.runtime.internal.AroundClosure)\" \"[Label2Ef Label2Eg]\") (\"void damp.ekeko.aspectj.annotationtests.REPFix2.<init>()\" \"[Label2Ea Label2Eb]\") (\"void damp.ekeko.aspectj.annotationtests.REPFix2.methodb()\" \"[Label2Ec Label2Ed]\") (\"void damp.ekeko.aspectj.annotationtests.REPFix1.methodb()\" \"[Label1Eb]\") (\"void damp.ekeko.aspectj.annotationtests.REPFix1.<init>(int)\" \"[Label1Ea]\")}"))
+
+
 ;(deftest test-annotation-aspect
 ;  (test/tuples-correspond
 ;    (damp.ekeko/ekeko [?t]
@@ -264,11 +275,8 @@
   (test/against-project-named "AJ-LMP-Annotations" false test-annotation-requires)
   (test/against-project-named "AJ-LMP-Annotations" false test-annotation-excludes)
   (test/against-project-named "AJ-LMP-Annotations" false test-annotation-oneOf)
-  
-  
-;  (test/against-project-named "AJ-LMP-Annotations" false test-annotation-aspect)
-;  (test/against-project-named "AJ-LMP-Annotations" false test-annotation-contents)
-
+  (test/against-project-named "AJ-LMP-Annotations" false test-annotation-requiresPrevious)
+  (test/against-project-named "AJ-LMP-Annotations" false test-annotation-excludesPrevious)
   
     )
 

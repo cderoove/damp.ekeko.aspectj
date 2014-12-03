@@ -10,18 +10,18 @@ import damp.ekeko.aspectj.annotations.RequiresPrevious;
 
 public class REPFix1 {
 
-	@RequiresPrevious(label = "Label1Ra")
+	@RequiresPrevious("Label1Ra")
 	public REPFix1(){}
 	
-	@ExcludesPrevious(label = "Label1Ea")
+	@ExcludesPrevious("Label1Ea")
 	public REPFix1(int second){}
 	
 	public REPFix1(float third){}
 	
-	@RequiresPrevious(label = "Label1Rb")
+	@RequiresPrevious("Label1Rb")
 	public void methoda(){}
 	
-	@ExcludesPrevious(label = "Label1Eb")
+	@ExcludesPrevious("Label1Eb")
 	public void methodb(){}
 	
 	public void methodc(){}

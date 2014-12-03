@@ -98,10 +98,16 @@
     (pointcut-annotation|key-annotation|value-annotation|type|name ?pc ?key ?val "damp.ekeko.aspectj.annotations.Label")))
  
 (defn 
-  reqPrev|behavior-key-val
-  [?behavior ?key ?val]
-  (l/all
+  reqPrev|behavior-val
+  [?behavior ?val]
+  (l/fresh [?key]
     (behavior-annotation|key-annotation|value-annotation|type|name ?behavior ?key ?val "damp.ekeko.aspectj.annotations.RequiresPrevious")))
+
+(defn 
+  exclPrev|behavior-val
+  [?behavior ?val]
+  (l/fresh [?key]
+    (behavior-annotation|key-annotation|value-annotation|type|name ?behavior ?key ?val "damp.ekeko.aspectj.annotations.ExcludesPrevious")))
 
 ;;Type pattern matching
 
