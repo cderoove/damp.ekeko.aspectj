@@ -7,6 +7,7 @@
   (:use [damp.ekeko logic])
   (:use [damp.ekeko])
   (:use [damp.ekeko.aspectj weaverworld])
+  (:use [damp.ekeko.aspectj.annotations])
   (:require [damp.ekeko.aspectj
              [soot :as ajsoot]
              ;only use these when absolutely necessary, not as developed as relations from weaverworld
@@ -300,3 +301,11 @@
 ;;===========================================================================================
 
 ; Annotations
+
+(defn missing|required-requires
+  [?required ?requires]
+  (l/fresh [?reqds ?pat]
+           (requiring|type-key-val ?requires "type" ?reqds)
+           (contains ?reqds ?pat)
+           (l/fail (type-pattern|type ?pat ?required))
+           ))

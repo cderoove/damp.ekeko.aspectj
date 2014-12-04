@@ -130,7 +130,7 @@
     [(type-name|sub ?sn ?subtype)]))
 
 
-(defn- type-pattern|type
+(defn type-pattern|type
   [?typePat ?match]
   (l/fresh [?name ?nameplus]
            (v+ ?typePat)
