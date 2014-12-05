@@ -302,10 +302,58 @@
 
 ; Annotations
 
+(defn type-nameOrPattern 
+  [?type ?name]
+   (l/conde
+     [(type-name ?type ?name)]
+     [(type-pattern|type ?type ?name)]))
+
+;broken because of the strings issue
 (defn missing|required-requires
-  [?required ?requires]
-  (l/fresh [?reqds ?pat]
+  [?name ?requires]
+  (l/fresh [?reqds ?required]
            (requiring|type-key-val ?requires "type" ?reqds)
-           (contains ?reqds ?pat)
-           (l/fail (type-pattern|type ?pat ?required))
+           (contains ?reqds ?name)
+           (fails (type-nameOrPattern ?required ?name))
            ))
+
+;broken because of the strings issue
+(defn present|excluded-excluder
+  [?exd ?excluder]
+  (l/fresh [?exds ?excluded]
+           (excluding|type-key-val ?excluder "type" ?exds)
+           (contains ?exds ?exd)
+           (type-nameOrPattern ?excluded ?exd )
+           ))
+
+(comment
+ ; these are for labels, the ones of types should be renamed with |type
+ ; and then the *real* one does a conde on |label and |type
+(defn missing|required-requires|label
+ [?required ?requires]
+ (l/fresh [?reqds ?type]
+         (requiring|type-key-val ?requires "label" ?reqds)
+         (contains ?reqds ?required)
+         (fails (labeled|type-label|val ?type ?required))
+         ))
+
+(defn present|excluded-excluder|label
+  [?excluded ?excluder]
+  (l/fresh [?exds ?exd]
+           (excluding|type-key-val ?excluder "label" ?exds)
+           (contains ?exds ?exd)
+           (labeled|type-label|val ?excluded ?exd)
+           ))
+
+;; OneOf pseudocode to the extreme
+(defn oneOfViolation
+  [?type]
+  (l/fresh [?types ?successes]
+           (oneOfing|type-key-val ?type "type" ?types)
+           (givemethenumberofsuccessesofthisall            
+                    ((contains ?types ?pat)
+                      (type-pattern|type ?pat ?type))
+                    ?successes)
+           (=! ?successes 1)))
+
+) ; end comment
