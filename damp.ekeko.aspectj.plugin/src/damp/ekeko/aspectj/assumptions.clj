@@ -324,6 +324,37 @@
            (type-type|pattern ?excluded ?exd )
            ))
 
+
+;this might be slow for many typepatterns as the JVM does not support tail call optimiziation and we cannot use Clojure's recur keyword
+;warning: non-relational, excpects ?typepatterns to be bound to a collection of typepatterns
+(defn
+  typepatterns-typepatterns|matched
+  ([?typepatterns ?matched] 
+    (l/all
+      (v+ ?typepatterns)
+      (typepatterns-typepatterns|matched ?typepatterns [] ?matched)))
+  ([?typepatterns ?sofar ?matched]
+    (l/conda [(succeeds (empty? ?typepatterns)) ;conda (soft cut) will not consider the other clause if it has succeeded
+              (l/== ?sofar ?matched)]
+             [(l/fresh [?head ?tail ?match ?newsofar]
+                       (equals ?head (first ?typepatterns))
+                       (equals ?tail (rest ?typepatterns))
+                       (l/condu [(type-type|pattern ?match ?head) ;condu will not backtrack over the conditions in this clause once the first has succeeded 
+                                 (equals ?newsofar (conj ?sofar ?head))	
+                                 (typepatterns-typepatterns|matched ?tail ?newsofar ?matched)]
+                                [(typepatterns-typepatterns|matched ?tail ?sofar ?matched)]))])))
+
+;;Johan, I think this is what you were looking for, but I don't have the AJ code to test 
+(defn 
+  oneOfViolation
+  [?targettype]
+  (l/fresh [?patterns ?matchingpatterns ?count]
+           (oneOfing|type-key-val ?targettype "type" ?patterns)
+           (typepatterns-typepatterns|matched ?patterns ?matchingpatterns)
+           (l/!= ?count 1)
+           (equals ?count (count ?matchingpatterns))))
+
+
 (comment
  ; these are for labels, the ones of types should be renamed with |type
  ; and then the *real* one does a conde on |label and |type
@@ -343,15 +374,8 @@
            (labeled|type-label|val ?excluded ?exd)
            ))
 
-;; OneOf pseudocode to the extreme
-(defn oneOfViolation
-  [?type]
-  (l/fresh [?types ?successes]
-           (oneOfing|type-key-val ?type "type" ?types)
-           (givemethenumberofsuccessesofthisall            
-                    ((contains ?types ?pat)
-                      (type-pattern|type ?pat ?type))
-                    ?successes)
-           (=! ?successes 1)))
+  
+  
+
 
 ) ; end comment

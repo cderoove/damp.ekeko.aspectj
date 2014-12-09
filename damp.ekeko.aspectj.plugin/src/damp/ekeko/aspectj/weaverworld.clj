@@ -2310,7 +2310,7 @@ type-intertype
     (v+ ?pat)
     (type ?type)
     (weaverworld ?w)
-    (equals ?pattern (.parseTypePattern (new PatternParser ?pat)))
+    (equals ?pattern (.parseTypePattern (PatternParser. ?pat)))
     (perform (.resolve ?pattern ?w)) 
     (equals true (.matchesStatically ?pattern ?type))))
 
