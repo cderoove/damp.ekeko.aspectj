@@ -302,28 +302,26 @@
 
 ; Annotations
 
-(defn type-nameOrPattern 
-  [?type ?name]
-   (l/conde
-     [(type-name ?type ?name)]
-     [(type-pattern|type ?type ?name)]))
+;(defn type-nameOrPattern 
+;  [?type ?name]
+;   (l/conde
+;     [(type-name ?type ?name)]
+;     [(type-type|pattern ?type ?name)]))
 
-;broken because of the strings issue
 (defn missing|required-requires
   [?name ?requires]
   (l/fresh [?reqds ?required]
            (requiring|type-key-val ?requires "type" ?reqds)
            (contains ?reqds ?name)
-           (fails (type-nameOrPattern ?required ?name))
+           (fails (type-type|pattern ?required ?name))
            ))
 
-;broken because of the strings issue
 (defn present|excluded-excluder
   [?exd ?excluder]
   (l/fresh [?exds ?excluded]
            (excluding|type-key-val ?excluder "type" ?exds)
            (contains ?exds ?exd)
-           (type-nameOrPattern ?excluded ?exd )
+           (type-type|pattern ?excluded ?exd )
            ))
 
 (comment
