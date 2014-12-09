@@ -731,7 +731,11 @@ damp.ekeko.aspectj.weaverworld
 
 (extend-type SimpleElementValue IBCelToWeaver
   (toweavervalue [bcel world]
-    (read-string (.stringifyValue bcel))))
+    (let [t (.getElementValueType bcel)]
+      (if 
+        (= t ElementValue/STRING)
+        (.getValueString bcel)
+        (read-string (.stringifyValue bcel))))))
 
 (extend-type ArrayElementValue IBCelToWeaver
   (toweavervalue [bcel world]
