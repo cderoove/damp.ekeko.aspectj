@@ -471,6 +471,15 @@ damp.ekeko.aspectj.weaverworld
 
 
 (defn
+  type-packageName
+  "Relation between a type and its declared package name."
+  [?resolvedtype ?name]
+  (all
+    (type ?resolvedtype)
+    (equals ?name (.getPackageName ?resolvedtype)))) 
+
+
+(defn
   type-fields
   "Relation between a type and its declared fields as known to the weaver.
    For fields that do not declare a field, ?fields==[]."
