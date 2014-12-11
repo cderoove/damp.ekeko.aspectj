@@ -344,6 +344,25 @@
                                  (typepatterns-typepatterns|matched ?tail ?newsofar ?matched)]
                                 [(typepatterns-typepatterns|matched ?tail ?sofar ?matched)]))])))
 
+(defn
+  typepatterns-matches
+  ([?typepatterns ?matches] 
+    (l/all
+      (v+ ?typepatterns)
+      (typepatterns-matches ?typepatterns [] ?matches)))
+  ([?typepatterns ?sofar ?matches]
+    (l/conda [(succeeds (empty? ?typepatterns)) 
+              (equals ?sofar (into [] (into #{} ?matches)))]
+             [(l/fresh [?head ?tail ?match ?newsofar ?additional]
+                       (equals ?head (first ?typepatterns))
+                       (equals ?tail (rest ?typepatterns))
+                       (findall ?match (type-type|pattern ?match ?head) ?additional)
+                       (equals ?newsofar (concat ?sofar ?additional))	
+                       (typepatterns-typepatterns|matched ?tail ?newsofar ?matches))])))
+                   
+  
+  
+
 ;;Johan, I think this is what you were looking for, but I don't have the AJ code to test 
 (defn 
   oneOfViolation
