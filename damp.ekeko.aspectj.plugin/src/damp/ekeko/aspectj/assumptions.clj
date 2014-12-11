@@ -359,17 +359,13 @@
                        (findall ?match (type-type|pattern ?match ?head) ?additional)
                        (equals ?newsofar (concat ?sofar ?additional))	
                        (typepatterns-typepatterns|matched ?tail ?newsofar ?matches))])))
-                   
-  
-  
 
-;;Johan, I think this is what you were looking for, but I don't have the AJ code to test 
 (defn 
   oneOfViolation
   [?targettype]
   (l/fresh [?patterns ?matchingpatterns ?count]
            (oneOfing|type-key-val ?targettype "type" ?patterns)
-           (typepatterns-typepatterns|matched ?patterns ?matchingpatterns)
+           (typepatterns-matches ?patterns ?matchingpatterns)
            (l/!= ?count 1)
            (equals ?count (count ?matchingpatterns))))
 

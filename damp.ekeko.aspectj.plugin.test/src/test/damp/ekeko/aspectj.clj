@@ -4,6 +4,7 @@
   (:use [damp.ekeko logic])
   (:use [damp.ekeko])
   (:require
+    [clojure.core.logic :as l] 
     [test.damp [ekeko :as test]]
     [damp.ekeko.workspace
      [workspace :as ws]]
@@ -188,6 +189,29 @@
     (damp.ekeko/ekeko [?beh ?val] (annotations/exclPrev|behavior-val ?beh ?val))
     "#{(\"void damp.ekeko.aspectj.annotationtests.REPFix2.ajc$after$damp_ekeko_aspectj_annotationtests_REPFix2$2$8598ac45()\" \"[Label2Ee]\") (\"void damp.ekeko.aspectj.annotationtests.REPFix2.ajc$around$damp_ekeko_aspectj_annotationtests_REPFix2$3$8598ac45(org.aspectj.runtime.internal.AroundClosure)\" \"[Label2Ef Label2Eg]\") (\"void damp.ekeko.aspectj.annotationtests.REPFix2.<init>()\" \"[Label2Ea Label2Eb]\") (\"void damp.ekeko.aspectj.annotationtests.REPFix2.methodb()\" \"[Label2Ec Label2Ed]\") (\"void damp.ekeko.aspectj.annotationtests.REPFix1.methodb()\" \"[Label1Eb]\") (\"void damp.ekeko.aspectj.annotationtests.REPFix1.<init>(int)\" \"[Label1Ea]\")}"))
 
+(deftest test-logic-requires
+  (test/tuples-correspond
+    (damp.ekeko/ekeko [?rqd ?rqs]
+        (l/all
+            (world/type-packageName ?rqs "damp.ekeko.aspectj.annasstests")
+            (assumptions/missing|required-requires ?rqd ?rqs)))
+    "#{(\"damp.ekeko.aspectj.annasstests.AbsentReqSat\" \"damp.ekeko.aspectj.annasstests.ReqFix\")}"))
+
+(deftest test-logic-excludes
+  (test/tuples-correspond
+    (damp.ekeko/ekeko [?exd ?exr]
+        (l/all
+            (world/type-packageName ?exr "damp.ekeko.aspectj.annasstests")
+            (assumptions/present|excluded-excluder ?exd ?exr)))
+    "#{(\"damp.ekeko.aspectj.annasstests.ReqFix\" \"damp.ekeko.aspectj.annasstests.ExcFix\")}"))
+
+(deftest test-logic-oneOf
+  (test/tuples-correspond
+   (damp.ekeko/ekeko [?target]
+        (l/all
+            (world/type-packageName ?target "damp.ekeko.aspectj.annasstests")
+            (assumptions/oneOfViolation ?target)))
+   "#{(\"damp.ekeko.aspectj.annasstests.OneOfFix\") (\"damp.ekeko.aspectj.annasstests.OneOfFix2\") (\"damp.ekeko.aspectj.annasstests.OneOfFix3\")}"))
 
 ;(deftest test-annotation-aspect
 ;  (test/tuples-correspond
@@ -266,9 +290,8 @@
   ;(test/against-project-named "AJ-LMP-Wormhole" true test-naive-wormhole)
   ;temporarily disabled because running soot takes too long in an integration test 
 
-)
   
-  ;;Annotations
+  ;;Annotations 
   (test/against-project-named "AJ-LMP-Annotations" false test-annotation-label-types)
   (test/against-project-named "AJ-LMP-Annotations" false test-annotation-label-behavior)
   (test/against-project-named "AJ-LMP-Annotations" false test-annotation-label-pointcut)
@@ -277,6 +300,15 @@
   (test/against-project-named "AJ-LMP-Annotations" false test-annotation-oneOf)
   (test/against-project-named "AJ-LMP-Annotations" false test-annotation-requiresPrevious)
   (test/against-project-named "AJ-LMP-Annotations" false test-annotation-excludesPrevious)
+
+;;end commented out part
+)
+  
+  ;;Annotation assumptions
+  (test/against-project-named "AJ-LMP-Annotations" false test-logic-requires)
+  (test/against-project-named "AJ-LMP-Annotations" false test-logic-excludes)
+  ;(test/against-project-named "AJ-LMP-Annotations" false test-logic-oneOf)
+  
   
     )
 
