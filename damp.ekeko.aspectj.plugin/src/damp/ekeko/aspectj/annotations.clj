@@ -110,7 +110,8 @@
     (behavior-annotation|key-annotation|value-annotation|type|name ?behavior ?key ?val "damp.ekeko.aspectj.annotations.ExcludesPrevious")))
 
 ;;Type pattern matching
-
+(comment 
+  ;;homebrew version. AspectJ pattern matcher is type-type|pattern in weaverworld
 (defn- type-simple-name 
   [?type ?sn]
   (l/all 
@@ -141,4 +142,14 @@
               (type-name|sub+ ?name ?match)]
              [(l/!= ?nameplus ?typePat)
               (type-simple-name ?match ?typePat)])))
-    
+ )
+
+(defn type-type|pattern2
+ "Uses AJ pattern matcher BUT removes 'root' types when using the + operator e.g., XXX+ will NOT match XXX.
+For normal AJ type-pattern matching semantics use d.e.a.weaverworld/type-type|pattern"
+ [?type ?pattern]
+ (v+ ?pattern)
+ (type-type|pattern ?type ?pattern)
+ (fails
+   (type-type|pattern ?type (clojure.string/replace ?pattern #"\+" ""))))
+
