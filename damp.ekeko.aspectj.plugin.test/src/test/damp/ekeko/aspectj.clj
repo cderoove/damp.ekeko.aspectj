@@ -308,7 +308,7 @@
   ;;Annotation assumptions
   (test/against-project-named "AJ-LMP-Annotations" false test-logic-requires)
   (test/against-project-named "AJ-LMP-Annotations" false test-logic-excludes)
-  ;(test/against-project-named "AJ-LMP-Annotations" false test-logic-oneOf)
+  (test/against-project-named "AJ-LMP-Annotations" false test-logic-oneOf)
   
   
     )
