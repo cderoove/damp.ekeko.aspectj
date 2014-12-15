@@ -363,11 +363,11 @@
 (defn 
   oneOfViolation
   [?targettype]
-  (l/fresh [?patterns ?matchingpatterns ?count]
+  (l/fresh [?patterns ?matches ?count]
            (oneOfing|type-key-val ?targettype "type" ?patterns)
-           (typepatterns-matches ?patterns ?matchingpatterns)
+           (typepatterns-matches ?patterns ?matches)
            (l/!= ?count 1)
-           (equals ?count (count ?matchingpatterns))))
+           (equals ?count (count ?matches))))
 
 
 (comment

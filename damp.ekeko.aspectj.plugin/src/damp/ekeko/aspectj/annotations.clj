@@ -148,8 +148,9 @@
  "Uses AJ pattern matcher BUT removes 'root' types when using the + operator e.g., XXX+ will NOT match XXX.
 For normal AJ type-pattern matching semantics use d.e.a.weaverworld/type-type|pattern"
  [?type ?pattern]
- (v+ ?pattern)
- (type-type|pattern ?type ?pattern)
- (fails
-   (type-type|pattern ?type (clojure.string/replace ?pattern #"\+" ""))))
-
+ (l/all (v+ ?pattern)
+        (type-type|pattern ?type ?pattern)
+        (fails
+          (l/all
+            (l/!= ?pattern (clojure.string/replace ?pattern #"\+" ""))
+            (type-type|pattern ?type (clojure.string/replace ?pattern #"\+" ""))))))
