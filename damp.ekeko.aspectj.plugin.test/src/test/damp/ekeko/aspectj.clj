@@ -290,7 +290,10 @@
   ;(test/against-project-named "AJ-LMP-Wormhole" true test-naive-wormhole)
   ;temporarily disabled because running soot takes too long in an integration test 
 
+;;end commented out part
+)
   
+
   ;;Annotations 
   (test/against-project-named "AJ-LMP-Annotations" false test-annotation-label-types)
   (test/against-project-named "AJ-LMP-Annotations" false test-annotation-label-behavior)
@@ -301,8 +304,6 @@
   (test/against-project-named "AJ-LMP-Annotations" false test-annotation-requiresPrevious)
   (test/against-project-named "AJ-LMP-Annotations" false test-annotation-excludesPrevious)
 
-;;end commented out part
-)
   
   ;;Annotation assumptions
   (test/against-project-named "AJ-LMP-Annotations" false test-logic-requires)
