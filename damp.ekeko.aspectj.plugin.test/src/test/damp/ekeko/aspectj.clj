@@ -151,32 +151,50 @@
 
 (deftest test-annotation-label-types
   (test/tuples-correspond
-    (damp.ekeko/ekeko [?type ?val] (annotations/labeled|type-label|val ?type ?val))
+    (damp.ekeko/ekeko [?type ?val]
+      (l/all
+        (world/type-packageName ?type "damp.ekeko.aspectj.annotationtests")
+        (annotations/labeled|type-label|val ?type ?val)))
     "#{(\"damp.ekeko.aspectj.annotationtests.LaFix1\" \"[Label1]\") (\"damp.ekeko.aspectj.annotationtests.LaFix2\" \"[Label2a Label2b]\")}"))
 
 (deftest test-annotation-label-behavior
   (test/tuples-correspond
-    (damp.ekeko/ekeko [?type ?val] (annotations/labeled|behavior-label|val ?type ?val))
+    (damp.ekeko/ekeko [?type ?val]
+      (l/all
+        (world/type-packageName ?type "damp.ekeko.aspectj.annotationtests")
+        (annotations/labeled|behavior-label|val ?type ?val)))
    "#{(\"void damp.ekeko.aspectj.annotationtests.LaFix2.labeledMethod()\" \"[MethLabel2]\") (\"void damp.ekeko.aspectj.annotationtests.LaFix2.ajc$before$damp_ekeko_aspectj_annotationtests_LaFix2$1$8598ac45()\" \"[AdvLabel2]\") (\"void damp.ekeko.aspectj.annotationtests.LaFix2.<init>()\" \"[ConsLabel2]\") (\"void damp.ekeko.aspectj.annotationtests.LaFix1.<init>()\" \"[ConsLabel]\") (\"void damp.ekeko.aspectj.annotationtests.LaFix2.multiLabeledMethod()\" \"[MethLabel2a MethLabel2b]\") (\"void damp.ekeko.aspectj.annotationtests.LaFix1.<init>(java.lang.String)\" \"[ConsLabel1a ConsLabel1b]\") (\"void damp.ekeko.aspectj.annotationtests.LaFix1.labeledMethod()\" \"[MethLabel]\") (\"void damp.ekeko.aspectj.annotationtests.LaFix2.ajc$before$damp_ekeko_aspectj_annotationtests_LaFix2$3$716cfb74()\" \"[AdvLabel2a AdvLabel2b]\")}"))
 
 (deftest test-annotation-label-pointcut
   (test/tuples-correspond
-    (damp.ekeko/ekeko [?type ?ann] (annotations/labeled|pointcut-label|val ?type ?ann))
+    (damp.ekeko/ekeko [?type ?ann]
+      (l/all
+        (world/type-packageName ?type "damp.ekeko.aspectj.annotationtests")
+        (annotations/labeled|pointcut-label|val ?type ?ann)))
     "#{(\"pointcut damp.ekeko.aspectj.annotationtests.LaFix2.barCall()\" \"[PCLabel2]\")}"))
 
 (deftest test-annotation-requires
   (test/tuples-correspond
-    (damp.ekeko/ekeko [?type ?key ?val] (annotations/requiring|type-key-val ?type ?key ?val))
+    (damp.ekeko/ekeko [?type ?key ?val]
+      (l/all
+        (world/type-packageName ?type "damp.ekeko.aspectj.annotationtests")
+        (annotations/requiring|type-key-val ?type ?key ?val)))
     "#{(\"damp.ekeko.aspectj.annotationtests.REFix3\" \"type\" \"[Aspect3a Aspect3b]\") (\"damp.ekeko.aspectj.annotationtests.REFix3\" \"label\" \"[Label3a]\") (\"damp.ekeko.aspectj.annotationtests.REFix1\" \"type\" \"[Aspect1]\") (\"damp.ekeko.aspectj.annotationtests.REFix4\" \"label\" \"[Label4a]\") (\"damp.ekeko.aspectj.annotationtests.REFix4\" \"type\" \"[Aspect4a Aspect4b]\") (\"damp.ekeko.aspectj.annotationtests.REFix2\" \"label\" \"[Label2]\")}"))
 
 (deftest test-annotation-excludes
   (test/tuples-correspond
-    (damp.ekeko/ekeko [?type ?key ?val] (annotations/excluding|type-key-val ?type ?key ?val))
+    (damp.ekeko/ekeko [?type ?key ?val]
+      (l/all
+        (world/type-packageName ?type "damp.ekeko.aspectj.annotationtests")
+        (annotations/excluding|type-key-val ?type ?key ?val)))
     "#{(\"damp.ekeko.aspectj.annotationtests.REFix3\" \"type\" \"[Aspect3c]\") (\"damp.ekeko.aspectj.annotationtests.REFix4\" \"label\" \"[Label4b]\") (\"damp.ekeko.aspectj.annotationtests.REFix1\" \"label\" \"[Label1]\") (\"damp.ekeko.aspectj.annotationtests.REFix4\" \"type\" \"[Aspect4c]\") (\"damp.ekeko.aspectj.annotationtests.REFix2\" \"type\" \"[Aspect2]\") (\"damp.ekeko.aspectj.annotationtests.REFix3\" \"label\" \"[Label3b Label3c]\")}"))
 
 (deftest test-annotation-oneOf
   (test/tuples-correspond
-    (damp.ekeko/ekeko [?type ?key ?val] (annotations/oneOfing|type-key-val ?type ?key ?val))
+    (damp.ekeko/ekeko [?type ?key ?val]
+      (l/all
+        (world/type-packageName ?type "damp.ekeko.aspectj.annotationtests")
+        (annotations/oneOfing|type-key-val ?type ?key ?val)))
     "#{(\"damp.ekeko.aspectj.annotationtests.OOFix3\" \"label\" \"[Label3a Label3b]\") (\"damp.ekeko.aspectj.annotationtests.OOFix1\" \"type\" \"[Aspect1a Aspect1b]\") (\"damp.ekeko.aspectj.annotationtests.OOFix2\" \"label\" \"[Label2a Label2b]\") (\"damp.ekeko.aspectj.annotationtests.OOFix3\" \"type\" \"[Aspect3a Aspect3b]\")}"))
 
 (deftest test-annotation-requiresPrevious
@@ -212,29 +230,6 @@
             (world/type-packageName ?target "damp.ekeko.aspectj.annasstests")
             (assumptions/oneOfViolation ?target)))
    "#{(\"damp.ekeko.aspectj.annasstests.OneOfFix\") (\"damp.ekeko.aspectj.annasstests.OneOfFix2\") (\"damp.ekeko.aspectj.annasstests.OneOfFix3\")}"))
-
-;(deftest test-annotation-aspect
-;  (test/tuples-correspond
-;    (damp.ekeko/ekeko [?t]
-;                      (fresh [?a ?at]
-;                      (world/aspect ?t) 
-;                      (world/type-annotation ?t ?a)
-;                      (world/annotation-annotationtype ?a ?at)
-;                      (world/type-name ?at "damp.ekeko.aspectj.annotations.OneOf")))
-;    "#{(\"damp.ekeko.aspectj.annotationtests.HelloAspect\")}"))
-
-;(deftest test-annotation-contents
-;  (test/tuples-correspond
-;    (damp.ekeko/ekeko [?annotatedaspect ?requiredaspect]
-;                      (fresh [?annotationtype ?annotation]
-;                             (world/type-name ?annotationtype "damp.ekeko.aspectj.annotations.Requires")
-;                             (world/annotation-annotationtype ?annotation ?annotationtype)
-;                             (world/type-annotation ?annotatedaspect ?annotation)
-;                             (world/aspect ?annotatedaspect)
-;                             (world/annotation-key-value ?annotation "aspect" ?requiredaspect)
-;                             (world/aspect ?requiredaspect)))
-;    "#{(\"damp.ekeko.aspectj.annotationtests.HelloAspect\" \"damp.ekeko.aspectj.annotationtests.HelloAspect\")}"))
-
 
 ;; Test Suite
 ;; ----------
@@ -290,9 +285,8 @@
   ;(test/against-project-named "AJ-LMP-Wormhole" true test-naive-wormhole)
   ;temporarily disabled because running soot takes too long in an integration test 
 
-;;end commented out part
+  ;;end commented out part
 )
-  
 
   ;;Annotations 
   (test/against-project-named "AJ-LMP-Annotations" false test-annotation-label-types)
@@ -302,14 +296,12 @@
   (test/against-project-named "AJ-LMP-Annotations" false test-annotation-excludes)
   (test/against-project-named "AJ-LMP-Annotations" false test-annotation-oneOf)
   (test/against-project-named "AJ-LMP-Annotations" false test-annotation-requiresPrevious)
-  (test/against-project-named "AJ-LMP-Annotations" false test-annotation-excludesPrevious)
-
+  (test/against-project-named "AJ-LMP-Annotations" false test-annotation-excludesPrevious) 
   
   ;;Annotation assumptions
   (test/against-project-named "AJ-LMP-Annotations" false test-logic-requires)
   (test/against-project-named "AJ-LMP-Annotations" false test-logic-excludes)
   (test/against-project-named "AJ-LMP-Annotations" false test-logic-oneOf)
-  
   
     )
 
@@ -318,13 +310,7 @@
   [] 
   (test/with-ekeko-disabled test-suite))
 
-;; Example REPL Session that runs the test
-;; ---------------------------------------
 
-; note: uncommenting would run the tests upon loading
-
-;(comment  
-  
+; run the tests upon loading  
 (run-tests)
   
-;)

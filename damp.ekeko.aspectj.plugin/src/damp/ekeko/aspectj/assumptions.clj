@@ -339,7 +339,7 @@
              [(l/fresh [?head ?tail ?match ?newsofar]
                        (equals ?head (first ?typepatterns))
                        (equals ?tail (rest ?typepatterns))
-                       (l/condu [(type-type|pattern ?match ?head) ;condu will not backtrack over the conditions in this clause once the first has succeeded 
+                       (l/condu [(type-type|pattern2 ?match ?head) ;condu will not backtrack over the conditions in this clause once the first has succeeded 
                                  (equals ?newsofar (conj ?sofar ?head))	
                                  (typepatterns-typepatterns|matched ?tail ?newsofar ?matched)]
                                 [(typepatterns-typepatterns|matched ?tail ?sofar ?matched)]))])))
