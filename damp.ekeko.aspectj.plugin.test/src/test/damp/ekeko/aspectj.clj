@@ -149,13 +149,14 @@
     (ekeko [?aspect ?advice|entry ?advice|exit ?field] (assumptions/wormhole|naive-entry-exit-field ?aspect ?advice|entry ?advice|exit ?field))
     "#{(\"cl.pleiad.ajlmp.testWormhole.WrongOrderWormholeAspect\" \"(before: (execution(* cl.pleiad.ajlmp.testWormhole.BaseClass.*2()) && persingleton(cl.pleiad.ajlmp.testWormhole.WrongOrderWormholeAspect))->void cl.pleiad.ajlmp.testWormhole.WrongOrderWormholeAspect.ajc$before$cl_pleiad_ajlmp_testWormhole_WrongOrderWormholeAspect$1$b325ee9f())\" \"(before: ((execution(* cl.pleiad.ajlmp.testWormhole.BaseClass.*1(int)) && args(BindingTypePattern(int, 0))) && persingleton(cl.pleiad.ajlmp.testWormhole.WrongOrderWormholeAspect))->void cl.pleiad.ajlmp.testWormhole.WrongOrderWormholeAspect.ajc$before$cl_pleiad_ajlmp_testWormhole_WrongOrderWormholeAspect$2$72a7b216(int))\" \"int cl.pleiad.ajlmp.testWormhole.WrongOrderWormholeAspect.store\") (\"cl.pleiad.ajlmp.testWormhole.WormholeAspect\" \"(before: ((execution(* cl.pleiad.ajlmp.testWormhole.BaseClass.*1(int)) && args(BindingTypePattern(int, 0))) && persingleton(cl.pleiad.ajlmp.testWormhole.WormholeAspect))->void cl.pleiad.ajlmp.testWormhole.WormholeAspect.ajc$before$cl_pleiad_ajlmp_testWormhole_WormholeAspect$1$9821f264(int))\" \"(before: (execution(* cl.pleiad.ajlmp.testWormhole.BaseClass.*2()) && persingleton(cl.pleiad.ajlmp.testWormhole.WormholeAspect))->void cl.pleiad.ajlmp.testWormhole.WormholeAspect.ajc$before$cl_pleiad_ajlmp_testWormhole_WormholeAspect$2$b325ee9f())\" \"int cl.pleiad.ajlmp.testWormhole.WormholeAspect.store\") (\"cl.pleiad.ajlmp.testWormhole.TSWormholeAspect\" \"(before: ((execution(* cl.pleiad.ajlmp.testWormhole.BaseClass.*1(int)) && args(BindingTypePattern(int, 0))) && percflow(cl.pleiad.ajlmp.testWormhole.TSWormholeAspect on execution(* cl.pleiad.ajlmp.testWormhole.BaseClass.run())))->void cl.pleiad.ajlmp.testWormhole.TSWormholeAspect.ajc$before$cl_pleiad_ajlmp_testWormhole_TSWormholeAspect$1$9821f264(int))\" \"(before: (execution(* cl.pleiad.ajlmp.testWormhole.BaseClass.*2()) && percflow(cl.pleiad.ajlmp.testWormhole.TSWormholeAspect on execution(* cl.pleiad.ajlmp.testWormhole.BaseClass.run())))->void cl.pleiad.ajlmp.testWormhole.TSWormholeAspect.ajc$before$cl_pleiad_ajlmp_testWormhole_TSWormholeAspect$2$b325ee9f())\" \"int cl.pleiad.ajlmp.testWormhole.TSWormholeAspect.store\")}"))
 
+;HERE
 (deftest test-annotation-label-types
   (test/tuples-correspond
     (damp.ekeko/ekeko [?type ?val]
       (l/all
         (world/type-packageName ?type "damp.ekeko.aspectj.annotationtests")
         (annotations/labeled|type-label|val ?type ?val)))
-    "#{(\"damp.ekeko.aspectj.annotationtests.LaFix1\" \"[Label1]\") (\"damp.ekeko.aspectj.annotationtests.LaFix2\" \"[Label2a Label2b]\")}"))
+"#{(\"damp.ekeko.aspectj.annotationtests.LaFix2\" \"[\\\"Label2a\\\" \\\"Label2b\\\"]\") (\"damp.ekeko.aspectj.annotationtests.LaFix1\" \"[\\\"Label1\\\"]\")}"))
 
 (deftest test-annotation-label-behavior
   (test/tuples-correspond
@@ -163,7 +164,7 @@
       (l/all
         (world/type-packageName ?type "damp.ekeko.aspectj.annotationtests")
         (annotations/labeled|behavior-label|val ?type ?val)))
-   "#{(\"void damp.ekeko.aspectj.annotationtests.LaFix2.labeledMethod()\" \"[MethLabel2]\") (\"void damp.ekeko.aspectj.annotationtests.LaFix2.ajc$before$damp_ekeko_aspectj_annotationtests_LaFix2$1$8598ac45()\" \"[AdvLabel2]\") (\"void damp.ekeko.aspectj.annotationtests.LaFix2.<init>()\" \"[ConsLabel2]\") (\"void damp.ekeko.aspectj.annotationtests.LaFix1.<init>()\" \"[ConsLabel]\") (\"void damp.ekeko.aspectj.annotationtests.LaFix2.multiLabeledMethod()\" \"[MethLabel2a MethLabel2b]\") (\"void damp.ekeko.aspectj.annotationtests.LaFix1.<init>(java.lang.String)\" \"[ConsLabel1a ConsLabel1b]\") (\"void damp.ekeko.aspectj.annotationtests.LaFix1.labeledMethod()\" \"[MethLabel]\") (\"void damp.ekeko.aspectj.annotationtests.LaFix2.ajc$before$damp_ekeko_aspectj_annotationtests_LaFix2$3$716cfb74()\" \"[AdvLabel2a AdvLabel2b]\")}"))
+   "#{(\"void damp.ekeko.aspectj.annotationtests.LaFix2.labeledMethod()\" \"[\\\"MethLabel2\\\"]\") (\"void damp.ekeko.aspectj.annotationtests.LaFix2.ajc$before$damp_ekeko_aspectj_annotationtests_LaFix2$1$8598ac45()\" \"[\\\"AdvLabel2\\\"]\") (\"void damp.ekeko.aspectj.annotationtests.LaFix2.<init>()\" \"[\\\"ConsLabel2\\\"]\") (\"void damp.ekeko.aspectj.annotationtests.LaFix1.<init>()\" \"[\\\"ConsLabel\\\"]\") (\"void damp.ekeko.aspectj.annotationtests.LaFix2.multiLabeledMethod()\" \"[\\\"MethLabel2a\\\" \\\"MethLabel2b\\\"]\") (\"void damp.ekeko.aspectj.annotationtests.LaFix1.<init>(java.lang.String)\" \"[\\\"ConsLabel1a\\\" \\\"ConsLabel1b\\\"]\") (\"void damp.ekeko.aspectj.annotationtests.LaFix1.labeledMethod()\" \"[\\\"MethLabel\\\"]\") (\"void damp.ekeko.aspectj.annotationtests.LaFix2.ajc$before$damp_ekeko_aspectj_annotationtests_LaFix2$3$716cfb74()\" \"[\\\"AdvLabel2a\\\" \\\"AdvLabel2b\\\"]\")}"))
 
 (deftest test-annotation-label-pointcut
   (test/tuples-correspond
@@ -171,7 +172,7 @@
       (l/all
         (world/type-packageName ?type "damp.ekeko.aspectj.annotationtests")
         (annotations/labeled|pointcut-label|val ?type ?ann)))
-    "#{(\"pointcut damp.ekeko.aspectj.annotationtests.LaFix2.barCall()\" \"[PCLabel2]\")}"))
+    "#{(\"pointcut damp.ekeko.aspectj.annotationtests.LaFix2.barCall()\" \"[\\\"PCLabel2\\\"]\")}"))
 
 (deftest test-annotation-requires
   (test/tuples-correspond
@@ -179,7 +180,7 @@
       (l/all
         (world/type-packageName ?type "damp.ekeko.aspectj.annotationtests")
         (annotations/requiring|type-key-val ?type ?key ?val)))
-    "#{(\"damp.ekeko.aspectj.annotationtests.REFix3\" \"type\" \"[Aspect3a Aspect3b]\") (\"damp.ekeko.aspectj.annotationtests.REFix3\" \"label\" \"[Label3a]\") (\"damp.ekeko.aspectj.annotationtests.REFix1\" \"type\" \"[Aspect1]\") (\"damp.ekeko.aspectj.annotationtests.REFix4\" \"label\" \"[Label4a]\") (\"damp.ekeko.aspectj.annotationtests.REFix4\" \"type\" \"[Aspect4a Aspect4b]\") (\"damp.ekeko.aspectj.annotationtests.REFix2\" \"label\" \"[Label2]\")}"))
+    "#{(\"damp.ekeko.aspectj.annotationtests.REFix3\" \"label\" \"[\\\"Label3a\\\"]\") (\"damp.ekeko.aspectj.annotationtests.REFix1\" \"type\" \"[\\\"Aspect1\\\"]\") (\"damp.ekeko.aspectj.annotationtests.REFix3\" \"type\" \"[\\\"Aspect3a\\\" \\\"Aspect3b\\\"]\") (\"damp.ekeko.aspectj.annotationtests.REFix2\" \"label\" \"[\\\"Label2\\\"]\") (\"damp.ekeko.aspectj.annotationtests.REFix4\" \"label\" \"[\\\"Label4a\\\"]\") (\"damp.ekeko.aspectj.annotationtests.REFix4\" \"type\" \"[\\\"Aspect4a\\\" \\\"Aspect4b\\\"]\")}"))
 
 (deftest test-annotation-excludes
   (test/tuples-correspond
@@ -187,7 +188,7 @@
       (l/all
         (world/type-packageName ?type "damp.ekeko.aspectj.annotationtests")
         (annotations/excluding|type-key-val ?type ?key ?val)))
-    "#{(\"damp.ekeko.aspectj.annotationtests.REFix3\" \"type\" \"[Aspect3c]\") (\"damp.ekeko.aspectj.annotationtests.REFix4\" \"label\" \"[Label4b]\") (\"damp.ekeko.aspectj.annotationtests.REFix1\" \"label\" \"[Label1]\") (\"damp.ekeko.aspectj.annotationtests.REFix4\" \"type\" \"[Aspect4c]\") (\"damp.ekeko.aspectj.annotationtests.REFix2\" \"type\" \"[Aspect2]\") (\"damp.ekeko.aspectj.annotationtests.REFix3\" \"label\" \"[Label3b Label3c]\")}"))
+    "#{(\"damp.ekeko.aspectj.annotationtests.REFix2\" \"type\" \"[\\\"Aspect2\\\"]\") (\"damp.ekeko.aspectj.annotationtests.REFix3\" \"type\" \"[\\\"Aspect3c\\\"]\") (\"damp.ekeko.aspectj.annotationtests.REFix1\" \"label\" \"[\\\"Label1\\\"]\") (\"damp.ekeko.aspectj.annotationtests.REFix3\" \"label\" \"[\\\"Label3b\\\" \\\"Label3c\\\"]\") (\"damp.ekeko.aspectj.annotationtests.REFix4\" \"label\" \"[\\\"Label4b\\\"]\") (\"damp.ekeko.aspectj.annotationtests.REFix4\" \"type\" \"[\\\"Aspect4c\\\"]\")}"))
 
 (deftest test-annotation-oneOf
   (test/tuples-correspond
@@ -195,18 +196,18 @@
       (l/all
         (world/type-packageName ?type "damp.ekeko.aspectj.annotationtests")
         (annotations/oneOfing|type-key-val ?type ?key ?val)))
-    "#{(\"damp.ekeko.aspectj.annotationtests.OOFix3\" \"label\" \"[Label3a Label3b]\") (\"damp.ekeko.aspectj.annotationtests.OOFix1\" \"type\" \"[Aspect1a Aspect1b]\") (\"damp.ekeko.aspectj.annotationtests.OOFix2\" \"label\" \"[Label2a Label2b]\") (\"damp.ekeko.aspectj.annotationtests.OOFix3\" \"type\" \"[Aspect3a Aspect3b]\")}"))
+    "#{(\"damp.ekeko.aspectj.annotationtests.OOFix1\" \"type\" \"[\\\"Aspect1a\\\" \\\"Aspect1b\\\"]\") (\"damp.ekeko.aspectj.annotationtests.OOFix2\" \"label\" \"[\\\"Label2a\\\" \\\"Label2b\\\"]\") (\"damp.ekeko.aspectj.annotationtests.OOFix3\" \"type\" \"[\\\"Aspect3a\\\" \\\"Aspect3b\\\"]\") (\"damp.ekeko.aspectj.annotationtests.OOFix3\" \"label\" \"[\\\"Label3a\\\" \\\"Label3b\\\"]\")}"))
 
 (deftest test-annotation-requiresPrevious
   (test/tuples-correspond
     (damp.ekeko/ekeko [?beh ?val] (annotations/reqPrev|behavior-val ?beh ?val))
-    "#{(\"void damp.ekeko.aspectj.annotationtests.REPFix2.methoda()\" \"[Label2Rc Label2Rd]\") (\"void damp.ekeko.aspectj.annotationtests.REPFix1.<init>()\" \"[Label1Ra]\") (\"void damp.ekeko.aspectj.annotationtests.REPFix2.ajc$before$damp_ekeko_aspectj_annotationtests_REPFix2$1$8598ac45()\" \"[Label2Re]\") (\"void damp.ekeko.aspectj.annotationtests.REPFix2.<init>()\" \"[Label2Ra Label2Rb]\") (\"void damp.ekeko.aspectj.annotationtests.REPFix1.methoda()\" \"[Label1Rb]\") (\"void damp.ekeko.aspectj.annotationtests.REPFix2.ajc$around$damp_ekeko_aspectj_annotationtests_REPFix2$3$8598ac45(org.aspectj.runtime.internal.AroundClosure)\" \"[Label2Rf Label2Rg]\")}"))
+"#{(\"void damp.ekeko.aspectj.annotationtests.REPFix2.ajc$around$damp_ekeko_aspectj_annotationtests_REPFix2$3$8598ac45(org.aspectj.runtime.internal.AroundClosure)\" \"[\\\"Label2Rf\\\" \\\"Label2Rg\\\"]\") (\"void damp.ekeko.aspectj.annasstests.PrevFix2.ajc$before$damp_ekeko_aspectj_annasstests_PrevFix2$1$36c63601()\" \"[\\\"beforecompute\\\"]\") (\"void damp.ekeko.aspectj.annasstests.PrevFix2.ajc$after$damp_ekeko_aspectj_annasstests_PrevFix2$3$36c63601()\" \"[\\\"preparing\\\"]\") (\"void damp.ekeko.aspectj.annasstests.PrevFix.ajc$before$damp_ekeko_aspectj_annasstests_PrevFix$1$36c63601()\" \"[\\\"thinking\\\"]\") (\"void damp.ekeko.aspectj.annasstests.PrevFix2.ajc$after$damp_ekeko_aspectj_annasstests_PrevFix2$2$36c63601()\" \"[\\\"beforecompute\\\"]\") (\"void damp.ekeko.aspectj.annasstests.PrevFix.ajc$around$damp_ekeko_aspectj_annasstests_PrevFix$3$592dcb64(org.aspectj.runtime.internal.AroundClosure)\" \"[\\\"executing\\\"]\") (\"void damp.ekeko.aspectj.annasstests.PrevFix2.ajc$after$damp_ekeko_aspectj_annasstests_PrevFix2$4$74faf45e()\" \"[\\\"beforecompute\\\"]\") (\"void damp.ekeko.aspectj.annotationtests.REPFix2.methoda()\" \"[\\\"Label2Rc\\\" \\\"Label2Rd\\\"]\") (\"void damp.ekeko.aspectj.annotationtests.REPFix2.ajc$before$damp_ekeko_aspectj_annotationtests_REPFix2$1$8598ac45()\" \"[\\\"Label2Re\\\"]\") (\"void damp.ekeko.aspectj.annotationtests.REPFix1.methoda()\" \"[\\\"Label1Rb\\\"]\") (\"void damp.ekeko.aspectj.annasstests.PrevFix.ajc$after$damp_ekeko_aspectj_annasstests_PrevFix$2$74faf45e()\" \"[\\\"executing\\\"]\") (\"void damp.ekeko.aspectj.annotationtests.REPFix1.<init>()\" \"[\\\"Label1Ra\\\"]\") (\"void damp.ekeko.aspectj.annotationtests.REPFix2.<init>()\" \"[\\\"Label2Ra\\\" \\\"Label2Rb\\\"]\") (\"void damp.ekeko.aspectj.annasstests.PrevFix2.unthink()\" \"[\\\"thinking\\\"]\") (\"void damp.ekeko.aspectj.annasstests.EntryPoint.execute()\" \"[\\\"computing\\\"]\")}"))
+
 
 (deftest test-annotation-excludesPrevious
   (test/tuples-correspond
     (damp.ekeko/ekeko [?beh ?val] (annotations/exclPrev|behavior-val ?beh ?val))
-    "#{(\"void damp.ekeko.aspectj.annotationtests.REPFix2.ajc$after$damp_ekeko_aspectj_annotationtests_REPFix2$2$8598ac45()\" \"[Label2Ee]\") (\"void damp.ekeko.aspectj.annotationtests.REPFix2.ajc$around$damp_ekeko_aspectj_annotationtests_REPFix2$3$8598ac45(org.aspectj.runtime.internal.AroundClosure)\" \"[Label2Ef Label2Eg]\") (\"void damp.ekeko.aspectj.annotationtests.REPFix2.<init>()\" \"[Label2Ea Label2Eb]\") (\"void damp.ekeko.aspectj.annotationtests.REPFix2.methodb()\" \"[Label2Ec Label2Ed]\") (\"void damp.ekeko.aspectj.annotationtests.REPFix1.methodb()\" \"[Label1Eb]\") (\"void damp.ekeko.aspectj.annotationtests.REPFix1.<init>(int)\" \"[Label1Ea]\")}"))
-
+"#{(\"void damp.ekeko.aspectj.annasstests.PrevFix.ajc$before$damp_ekeko_aspectj_annasstests_PrevFix$1$36c63601()\" \"[\\\"cleaning\\\"]\") (\"void damp.ekeko.aspectj.annotationtests.REPFix2.ajc$around$damp_ekeko_aspectj_annotationtests_REPFix2$3$8598ac45(org.aspectj.runtime.internal.AroundClosure)\" \"[\\\"Label2Ef\\\" \\\"Label2Eg\\\"]\") (\"void damp.ekeko.aspectj.annasstests.PrevFix.ajc$after$damp_ekeko_aspectj_annasstests_PrevFix$2$74faf45e()\" \"[\\\"thinking\\\"]\") (\"void damp.ekeko.aspectj.annotationtests.REPFix2.methodb()\" \"[\\\"Label2Ec\\\" \\\"Label2Ed\\\"]\") (\"void damp.ekeko.aspectj.annotationtests.REPFix2.ajc$after$damp_ekeko_aspectj_annotationtests_REPFix2$2$8598ac45()\" \"[\\\"Label2Ee\\\"]\") (\"void damp.ekeko.aspectj.annotationtests.REPFix1.methodb()\" \"[\\\"Label1Eb\\\"]\") (\"void damp.ekeko.aspectj.annotationtests.REPFix2.<init>()\" \"[\\\"Label2Ea\\\" \\\"Label2Eb\\\"]\") (\"void damp.ekeko.aspectj.annotationtests.REPFix1.<init>(int)\" \"[\\\"Label1Ea\\\"]\") (\"void damp.ekeko.aspectj.annasstests.PrevFix.ajc$around$damp_ekeko_aspectj_annasstests_PrevFix$3$592dcb64(org.aspectj.runtime.internal.AroundClosure)\" \"[\\\"simulating\\\"]\")}"))
 (deftest test-logic-requires
   (test/tuples-correspond
     (damp.ekeko/ekeko [?rqd ?rqs]
@@ -242,11 +243,14 @@
 
 (deftest
   test-suite  
+ 
+
+  (comment
   
   ;sanity check
   (test/against-project-named "AJ-LMP-Precedence" false test-aspect)
   
-(comment
+
 
   ;precedence logic
   (test/against-project-named "AJ-LMP-Precedence" false test-explicit-decprec+)
@@ -302,8 +306,8 @@
   (test/against-project-named "AJ-LMP-Annotations" false test-logic-requires)
   (test/against-project-named "AJ-LMP-Annotations" false test-logic-excludes)
   (test/against-project-named "AJ-LMP-Annotations" false test-logic-oneOf)
-  
-    )
+
+)
 
 (defn 
   test-ns-hook 
