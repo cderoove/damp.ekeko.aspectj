@@ -151,6 +151,6 @@ For normal AJ type-pattern matching semantics use d.e.a.weaverworld/type-type|pa
  (l/all (v+ ?pattern)
         (type-type|pattern ?type ?pattern)
         (fails
-          (l/all
+          (l/project [?pattern]
             (l/!= ?pattern (clojure.string/replace ?pattern #"\+" ""))
             (type-type|pattern ?type (clojure.string/replace ?pattern #"\+" ""))))))
