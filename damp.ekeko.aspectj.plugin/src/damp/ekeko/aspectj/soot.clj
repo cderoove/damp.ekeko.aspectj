@@ -35,6 +35,9 @@
   org.aspectj.weaver.Advice
   (sootsignature [this]
                  (sootsignature-as-method (.getSignature this)))
+  org.aspectj.weaver.bcel.BcelMethod
+  (sootsignature [this]
+    (sootsignature-as-method this))
   org.aspectj.weaver.ConcreteTypeMunger
   (sootsignature [this]
                  (sootsignature (.getMunger this)))
@@ -76,6 +79,15 @@
   (sootsignature-as-method [this] 
                            ""))
   
+(defn
+  behavior-soot|method
+  "Relation between a method or advice, and the corresponding Soot method."
+  [?method ?soot]
+  (fresh [?model ?scene ?signature]
+         (world/method ?method)
+         (equals ?signature (sootsignature ?method))
+         (soot/soot-model-scene ?model ?scene)
+         (soot/soot-method-signature ?soot ?signature)))
 
 (defn
   advice-soot|method 
@@ -183,11 +195,56 @@
                            (qwal/qcurrent [icfgnode]
                                           (equals ?soot|method2 (soot/icfgnode-method icfgnode)))))))
          
-         
+
+;;slow
+(defn
+  behavior-reachable|behaviorSLOW
+  "Relation between a behavior (advice or method) and another behavior that may be executed afterwards. Slow version using regular path expressions."
+  [?behavior1 ?behavior2]
+  (fresh [?soot|method1 ?soot|method2]
+         (behavior-soot|method ?behavior1 ?soot|method1)
+         (!= ?behavior1 ?behavior2)
+         (behavior-soot|method ?behavior2 ?soot|method2)
+         (fresh [?icfg ?icfg|start ?icfg|end]
+                ;starting in main() because starting in the caller of advice1 did not work
+                ;(advice-icfg-start ?advice1 ?icfg ?icfg|start)
+                (icfg-start ?icfg ?icfg|start)
+                (qwal/qwal ?icfg ?icfg|start ?icfg|end []
+                           ;(start in application of first advice, make transition to first advice)
+                           ;qwal/q=>
+                           ;start in main method, make zero or more transitions to first advice
+                           (qwal/q=>*)
+                           (qwal/qcurrent [icfgnode]
+                                          (equals ?soot|method1 (soot/icfgnode-method icfgnode)))
+                           ;make one or more transitions to second advice  
+                           (qwal/q=>+)
+                           (qwal/qcurrent [icfgnode]
+                                          (equals ?soot|method2 (soot/icfgnode-method icfgnode)))))))
+
+(defn
+  soot|behavior-soot|behavior|reachable
+  [?m ?r]
+  (soot/soot|method-soot|method|called+ ?m ?r))
+  
+(defn
+  behavior-reachable|behavior
+  "Relation between a behavior (advice or method) and another behavior that may be executed afterwards."
+  [?behavior1 ?behavior2]
+  (fresh [?soot|method1 ?soot|method2]
+         (behavior-soot|method ?behavior1 ?soot|method1)
+         (!= ?behavior1 ?behavior2)
+         (behavior-soot|method ?behavior2 ?soot|method2)
+         (soot|behavior-soot|behavior|reachable ?soot|method1 ?soot|method2)))
+       
+  
+
+
+
+
          
          
 (comment
-  (damp.ekeko/ekeko* [?advice ?method] (advice-sootmethod ?advice ?method))
+  (damp.ekeko/ekeko* [?advice ?method] (advice-soot|method ?advice ?method))
   
   (damp.ekeko/ekeko* [?itmethod ?sootmethod] (intertype|method-sootmethod ?itmethod ?sootmethod))
   
