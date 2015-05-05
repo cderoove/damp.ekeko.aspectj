@@ -10,7 +10,8 @@
              [xcut :as xcut] 
              [weaverworld :as world]
              [assumptions :as assumptions]
-             ]))
+             ])
+  (:import [org.aspectj.weaver.AnnotationAJ]))
 
 (defn
   make-query-views-aspectj-aware!
@@ -18,6 +19,20 @@
   (intern 'damp.ekeko.gui 'label-provider-class baristaui.views.queryResult.AJDTLabelProvider))
 
 (make-query-views-aspectj-aware!)
+
+
+(extend-ISupportContains-to-arrays-of-class org.aspectj.weaver.AnnotationAJ)
+(extend-ISupportContains-to-arrays-of-class org.aspectj.weaver.ResolvedMember)
+(extend-ISupportContains-to-arrays-of-class org.aspectj.weaver.ResolvedPointcutDefinition)
+
+(extend-ISupportContains-to-arrays-of-class org.aspectj.weaver.ResolvedType)
+(extend-ISupportContains-to-arrays-of-class org.aspectj.weaver.UnresolvedType)
+(extend-ISupportContains-to-arrays-of-class org.aspectj.weaver.TypeVariable)
+(extend-ISupportContains-to-arrays-of-class org.aspectj.weaver.JoinPointSignature)
+(extend-ISupportContains-to-arrays-of-class org.aspectj.weaver.Member)
+
+
+
 
 (comment
   ;; Example REPL session
