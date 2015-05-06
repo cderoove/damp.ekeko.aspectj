@@ -10,6 +10,7 @@
      [workspace :as ws]]
     [damp.ekeko.soot
      [projectmodel :as spm]]
+    [damp.ekeko [aspectj]]
     [damp.ekeko.aspectj
      [soot :as soot]
      [ajdt :as ajdt]
