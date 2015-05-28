@@ -154,3 +154,66 @@ For normal AJ type-pattern matching semantics use d.e.a.weaverworld/type-type|pa
           (l/project [?pattern]
             (l/!= ?pattern (clojure.string/replace ?pattern #"\+" ""))
             (type-type|pattern ?type (clojure.string/replace ?pattern #"\+" ""))))))
+
+
+
+;------------------------  ASPECT PRESENCE (GASREE Section 6.1) ------------------------------
+
+(defn- get-all-matches 
+  [pattern]
+  (ekeko [?t] (type-type|pattern2 ?t pattern)))
+
+(defn- typepatterns-matches 
+  [?pattern ?matches]
+  (l/all
+    (v+ ?pattern)
+    (equals ?matches (get-all-matches ?pattern))))
+
+(defn missing|required-requires [?name ?requirer]
+  (l/fresh [?reqds ?required]
+         (requiring|type-key-val ?requirer "type" ?reqds)
+         (contains ?reqds ?name)
+         (fails (type-type|pattern ?required ?name))))
+(defn present|excluded-excluder [?exd ?excluder]
+  (l/fresh [?exds ?excluded]
+         (excluding|type-key-val ?excluder "type" ?exds) 
+         (contains ?exds ?exd)
+         (type-type|pattern ?excluded ?exd )))
+(defn oneOfViolation [?targettype]
+  (l/fresh [?patterns ?matches ?count ?pattern]
+         (oneOfing|type-key-val ?targettype "type" ?patterns)
+         (contains ?patterns ?pattern)
+         (typepatterns-matches ?pattern ?matches) ;don;t exists
+         (differs ?count 1)
+         (equals ?count (count ?matches))))
+
+
+(defn oneOf|definer-offenders [?def ?offs]
+  (l/fresh  [?patterns ?count ?pattern]
+             (oneOfing|type-key-val ?def "type" ?patterns)
+             (contains ?patterns ?pattern)
+             (typepatterns-matches ?pattern ?offs)
+             (differs ?count 1)
+             (equals ?count (count ?offs))))
+
+
+;------------------------  Control Flow (GASREE Section 6.2) ------------------------------
+
+(defn present|excludedPrevious-excluder [?excluded ?excluder]
+  (l/fresh [?label]
+         (exclPrev|behavior-val ?excluder ?label)
+         (labeled|behavior-label|val ?excluded ?label)
+         (ajsoot/behavior-reachable|behavior ?excluded ?excluder)))
+
+(defn missing|requiredPrevious-requirer [?required ?requirer]
+  (l/fresh [?label]
+         (reqPrev|behavior-val ?requirer ?label)
+         (labeled|behavior-label|val ?required ?label)
+         (fails (ajsoot/behavior-reachable|behavior ?required ?requirer))))
+
+(defn missing|requiredPrevious-requirer-label [?required ?requirer ?label]
+  (l/all
+         (reqPrev|behavior-val ?requirer ?label)
+         (labeled|behavior-label|val ?required ?label)
+         (fails (ajsoot/behavior-reachable|behavior ?required ?requirer))))
+         
