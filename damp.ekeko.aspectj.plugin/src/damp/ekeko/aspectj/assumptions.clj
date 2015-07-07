@@ -308,21 +308,16 @@
 ;     [(type-name ?type ?name)]
 ;     [(type-type|pattern ?type ?name)]))
 
-(defn missing|required-requires
-  [?name ?requires]
+(defn missing|required-requires [?name ?requirer]
   (l/fresh [?reqds ?required]
-           (requiring|type-key-val ?requires "type" ?reqds)
-           (contains ?reqds ?name)
-           (fails (type-type|pattern ?required ?name))
-           ))
-
-(defn present|excluded-excluder
-  [?exd ?excluder]
+         (requiring|type-key-val ?requirer "type" ?reqds)
+         (contains ?reqds ?name)
+         (fails (type-type|pattern ?required ?name))))
+(defn present|excluded-excluder [?exd ?excluder]
   (l/fresh [?exds ?excluded]
-           (excluding|type-key-val ?excluder "type" ?exds)
-           (contains ?exds ?exd)
-           (type-type|pattern ?excluded ?exd )
-           ))
+         (excluding|type-key-val ?excluder "type" ?exds) 
+         (contains ?exds ?exd)
+         (type-type|pattern ?excluded ?exd )))
 
 
 ;this might be slow for many typepatterns as the JVM does not support tail call optimiziation and we cannot use Clojure's recur keyword
@@ -344,21 +339,15 @@
                                  (typepatterns-typepatterns|matched ?tail ?newsofar ?matched)]
                                 [(typepatterns-typepatterns|matched ?tail ?sofar ?matched)]))])))
 
-(defn
-  typepatterns-matches
-  ([?typepatterns ?matches] 
-    (l/all
-      (v+ ?typepatterns)
-      (typepatterns-matches ?typepatterns [] ?matches)))
-  ([?typepatterns ?sofar ?matches]
-    (l/conda [(succeeds (empty? ?typepatterns)) 
-              (equals ?sofar (into [] (into #{} ?matches)))]
-             [(l/fresh [?head ?tail ?match ?newsofar ?additional]
-                       (equals ?head (first ?typepatterns))
-                       (equals ?tail (rest ?typepatterns))
-                       (findall ?match (type-type|pattern ?match ?head) ?additional)
-                       (equals ?newsofar (concat ?sofar ?additional))	
-                       (typepatterns-typepatterns|matched ?tail ?newsofar ?matches))])))
+(defn- get-all-matches 
+  [pattern]
+  (ekeko [?t] (type-type|pattern2 ?t pattern)))
+
+(defn- typepatterns-matches 
+  [?pattern ?matches]
+  (l/all
+    (v+ ?pattern)
+    (equals ?matches (get-all-matches ?pattern))))
 
 (defn 
   oneOfViolation
