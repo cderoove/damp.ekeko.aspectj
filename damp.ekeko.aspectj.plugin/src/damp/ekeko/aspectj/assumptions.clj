@@ -308,6 +308,9 @@
 ;     [(type-name ?type ?name)]
 ;     [(type-type|pattern ?type ?name)]))
 
+
+;------------------------  ASPECT PRESENCE (GASREE Section 6.1) ------------------------------
+
 (defn missing|required-requires [?name ?requirer]
   (l/fresh [?reqds ?required]
          (requiring|type-key-val ?requirer "type" ?reqds)
@@ -349,15 +352,43 @@
     (v+ ?pattern)
     (equals ?matches (get-all-matches ?pattern))))
 
-(defn 
-  oneOfViolation
-  [?targettype]
-  (l/fresh [?patterns ?matches ?count]
-           (oneOfing|type-key-val ?targettype "type" ?patterns)
-           (typepatterns-matches ?patterns ?matches)
-           (l/!= ?count 1)
-           (equals ?count (count ?matches))))
+(defn oneOfViolation [?targettype]
+  (l/fresh [?patterns ?matches ?count ?pattern]
+         (oneOfing|type-key-val ?targettype "type" ?patterns)
+         (contains ?patterns ?pattern)
+         (typepatterns-matches ?pattern ?matches) ;don;t exists
+         (differs ?count 1)
+         (equals ?count (count ?matches))))
 
+
+(defn oneOf|definer-offenders [?def ?offs]
+  (l/fresh  [?patterns ?count ?pattern]
+             (oneOfing|type-key-val ?def "type" ?patterns)
+             (contains ?patterns ?pattern)
+             (typepatterns-matches ?pattern ?offs)
+             (differs ?count 1)
+             (equals ?count (count ?offs))))
+
+;------------------------  Control Flow (GASREE Section 6.2) ------------------------------
+
+(defn present|excludedPrevious-excluder [?excluded ?excluder]
+  (l/fresh [?label]
+         (exclPrev|behavior-val ?excluder ?label)
+         (labeled|behavior-label|val ?excluded ?label)
+         (ajsoot/behavior-reachable|behavior ?excluded ?excluder)))
+
+(defn missing|requiredPrevious-requirer [?required ?requirer]
+  (l/fresh [?label]
+         (reqPrev|behavior-val ?requirer ?label)
+         (labeled|behavior-label|val ?required ?label)
+         (fails (ajsoot/behavior-reachable|behavior ?required ?requirer))))
+
+(defn missing|requiredPrevious-requirer-label [?required ?requirer ?label]
+  (l/all
+         (reqPrev|behavior-val ?requirer ?label)
+         (labeled|behavior-label|val ?required ?label)
+         (fails (ajsoot/behavior-reachable|behavior ?required ?requirer))))
+         
 
 (comment
  ; these are for labels, the ones of types should be renamed with |type
