@@ -144,7 +144,7 @@
 
 (defn
   advice-soot|calling|unit-soot|calling|method
-  "Relation between an advice and the Soot unit and method that calls it."
+  "Relation between an advice, and the Soot unit and method that calls it."
   [?advice ?soot|calling|unit ?soot|calling|method]
   (fresh [?soot|method]
          (advice-soot|method ?advice ?soot|method)
