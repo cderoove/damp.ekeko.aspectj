@@ -17,23 +17,16 @@ Slideshare hosts an [earlier presentation on GASR](http://www.slideshare.net/oni
 
 ## Installation
 
-Install the prebuilt GASR plugin from the Eclipse update site: 
-[http://soft.vub.ac.be/~cderoove/eclipse/](http://soft.vub.ac.be/~cderoove/eclipse/) 
+Ensure that the dependencies [AspectJ Development Tools](http://www.eclipse.org/ajdt/) and and [Counterclockwise](https://github.com/laurentpetit/ccw/wiki/GoogleCodeHome) are installed.  (See [Installing New Software](http://help.eclipse.org/luna/topic/org.eclipse.platform.doc.user/tasks/tasks-124.htm) for help on installing Eclipse plugins from an update site.)
 
-Ensure dependencies [Ekeko](https://github.com/cderoove/damp.ekeko/tree/master/EkekoPlugin), [AspectJ Development Tools](http://www.eclipse.org/ajdt/), [org.eclipse.jdt.astview](http://www.eclipse.org/jdt/ui/astview/index.php) and [Counterclockwise](http://code.google.com/p/counterclockwise/) are installed. 
+The plugin can be built from the [EkekoAspectJ](https://github.com/cderoove/damp.ekeko.aspectj/tree/master/EkekoAspectJ) Eclipse project in this repository.
 
-See [Installing New Software](http://help.eclipse.org/juno/topic/org.eclipse.platform.doc.user/tasks/tasks-124.htm) for help on installing Eclipse plugins from an update site. 
+GASR has been tested against [Eclipse Luna (4.4)](http://www.eclipse.org/luna/) and [Eclipse Mars (4.5)](http://www.eclipse.org/mars/).
 
-GASR has been tested against [Eclipse Luna (4.4)](http://www.eclipse.org).
-Eclipse update site for AspectJ development snapshots that are Luna compatible:
-http://download.eclipse.org/tools/ajdt/44/dev/update/
-
-Alternatively, the plugin can also be built from the [EkekoAspectJ](https://github.com/cderoove/damp.ekeko.aspectj/tree/master/EkekoAspectJ) Eclipse project in this repository.
-
-
+> **Note:** for annotations to be visible to GASR, their type definitions need to be on the AspectJ inpath (Project context menu item "AspectJ Tools" -> "Configure AspectJ Build path ..." )
 
 ## License  
 
-Copyright © 2012-2014 GASR contributors: [Coen De Roover](http://soft.vub.ac.be/~cderoove/), [Johan Fabry](http://www.dcc.uchile.cl/~jfabry)
+Copyright © 2012-2014 GASR contributors: [Coen De Roover](http://soft.vub.ac.be/~cderoove/), [Johan Fabry](http://www.dcc.uchile.cl/~jfabry), [Carlos Noguera](https://soft.vub.ac.be/soft/members/cnoguera)
 
 Distributed under the Eclipse Public License (EPL version 1.0). See ``LICENSE.html``.
