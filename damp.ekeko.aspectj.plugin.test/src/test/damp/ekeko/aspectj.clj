@@ -150,7 +150,6 @@
     (ekeko [?aspect ?advice|entry ?advice|exit ?field] (assumptions/wormhole|naive-entry-exit-field ?aspect ?advice|entry ?advice|exit ?field))
     "#{(\"cl.pleiad.ajlmp.testWormhole.WrongOrderWormholeAspect\" \"(before: (execution(* cl.pleiad.ajlmp.testWormhole.BaseClass.*2()) && persingleton(cl.pleiad.ajlmp.testWormhole.WrongOrderWormholeAspect))->void cl.pleiad.ajlmp.testWormhole.WrongOrderWormholeAspect.ajc$before$cl_pleiad_ajlmp_testWormhole_WrongOrderWormholeAspect$1$b325ee9f())\" \"(before: ((execution(* cl.pleiad.ajlmp.testWormhole.BaseClass.*1(int)) && args(BindingTypePattern(int, 0))) && persingleton(cl.pleiad.ajlmp.testWormhole.WrongOrderWormholeAspect))->void cl.pleiad.ajlmp.testWormhole.WrongOrderWormholeAspect.ajc$before$cl_pleiad_ajlmp_testWormhole_WrongOrderWormholeAspect$2$72a7b216(int))\" \"int cl.pleiad.ajlmp.testWormhole.WrongOrderWormholeAspect.store\") (\"cl.pleiad.ajlmp.testWormhole.WormholeAspect\" \"(before: ((execution(* cl.pleiad.ajlmp.testWormhole.BaseClass.*1(int)) && args(BindingTypePattern(int, 0))) && persingleton(cl.pleiad.ajlmp.testWormhole.WormholeAspect))->void cl.pleiad.ajlmp.testWormhole.WormholeAspect.ajc$before$cl_pleiad_ajlmp_testWormhole_WormholeAspect$1$9821f264(int))\" \"(before: (execution(* cl.pleiad.ajlmp.testWormhole.BaseClass.*2()) && persingleton(cl.pleiad.ajlmp.testWormhole.WormholeAspect))->void cl.pleiad.ajlmp.testWormhole.WormholeAspect.ajc$before$cl_pleiad_ajlmp_testWormhole_WormholeAspect$2$b325ee9f())\" \"int cl.pleiad.ajlmp.testWormhole.WormholeAspect.store\") (\"cl.pleiad.ajlmp.testWormhole.TSWormholeAspect\" \"(before: ((execution(* cl.pleiad.ajlmp.testWormhole.BaseClass.*1(int)) && args(BindingTypePattern(int, 0))) && percflow(cl.pleiad.ajlmp.testWormhole.TSWormholeAspect on execution(* cl.pleiad.ajlmp.testWormhole.BaseClass.run())))->void cl.pleiad.ajlmp.testWormhole.TSWormholeAspect.ajc$before$cl_pleiad_ajlmp_testWormhole_TSWormholeAspect$1$9821f264(int))\" \"(before: (execution(* cl.pleiad.ajlmp.testWormhole.BaseClass.*2()) && percflow(cl.pleiad.ajlmp.testWormhole.TSWormholeAspect on execution(* cl.pleiad.ajlmp.testWormhole.BaseClass.run())))->void cl.pleiad.ajlmp.testWormhole.TSWormholeAspect.ajc$before$cl_pleiad_ajlmp_testWormhole_TSWormholeAspect$2$b325ee9f())\" \"int cl.pleiad.ajlmp.testWormhole.TSWormholeAspect.store\")}"))
 
-;HERE
 (deftest test-annotation-label-types
   (test/tuples-correspond
     (damp.ekeko/ekeko [?type ?val]
@@ -209,13 +208,15 @@
   (test/tuples-correspond
     (damp.ekeko/ekeko [?beh ?val] (annotations/exclPrev|behavior-val ?beh ?val))
 "#{(\"void damp.ekeko.aspectj.annasstests.PrevFix.ajc$before$damp_ekeko_aspectj_annasstests_PrevFix$1$36c63601()\" \"[\\\"cleaning\\\"]\") (\"void damp.ekeko.aspectj.annotationtests.REPFix2.ajc$around$damp_ekeko_aspectj_annotationtests_REPFix2$3$8598ac45(org.aspectj.runtime.internal.AroundClosure)\" \"[\\\"Label2Ef\\\" \\\"Label2Eg\\\"]\") (\"void damp.ekeko.aspectj.annasstests.PrevFix.ajc$after$damp_ekeko_aspectj_annasstests_PrevFix$2$74faf45e()\" \"[\\\"thinking\\\"]\") (\"void damp.ekeko.aspectj.annotationtests.REPFix2.methodb()\" \"[\\\"Label2Ec\\\" \\\"Label2Ed\\\"]\") (\"void damp.ekeko.aspectj.annotationtests.REPFix2.ajc$after$damp_ekeko_aspectj_annotationtests_REPFix2$2$8598ac45()\" \"[\\\"Label2Ee\\\"]\") (\"void damp.ekeko.aspectj.annotationtests.REPFix1.methodb()\" \"[\\\"Label1Eb\\\"]\") (\"void damp.ekeko.aspectj.annotationtests.REPFix2.<init>()\" \"[\\\"Label2Ea\\\" \\\"Label2Eb\\\"]\") (\"void damp.ekeko.aspectj.annotationtests.REPFix1.<init>(int)\" \"[\\\"Label1Ea\\\"]\") (\"void damp.ekeko.aspectj.annasstests.PrevFix.ajc$around$damp_ekeko_aspectj_annasstests_PrevFix$3$592dcb64(org.aspectj.runtime.internal.AroundClosure)\" \"[\\\"simulating\\\"]\")}"))
+
 (deftest test-logic-requires
   (test/tuples-correspond
     (damp.ekeko/ekeko [?rqd ?rqs]
         (l/all
             (world/type-packageName ?rqs "damp.ekeko.aspectj.annasstests")
             (assumptions/missing|required-requires ?rqd ?rqs)))
-    "#{(\"damp.ekeko.aspectj.annasstests.AbsentReqSat\" \"damp.ekeko.aspectj.annasstests.ReqFix\")}"))
+    "#{(\"damp.ekeko.aspectj.annasstests.AbsentReqSat\" \"damp.ekeko.aspectj.annasstests.ReqFix\") (\"AbsentReqLabelSat\" \"damp.ekeko.aspectj.annasstests.ReqLabFix\")}"
+))
 
 (deftest test-logic-excludes
   (test/tuples-correspond
@@ -223,15 +224,15 @@
         (l/all
             (world/type-packageName ?exr "damp.ekeko.aspectj.annasstests")
             (assumptions/present|excluded-excluder ?exd ?exr)))
-    "#{(\"damp.ekeko.aspectj.annasstests.ReqFix\" \"damp.ekeko.aspectj.annasstests.ExcFix\")}"))
+    "#{(\"damp.ekeko.aspectj.annasstests.ReqLabFix\" \"damp.ekeko.aspectj.annasstests.ExcFix\") (\"damp.ekeko.aspectj.annasstests.ReqFix\" \"damp.ekeko.aspectj.annasstests.ExcFix\")}"))
 
 (deftest test-logic-oneOf
   (test/tuples-correspond
-   (damp.ekeko/ekeko [?target]
+   (damp.ekeko/ekeko [?target ?offs]
         (l/all
             (world/type-packageName ?target "damp.ekeko.aspectj.annasstests")
-            (assumptions/oneOfViolation ?target)))
-   "#{(\"damp.ekeko.aspectj.annasstests.OneOfFix\") (\"damp.ekeko.aspectj.annasstests.OneOfFix2\") (\"damp.ekeko.aspectj.annasstests.OneOfFix3\")}"))
+            (assumptions/oneOf|definer-offenders ?target ?offs)))
+"#{(\"damp.ekeko.aspectj.annasstests.OneOfFix3\" \"[[#<ReferenceType damp.ekeko.aspectj.annasstests.ReqSatLeaf1>] [#<ReferenceType damp.ekeko.aspectj.annasstests.ReqSatLeaf2>] [#<ReferenceType damp.ekeko.aspectj.annasstests.ReqSatTree>]]\") (\"damp.ekeko.aspectj.annasstests.OneOfFix2\" \"[[#<ReferenceType damp.ekeko.aspectj.annasstests.ReqFix>] [#<ReferenceType damp.ekeko.aspectj.annasstests.ReqLabFix>]]\") (\"damp.ekeko.aspectj.annasstests.OneOfFix\" \"[]\") (\"damp.ekeko.aspectj.annasstests.OneOfFix4\" \"[]\")}"))
 
 ;; Test Suite
 ;; ----------

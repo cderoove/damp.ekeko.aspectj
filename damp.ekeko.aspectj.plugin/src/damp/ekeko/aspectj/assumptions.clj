@@ -300,117 +300,112 @@
 
 ;;===========================================================================================
 
-; Annotations
-
-;(defn type-nameOrPattern 
-;  [?type ?name]
-;   (l/conde
-;     [(type-name ?type ?name)]
-;     [(type-type|pattern ?type ?name)]))
-
-
 ;------------------------  ASPECT PRESENCE (GASREE Section 6.1) ------------------------------
 
-(defn missing|required-requires [?name ?requirer]
+(defn missing|required-requires|type [?name ?requirer]
   (l/fresh [?reqds ?required]
          (requiring|type-key-val ?requirer "type" ?reqds)
          (contains ?reqds ?name)
-         (fails (type-type|pattern ?required ?name))))
-(defn present|excluded-excluder [?exd ?excluder]
-  (l/fresh [?exds ?excluded]
+         (fails (type-type|pattern|plusplus ?required ?name))))
+
+(defn missing|required-requires|label [?required ?requirer]
+ (l/fresh [?reqds ?type ?labeled]
+         (requiring|type-key-val ?requirer "label" ?reqds)
+         (contains ?reqds ?required)
+         (fails 
+           (l/all (labeled|type-label|val ?type ?labeled)
+                  (contains ?labeled ?required))
+         )))
+
+(defn missing|required-requires [?required ?requirer]
+  (l/conde
+    [(missing|required-requires|type ?required ?requirer)]
+    [(missing|required-requires|label ?required ?requirer)]))
+
+(defn present|excluded-excluder|type [?excluded ?excluder]
+  (l/fresh [?exds ?exd]
          (excluding|type-key-val ?excluder "type" ?exds) 
          (contains ?exds ?exd)
-         (type-type|pattern ?excluded ?exd )))
+         (type-type|pattern|plusplus ?excluded ?exd )))
 
+(defn present|excluded-excluder|label [?excluded ?excluder]
+  (l/fresh [?exds ?exd ?label]
+           (excluding|type-key-val ?excluder "label" ?exds)
+           (contains ?exds ?exd)
+           (labeled|type-label|val ?excluded ?label)
+           (contains ?label ?exd)
+           ))
 
-;this might be slow for many typepatterns as the JVM does not support tail call optimiziation and we cannot use Clojure's recur keyword
-;warning: non-relational, excpects ?typepatterns to be bound to a collection of typepatterns
-(defn
-  typepatterns-typepatterns|matched
-  ([?typepatterns ?matched] 
-    (l/all
-      (v+ ?typepatterns)
-      (typepatterns-typepatterns|matched ?typepatterns [] ?matched)))
-  ([?typepatterns ?sofar ?matched]
-    (l/conda [(succeeds (empty? ?typepatterns)) ;conda (soft cut) will not consider the other clause if it has succeeded
-              (l/== ?sofar ?matched)]
-             [(l/fresh [?head ?tail ?match ?newsofar]
-                       (equals ?head (first ?typepatterns))
-                       (equals ?tail (rest ?typepatterns))
-                       (l/condu [(type-type|pattern2 ?match ?head) ;condu will not backtrack over the conditions in this clause once the first has succeeded 
-                                 (equals ?newsofar (conj ?sofar ?head))	
-                                 (typepatterns-typepatterns|matched ?tail ?newsofar ?matched)]
-                                [(typepatterns-typepatterns|matched ?tail ?sofar ?matched)]))])))
+(defn present|excluded-excluder  [?excluded ?excluder]
+ (l/conde
+    [(present|excluded-excluder|type ?excluded ?excluder)]
+    [(present|excluded-excluder|label ?excluded ?excluder)]))
+
 
 (defn- get-all-matches 
   [pattern]
-  (ekeko [?t] (type-type|pattern2 ?t pattern)))
+  (into [] (ekeko [?t] (type-type|pattern|plusplus ?t pattern))))
+
+(defn- flatt-get [patterns]
+  (into [](mapcat get-all-matches patterns) ))
 
 (defn- typepatterns-matches 
   [?pattern ?matches]
   (l/all
     (v+ ?pattern)
-    (equals ?matches (get-all-matches ?pattern))))
+    (equals ?matches (flatt-get ?pattern))))
 
-(defn oneOfViolation [?targettype]
-  (l/fresh [?patterns ?matches ?count ?pattern]
-         (oneOfing|type-key-val ?targettype "type" ?patterns)
-         (contains ?patterns ?pattern)
-         (typepatterns-matches ?pattern ?matches) ;don;t exists
-         (differs ?count 1)
-         (equals ?count (count ?matches))))
-
-
-(defn oneOf|definer-offenders [?def ?offs]
-  (l/fresh  [?patterns ?count ?pattern]
+(defn oneOf|definer|type-offenders [?def ?offs]
+  (l/fresh  [?patterns ?count]
              (oneOfing|type-key-val ?def "type" ?patterns)
-             (contains ?patterns ?pattern)
-             (typepatterns-matches ?pattern ?offs)
+             (typepatterns-matches ?patterns ?offs)
              (differs ?count 1)
              (equals ?count (count ?offs))))
 
-;------------------------  Control Flow (GASREE Section 6.2) ------------------------------
+(defn- get-all-labelmatches 
+  [label]
+  (into [] (ekeko [?t] (labeled|type-label|val ?t label))))
 
-(defn present|excludedPrevious-excluder [?excluded ?excluder]
-  (l/fresh [?label]
-         (exclPrev|behavior-val ?excluder ?label)
-         (labeled|behavior-label|val ?excluded ?label)
-         (ajsoot/behavior-reachable|behavior ?excluded ?excluder)))
+(defn- flatt-get-label [labels]
+  (into [](mapcat get-all-labelmatches labels) ))
 
-(defn missing|requiredPrevious-requirer [?required ?requirer]
-  (l/fresh [?label]
-         (reqPrev|behavior-val ?requirer ?label)
-         (labeled|behavior-label|val ?required ?label)
-         (fails (ajsoot/behavior-reachable|behavior ?required ?requirer))))
-
-(defn missing|requiredPrevious-requirer-label [?required ?requirer ?label]
+(defn- label-matches 
+  [?label ?matches] 
   (l/all
-         (reqPrev|behavior-val ?requirer ?label)
-         (labeled|behavior-label|val ?required ?label)
-         (fails (ajsoot/behavior-reachable|behavior ?required ?requirer))))
-         
-
-(comment
- ; these are for labels, the ones of types should be renamed with |type
- ; and then the *real* one does a conde on |label and |type
-(defn missing|required-requires|label
- [?required ?requires]
- (l/fresh [?reqds ?type]
-         (requiring|type-key-val ?requires "label" ?reqds)
-         (contains ?reqds ?required)
-         (fails (labeled|type-label|val ?type ?required))
-         ))
-
-(defn present|excluded-excluder|label
-  [?excluded ?excluder]
-  (l/fresh [?exds ?exd]
-           (excluding|type-key-val ?excluder "label" ?exds)
-           (contains ?exds ?exd)
-           (labeled|type-label|val ?excluded ?exd)
-           ))
-
+      (v+ ?label)
+      (equals ?matches (flatt-get-label ?label))))
   
-  
+  (defn oneOf|definer|label-offenders [?def ?offs]
+    (l/fresh  [?labels ?count ?labels]
+               (oneOfing|type-key-val ?def "label" ?labels)
+               (label-matches ?labels ?offs)
+               (differs ?count 1)
+               (equals ?count (count ?offs))))           
+             
+  (defn oneOf|definer-offenders [?def ?offs]
+    (l/conde
+        [(oneOf|definer|type-offenders ?def ?offs)]
+        [(oneOf|definer|label-offenders ?def ?offs)]))
+       
+       
+       
+  ;------------------------  Control Flow (GASREE Section 6.2) ------------------------------
 
+  (defn present|excludedPrevious-excluder [?excluded ?excluder]
+    (l/fresh [?label]
+           (exclPrev|behavior-val ?excluder ?label)
+           (labeled|behavior-label|val ?excluded ?label)
+           (ajsoot/behavior-reachable|behavior ?excluded ?excluder)))
 
-) ; end comment
+  (defn missing|requiredPrevious-requirer [?required ?requirer]
+    (l/fresh [?label]
+           (reqPrev|behavior-val ?requirer ?label)
+           (labeled|behavior-label|val ?required ?label)
+           (fails (ajsoot/behavior-reachable|behavior ?required ?requirer))))
+
+  (defn missing|requiredPrevious-requirer-label [?required ?requirer ?label]
+    (l/all
+           (reqPrev|behavior-val ?requirer ?label)
+           (labeled|behavior-label|val ?required ?label)
+           (fails (ajsoot/behavior-reachable|behavior ?required ?requirer))))
+           
