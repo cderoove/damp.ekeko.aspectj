@@ -143,11 +143,10 @@
               (type-name|sub+ ?name ?match)]
              [(l/!= ?nameplus ?typePat)
               (type-simple-name ?match ?typePat)])))
- )
+ ); end commented out code
 
-(defn type-type|pattern2
- "Uses AJ pattern matcher BUT removes 'root' types when using the + operator e.g., XXX+ will NOT match XXX.
-For normal AJ type-pattern matching semantics use d.e.a.weaverworld/type-type|pattern"
+(defn type|no|root-type|pattern
+ "Uses AJ pattern matcher BUT removes 'root' types when using the + operator e.g., XXX+ will NOT match XXX."
  [?type ?pattern]
  (l/all (v+ ?pattern)
         (type-type|pattern ?type ?pattern)
@@ -156,7 +155,19 @@ For normal AJ type-pattern matching semantics use d.e.a.weaverworld/type-type|pa
             (l/!= ?pattern (clojure.string/replace ?pattern #"\+" ""))
             (type-type|pattern ?type (clojure.string/replace ?pattern #"\+" ""))))))
 
-
+(defn type-type|pattern|plusplus
+  "Adds support for the = wildcard
+   For normal AJ type-pattern matching semantics use d.e.a.weaverworld/type-type|pattern"
+  [?type ?typePat]
+  (l/fresh [?name ?nameEq ?typePatPlus]
+           (equals ?name (clojure.string/replace ?typePat #"[=]" ""))
+           (equals ?nameEq (str ?name "="))
+           (l/conda
+             [(l/==  ?nameEq ?typePat)
+              (equals ?typePatPlus (str ?name "+"))
+              (type|no|root-type|pattern ?type ?typePatPlus )]
+             [(l/!= ?nameEq ?typePat)
+              (type-type|pattern ?type ?typePat)])))
 
 
 
