@@ -1,7 +1,12 @@
 package damp.ekeko.aspectj;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.aspectj.ajde.core.AjCompiler;
@@ -30,6 +35,10 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 
 import damp.ekeko.JavaProjectModel;
+import soot.SootMethod;
+import soot.Unit;
+import soot.jimple.toolkits.ide.icfg.AbstractJimpleBasedICFG;
+import soot.jimple.toolkits.ide.icfg.JimpleBasedInterproceduralCFG;
 
 public class AspectJProjectModel extends JavaProjectModel {
 
@@ -238,6 +247,8 @@ public class AspectJProjectModel extends JavaProjectModel {
 	protected void addControlFlowGraphInformationForMethodDeclaration(MethodDeclaration m) {
 	}
 
+
+	
 
 
 }

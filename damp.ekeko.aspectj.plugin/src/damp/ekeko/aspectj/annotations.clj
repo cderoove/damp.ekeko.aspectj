@@ -59,7 +59,8 @@
   [?meth ?annotation ?atn]
   (l/fresh [?at]
     (method-annotation ?meth ?annotation)
-    (fails (l/fresh [?pc] (pointcutdefinition-method|ajsynthetic ?pc ?meth)))
+    ;(fails (l/fresh [?pc] (pointcutdefinition-method|ajsynthetic ?pc ?meth)))
+    (member|nonsynthetic ?meth)
     (annotation-annotationtype ?annotation ?at)
     (type-name ?at ?atn)))
 

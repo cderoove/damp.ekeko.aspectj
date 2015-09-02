@@ -388,7 +388,40 @@
          (reqPrev|behavior-val ?requirer ?label)
          (labeled|behavior-label|val ?required ?label)
          (fails (ajsoot/behavior-reachable|behavior ?required ?requirer))))
-         
+    
+
+
+(comment
+  ;;sanity check on MobileMedia
+  
+  (damp.ekeko/ekeko* [?requirer ?required ?rsm ?dsm]
+                   (l/fresh [?label ?model]	
+                            (reqPrev|behavior-val ?requirer ?label)
+                            (labeled|behavior-label|val ?required ?label)
+                            (ajsoot/behavior-soot|method ?requirer ?rsm)
+                            (ajsoot/behavior-soot|method ?required ?dsm)
+                            (jsoot/soot-model ?model)
+                            (succeeds (.onSamePath ?model ^SootMethod ?dsm ?rsm)))
+                            
+                            )
+  
+  (damp.ekeko/ekeko* [?pred ?succ]
+                     (l/fresh [?model]
+                              (jsoot/soot-model ?model)
+                              (jsoot/soot-method-name ?pred "addObserver")
+                              (jsoot/soot-method-name ?succ "generate")
+                              (succeeds (.onSamePath ?model ^SootMethod ?pred ?succ))))
+
+  
+  
+  )
+  
+  
+  
+
+
+
+
 
 (comment
  ; these are for labels, the ones of types should be renamed with |type

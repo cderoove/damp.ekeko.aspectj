@@ -12,7 +12,7 @@
 	<artifactId>damp.ekeko.aspectj.plugin.test</artifactId>
 	<packaging>eclipse-test-plugin</packaging>
 	<version>1.0.4-SNAPSHOT</version>
-	
+
 
 	<properties>
 		<os-jvm-flags /> <!-- for the default case -->
@@ -27,7 +27,7 @@
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-surefire-plugin</artifactId>
-				<version>0.20.0</version>
+				<version>0.23.0</version>
 
 				<configuration>
 					<useUIHarness>true</useUIHarness>
@@ -43,7 +43,7 @@
 							<type>p2-installable-unit</type>
 							<artifactId>org.eclipse.sdk.feature.group</artifactId>
 						</dependency>
-					
+
 						<dependency>
 							<type>p2-installable-unit</type>
 							<artifactId>org.eclipse.pde.feature.group</artifactId>
@@ -92,4 +92,4 @@
 
 
 
-</project> 
+</project>
