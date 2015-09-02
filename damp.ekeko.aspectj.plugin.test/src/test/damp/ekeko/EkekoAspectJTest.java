@@ -26,7 +26,7 @@ public class EkekoAspectJTest {
 				"AJ-LMP-AdviceOrdering" , 
 				"AJ-LMP-Inclusion",
 				"AJ-LMP-MarkerIface",
-				"AJ-LMP-Pointcuts",
+				//"AJ-LMP-Pointcuts",
 				"AJ-LMP-RefineUsedPointcut", 
 				"AJ-LMP-Wormhole",
 				"AJ-LMP-ITD",
